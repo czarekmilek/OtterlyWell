@@ -1,136 +1,58 @@
 import {
-  alpha,
-  Box,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import {
-  DashboardIcon,
   CalorieIcon,
-  WorkoutIcon,
+  DashboardIcon,
   FinanceIcon,
   TaskIcon,
+  WorkoutIcon,
 } from "../../icons";
 
-const navItems = [
-  { text: "Dashboard", icon: <DashboardIcon /> },
-  { text: "Kalorie", icon: <CalorieIcon /> },
-  { text: "Treningi", icon: <WorkoutIcon /> },
-  { text: "Finanse", icon: <FinanceIcon /> },
-  { text: "Zadania", icon: <TaskIcon /> },
+const navigation = [
+  { name: "Dashboard", href: "#", icon: DashboardIcon, current: true },
+  { name: "Kalorie", href: "#", icon: CalorieIcon, current: false },
+  { name: "Treningi", href: "#", icon: WorkoutIcon, current: false },
+  { name: "Finanse", href: "#", icon: FinanceIcon, current: false },
+  { name: "Zadania", href: "#", icon: TaskIcon, current: false },
 ];
 
-interface SidebarProps {
-  mobileOpen: boolean;
-  handleDrawerToggle: () => void;
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
 }
 
-const Sidebar = ({ mobileOpen, handleDrawerToggle }: SidebarProps) => {
-  const drawerContent = (
-    <div>
-      <Toolbar
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          px: [1],
-        }}
-      >
-        <Typography variant="h6" noWrap component="div" color="text.primary">
-          Otterly Well
-        </Typography>
-      </Toolbar>
-      <List>
-        {navItems.map((item, index) => (
-          <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: mobileOpen ? "initial" : "center",
-                px: 2.5,
-                mx: 2,
-                borderRadius: 2,
-                "&.Mui-selected": {
-                  backgroundColor: (theme) =>
-                    alpha(theme.palette.primary.main, 0.1),
-                  color: "primary.main",
-                },
-                "&:hover": {
-                  backgroundColor: (theme) =>
-                    alpha(theme.palette.primary.main, 0.05),
-                },
-              }}
-              selected={index === 0}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: 3,
-                  justifyContent: "center",
-                  color: index === 0 ? "primary.main" : "text.secondary",
-                }}
-              >
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={item.text}
-                sx={{
-                  opacity: 1,
-                  color: index === 0 ? "text.primary" : "text.secondary",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
-
+const Sidebar = () => {
   return (
-    <Box
-      component="nav"
-      sx={{ width: { sm: 240 }, flexShrink: { sm: 0 } }}
-      aria-label="mailbox folders"
-    >
-      <Drawer
-        variant="temporary"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: 240,
-            backgroundColor: "background.default",
-          },
-        }}
-      >
-        {drawerContent}
-      </Drawer>
-      <Drawer
-        variant="permanent"
-        sx={{
-          display: { xs: "none", sm: "block" },
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: 240,
-            backgroundColor: "background.default",
-          },
-        }}
-        open
-      >
-        {drawerContent}
-      </Drawer>
-    </Box>
+    <aside className="fixed z-10 flex w-64 flex-col border-r border-white/10 bg-gray-900">
+      <div className="flex items-center justify-center px-6 h-16">
+        <h1 className="text-2xl font-bold text-white">Otterly Well</h1>
+      </div>
+      <nav className="flex flex-1 flex-col gap-y-5 overflow-y-auto px-4">
+        <ul role="list" className="flex flex-1 flex-col">
+          <li>
+            <ul role="list" className="space-y-1">
+              {navigation.map((item) => (
+                <li key={item.name}>
+                  <a
+                    href={item.href}
+                    className={classNames(
+                      item.current
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-400 hover:bg-gray-800 hover:text-white",
+                      "group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6"
+                    )}
+                    aria-current={item.current ? "page" : undefined}
+                  >
+                    <item.icon
+                      className="h-6 w-6"
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </aside>
   );
 };
 
