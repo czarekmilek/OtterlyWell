@@ -1,5 +1,9 @@
 import { lazy, Suspense } from "react";
 import "./App.css";
+import { ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+import Layout from "./components/Layout/Layout";
+import theme from "./theme";
 
 const Dashboard = lazy(() => import("./components/Dashboard/Dashboard"));
 
@@ -11,11 +15,14 @@ const LoadingSpinner: React.FC = () => (
 
 function App() {
   return (
-    <main className="min-h-screen">
-      <Suspense fallback={<LoadingSpinner />}>
-        <Dashboard />
-      </Suspense>
-    </main>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Layout>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Dashboard />
+        </Suspense>
+      </Layout>
+    </ThemeProvider>
   );
 }
 
