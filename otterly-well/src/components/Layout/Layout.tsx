@@ -1,14 +1,23 @@
+import { useState } from "react";
 import Sidebar from "./Sidebar/Sidebar";
+import Header from "./Header/Header";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-900">
-      <Sidebar />
-      <main className="pl-64">{children}</main>
+      <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+      <div className="lg:pl-64">
+        <Header onMenuClick={() => setMobileOpen(true)} />
+        <main className="py-10">
+          <div className="px-4 sm:px-6 lg:px-8">{children}</div>
+        </main>
+      </div>
     </div>
   );
 };
