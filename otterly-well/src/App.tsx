@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import "./App.css";
+import Layout from "./components/Layout/Layout";
 
 const Dashboard = lazy(() => import("./components/Dashboard/Dashboard"));
 
@@ -11,11 +12,11 @@ const LoadingSpinner: React.FC = () => (
 
 function App() {
   return (
-    <main className="min-h-screen">
+    <Layout>
       <Suspense fallback={<LoadingSpinner />}>
         <Dashboard />
       </Suspense>
-    </main>
+    </Layout>
   );
 }
 

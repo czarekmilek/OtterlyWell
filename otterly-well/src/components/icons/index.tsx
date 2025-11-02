@@ -21,3 +21,11 @@ export const FinanceIcon: React.FC<IconProps> = ({ className }) => (
 export const TaskIcon: React.FC<IconProps> = ({ className }) => (
   <span className={`material-symbols-sharp ${className}`}>task_alt</span>
 );
+
+export const DashboardIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>dashboard</span>
+);
+
+export const MenuIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>menu</span>
+);
