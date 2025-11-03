@@ -14,7 +14,7 @@ const Layout = ({ children }: LayoutProps) => {
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
       <div className="lg:pl-64">
         <Header onMenuClick={() => setMobileOpen(true)} />
-        <main className="py-10">
+        <main>
           <div className="px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
