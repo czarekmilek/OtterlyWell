@@ -1,15 +1,71 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, FormEvent } from "react";
 import { CalorieIcon } from "../icons";
 
-type Entry = { id: string; name: string; kcal: number };
+type Entry = { id: string; name: string; kcal: number; grams: number };
 
-const defaultGoalCalories = 2137;
+type FoodHit = {
+  name: string;
+  brand?: string;
+  kcalPer100g?: number;
+  proteinPer100g?: number;
+  fatPer100g?: number;
+  carbsPer100g?: number;
+  imageUrl?: string;
+  source: string;
+  sourceId?: string;
+};
+
+type FoodHitWithGrams = FoodHit & {
+  id: string;
+  grams: number;
+};
+
+function useFoodSearch(q: string) {
+  const [loading, setLoading] = useState(false);
+  const [hits, setHits] = useState<FoodHit[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let abort = false;
+    async function run() {
+      if (!q || q.length < 2) {
+        setHits([]);
+        return;
+      }
+      setLoading(true);
+      setError(null);
+
+      try {
+        const base = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL;
+        const url = new URL(`${base}/v1/search-food`);
+        url.searchParams.set("q", q);
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const json = await res.json();
+        if (!abort) setHits(json.items ?? []);
+      } catch (e: Error) {
+        if (!abort) setError(e.message);
+      } finally {
+        if (!abort) setLoading(false);
+      }
+    }
+
+    run();
+    return () => {
+      abort = true;
+    };
+  }, [q]);
+
+  return { loading, hits, error };
+}
 
 export default function Calories() {
-  const [goalCalories, setGoal] = useState<number>(defaultGoalCalories);
-  const [name, setName] = useState("");
-  const [kcal, setKcal] = useState<string>("");
+  const [goalCalories, setGoalCalories] = useState<number>(2137);
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [query, setQuery] = useState("");
+  const { loading, hits, error } = useFoodSearch(query);
 
   const totalCalories = useMemo(
     () => entries.reduce((sum, e) => sum + e.kcal, 0),
@@ -20,32 +76,63 @@ export default function Calories() {
     (totalCalories / Math.max(goalCalories, 1)) * 100
   );
 
-  function addEntry(e: React.FormEvent) {
-    e.preventDefault();
-    const cleanProductName = name.trim();
-    const productCalorieCount = Number(kcal);
-    if (
-      !cleanProductName ||
-      !Number.isFinite(productCalorieCount) ||
-      productCalorieCount <= 0
-    )
-      return;
+  // function addEntry(e: React.FormEvent) {
+  //   e.preventDefault();
+  //   const cleanProductName = name.trim();
+  //   const productCalorieCount = Number(kcal);
+  //   if (
+  //     !cleanProductName ||
+  //     !Number.isFinite(productCalorieCount) ||
+  //     productCalorieCount <= 0
+  //   )
+  //     return;
+
+  //   setEntries((prev) => [
+  //     ...prev,
+  //     {
+  //       id: crypto.randomUUID(),
+  //       name: cleanProductName,
+  //       kcal: Math.round(productCalorieCount),
+  //     },
+  //   ]);
+  //   setName("");
+  //   setKcal("");
+  // }
+
+  function addEntryFromFood(food: FoodHit, grams: number) {
+    if (!food.kcalPer100g) return;
+    const kcal = (food.kcalPer100g * grams) / 100;
 
     setEntries((prev) => [
       ...prev,
       {
         id: crypto.randomUUID(),
-        name: cleanProductName,
-        kcal: Math.round(productCalorieCount),
+        name: `${food.name} (${grams}g)}`,
+        kcal: Math.round(kcal),
+        grams,
       },
     ]);
-    setName("");
-    setKcal("");
   }
 
   function removeEntry(id: string) {
     setEntries((prev) => prev.filter((e) => e.id !== id));
   }
+
+  const hitsWithGrams: FoodHitWithGrams[] = useMemo(
+    () =>
+      hits.map((h) => ({
+        ...h,
+        id: h.sourceId + h.name,
+        grams: 100,
+      })),
+    [hits]
+  );
+
+  const [localHits, setLocalHits] = useState(hitsWithGrams);
+
+  useEffect(() => {
+    setLocalHits(hitsWithGrams);
+  }, [hitsWithGrams]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -99,14 +186,14 @@ export default function Calories() {
               value={goalCalories}
               onChange={(e) => {
                 const newGoal = Number(e.target.value);
-                setGoal(newGoal > 0 ? newGoal : defaultGoalCalories);
+                setGoalCalories(newGoal > 0 ? newGoal : defaultGoalCalories);
               }}
             />
           </div>
         </div>
 
-        <form
-          onSubmit={addEntry}
+        {/* <form
+          onSubmit={addEntryFromFood}
           className="rounded-xl border border-white/10 bg-gray-800/50 p-4"
         >
           <h2 className="text-lg font-semibold text-gray-100">Dodaj produkt</h2>
@@ -134,7 +221,103 @@ export default function Calories() {
               Dodaj
             </button>
           </div>
-        </form>
+        </form> */}
+
+        {/* Search box */}
+        <div>
+          <div className="mb-6">
+            <input
+              type="text"
+              placeholder="Szukaj produktu..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="w-full rounded-md border border-white/10 bg-gray-900 px-3 py-2 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-orange-400/40 focus:outline-none"
+            />
+            {loading && <p className="mt-2 text-gray-400">Szukam...</p>}
+            {error && <p className="mt-2 text-red-400">Błąd: {error}</p>}
+          </div>
+
+          {/* Results */}
+          {hits.length > 0 && (
+            <ul className="mb-8 divide-y divide-white/10 rounded-lg border border-white/10 max-h-96 overflow-y-auto">
+              {localHits.map((h, index) => (
+                <li
+                  key={h.id}
+                  className="group p-3 flex items-center gap-3 bg-gray-800/50 hover:bg-gray-700/50 transition"
+                >
+                  {h.imageUrl && (
+                    <img
+                      src={h.imageUrl}
+                      alt={h.name}
+                      className="h-10 w-10 rounded object-cover"
+                    />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-gray-100 truncate">{h.name}</p>
+                    <p className="text-sm text-gray-400">
+                      {h.brand ?? "—"} •{" "}
+                      {h.kcalPer100g
+                        ? `${h.kcalPer100g} kcal / 100g`
+                        : "brak danych"}
+                    </p>
+                  </div>
+
+                  {/* Add button */}
+                  {h.kcalPer100g && (
+                    <form
+                      className="ml-auto"
+                      onSubmit={(e: FormEvent) => {
+                        e.preventDefault();
+                        if (h.grams > 0) {
+                          addEntryFromFood(h, h.grams);
+                        }
+                      }}
+                    >
+                      <div
+                        className="
+                          gap-2
+                          items-center
+                          opacity-0
+                          focus-within:opacity-100
+                          group-hover:opacity-100
+                          transition-opacity
+                          duration-200
+                          flex
+                        "
+                      >
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          min={1}
+                          className="w-24 rounded-md border border-white/10 bg-gray-900 px-2 py-1 text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400/40"
+                          placeholder="Gramy"
+                          value={h.grams}
+                          onChange={(e) => {
+                            const newGrams = Number(e.target.value);
+                            setLocalHits((prev) =>
+                              prev.map((item, i) =>
+                                i === index
+                                  ? { ...item, grams: newGrams }
+                                  : item
+                              )
+                            );
+                          }}
+                        />
+                        <button
+                          type="submit"
+                          className="rounded-md bg-orange-500 px-3 py-1 text-sm text-white hover:bg-orange-400 disabled:cursor-not-allowed disabled:bg-gray-600"
+                          disabled={h.grams <= 0}
+                        >
+                          Dodaj
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </section>
 
       <section className="rounded-xl border border-white/10 bg-gray-800/50 p-4">
