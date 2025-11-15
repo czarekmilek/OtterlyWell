@@ -358,3 +358,9 @@ entrypoint = "./functions/search-food/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/search-food/*.html" ]
+
+[functions.get-food-by-barcode]
+enabled = true
+verify_jwt = false
+import_map = "./functions/get-food-by-barcode/deno.json"
+entrypoint = "./functions/get-food-by-barcode/index.ts"

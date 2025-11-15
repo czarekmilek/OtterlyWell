@@ -2,7 +2,13 @@ import { useMemo, useState, useEffect, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFoodSearch } from "./useFoodSearch";
 import type { Entry, FoodHit, FoodHitWithGrams } from "../types";
-import { Goals, FoodSearch, CustomEntry, EntriesList } from "./components";
+import {
+  Goals,
+  FoodSearch,
+  CustomEntry,
+  BarcodeScanner,
+  EntriesList,
+} from "./components";
 
 export default function Calories() {
   const [goalCalories, setGoalCalories] = useState<number>(2137);
@@ -13,7 +19,9 @@ export default function Calories() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [query, setQuery] = useState("");
   const { loading, hits, error } = useFoodSearch(query);
-  const [activeTab, setActiveTab] = useState<"search" | "custom">("custom");
+  const [activeTab, setActiveTab] = useState<"search" | "custom" | "scan">(
+    "custom"
+  );
   const [customEntry, setCustomEntry] = useState<Omit<Entry, "id">>({
     name: "",
     kcal: 0,
@@ -106,6 +114,13 @@ export default function Calories() {
     setEntries((prev) => prev.filter((e) => e.id !== id));
   }
 
+  const getTabClassName = (tabName: typeof activeTab) =>
+    `px-4 py-2 rounded-t-md transition-colors relative -mb-px ${
+      activeTab === tabName
+        ? "bg-brand-neutral-dark/50 text-brand-neutral-light border-x border-t border-brand-depth border-b-transparent"
+        : "text-brand-neutral-dark hover:bg-brand-accent-3 border-b border-brand-depth cursor-pointer"
+    }`;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -130,29 +145,28 @@ export default function Calories() {
           <div className="flex border-b border-brand-depth">
             <button
               onClick={() => setActiveTab("search")}
-              className={`px-4 py-2 rounded-t-md transition-colors relative -mb-px ${
-                activeTab === "search"
-                  ? "bg-brand-neutral-dark/50 text-brand-neutral-light border-x border-t border-brand-depth border-b-transparent"
-                  : "text-brand-neutral-dark hover:bg-brand-accent-3 border-b border-brand-depth cursor-pointer"
-              }`}
+              className={getTabClassName("search")}
             >
               Wyszukaj
             </button>
             <button
               onClick={() => setActiveTab("custom")}
-              className={`px-4 py-2 rounded-t-md transition-colors relative -mb-px ${
-                activeTab === "custom"
-                  ? "bg-brand-neutral-dark/50 text-brand-neutral-light border-x border-t border-brand-depth border-b-transparent"
-                  : "text-brand-neutral-dark hover:bg-brand-accent-3 border-b border-brand-depth cursor-pointer"
-              }`}
+              className={getTabClassName("custom")}
             >
               Dodaj własny
+            </button>
+            <button
+              onClick={() => setActiveTab("scan")}
+              className={getTabClassName("scan")}
+            >
+              Skanuj
             </button>
           </div>
 
           <AnimatePresence mode="wait">
             {activeTab === "search" ? (
               <FoodSearch
+                key="search"
                 query={query}
                 setQuery={setQuery}
                 loading={loading}
@@ -161,12 +175,15 @@ export default function Calories() {
                 addEntryFromFood={addEntryFromFood}
                 setLocalHits={setLocalHits}
               />
-            ) : (
+            ) : activeTab === "custom" ? (
               <CustomEntry
+                key="custom"
                 customEntry={customEntry}
                 handleCustomEntryChange={handleCustomEntryChange}
                 handleCustomEntrySubmit={handleCustomEntrySubmit}
               />
+            ) : (
+              <BarcodeScanner key="scan" addEntryFromFood={addEntryFromFood} />
             )}
           </AnimatePresence>
         </motion.div>
