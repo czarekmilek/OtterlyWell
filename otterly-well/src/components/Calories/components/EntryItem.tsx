@@ -33,9 +33,19 @@ export const EntryItem = ({ entry: e, removeEntry }: EntryItemProps) => {
       >
         {/* Info section */}
         <div className="min-w-0 flex-1">
-          <p className="text-brand-neutral-light">{e.name}</p>
+          <div className="flex justify-between">
+            <p className="text-brand-neutral-light">{e.name}</p>
+            <button
+              onClick={openModal}
+              className="flex sm:w-auto items-center justify-center rounded-md text-sm text-brand-neutral-light 
+                       hover:bg-red-800/20 hover:border-red-500/30 hover:text-red-400
+                       transition-colors duration-200 cursor-pointer"
+            >
+              <DeleteIcon className="text-base" />
+            </button>
+          </div>
 
-          <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm text-brand-secondary">
+          <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-brand-secondary">
             <span className="font-semibold bg-brand-accent-3 text-brand-neutral-light px-2 rounded-xl">
               {e.kcal} kcal
             </span>
@@ -62,20 +72,6 @@ export const EntryItem = ({ entry: e, removeEntry }: EntryItemProps) => {
           <div className="mt-2 w-">
             <MacroBar protein={e.protein} fat={e.fat} carbs={e.carbs} />
           </div>
-        </div>
-
-        {/* Button */}
-        <div className="flex-shrink-0 w-full sm:w-auto flex justify-center">
-          <button
-            onClick={openModal}
-            className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-md border border-brand-depth 
-                       bg-brand-neutral-dark px-3 py-1 text-sm text-brand-neutral-light 
-                       hover:bg-red-800/20 hover:border-red-500/30 hover:text-red-400
-                       transition-colors duration-200 cursor-pointer"
-          >
-            <DeleteIcon className="text-base" />
-            Usuń
-          </button>
         </div>
       </motion.li>
 

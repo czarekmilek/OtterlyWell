@@ -12,7 +12,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen bg-brand-secondary">
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
-      <div className="lg:pl-64">
+      <div className="xl:pl-64">
         <Header onMenuClick={() => setMobileOpen(true)} />
         <main>
           <div className="px-4 sm:px-6 lg:px-8">{children}</div>

@@ -106,11 +106,11 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
 
   return (
     <>
-      {/* --- Mobile Sidebar (using Headless UI Dialog) --- */}
+      {/* Mobile sidebar */}
       <Transition show={mobileOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="relative z-40 lg:hidden"
+          className="relative z-40 xl:hidden"
           onClose={setMobileOpen}
         >
           {/* Backdrop */}
@@ -170,8 +170,8 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
         </Dialog>
       </Transition>
 
-      {/* --- Desktop Sidebar --- */}
-      <aside className="hidden lg:fixed lg:inset-y-0 lg:z-10 lg:flex lg:w-64 lg:flex-col border-r border-brand-depth bg-brand-neutral-light">
+      {/* Desktop sidebar */}
+      <aside className="hidden xl:fixed xl:inset-y-0 xl:z-10 xl:flex xl:w-64 xl:flex-col border-r border-brand-depth bg-brand-neutral-light">
         {sidebarContent}
       </aside>
     </>

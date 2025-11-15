@@ -35,7 +35,7 @@ export const QrCodeIcon: React.FC<IconProps> = ({ className }) => (
 );
 
 export const DeleteIcon: React.FC<IconProps> = ({ className }) => (
-  <span className={`material-symbols-sharp ${className}`}>delete</span>
+  <span className={`material-symbols-sharp ${className}`}>clear</span>
 );
 
 export const WarningIcon: React.FC<IconProps> = ({ className }) => (

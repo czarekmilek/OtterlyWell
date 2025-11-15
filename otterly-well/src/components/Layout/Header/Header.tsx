@@ -13,14 +13,14 @@ const Header = ({ onMenuClick }: HeaderProps) => {
       {/* Mobile-only menu button */}
       <button
         type="button"
-        className="-m-2.5 p-2.5 text-brand-neutral-dark lg:hidden"
+        className="-m-2.5 p-2.5 text-brand-neutral-dark xl:hidden"
         onClick={onMenuClick}
       >
         <span className="sr-only">Open sidebar</span>
         <MenuIcon className="h-6 w-6" aria-hidden="true" />
       </button>
 
-      <div className="h-6 w-px bg-brand-depth lg:hidden" aria-hidden="true" />
+      <div className="h-6 w-px bg-brand-depth xl:hidden" aria-hidden="true" />
 
       {/* <div className="flex flex-1 justify-end gap-x-6">
         <div className="flex items-center gap-x-4">

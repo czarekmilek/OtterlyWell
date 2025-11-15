@@ -30,7 +30,7 @@ export const Goals = ({
   setGoalCarbs,
 }: GoalsProps) => {
   return (
-    <motion.div className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4 flex flex-col gap-4 lg:w-1/2">
+    <motion.div className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4 flex flex-col gap-4">
       <div className="flex items-end justify-between gap-4">
         <div>
           <p className="text-brand-secondary">Dzisiejszy cel</p>

@@ -126,70 +126,72 @@ export default function Calories() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="p-4 sm:p-6 lg:p-8"
+      className="py-2 sm:py-4"
     >
-      <section className="mb-4 flex gap-4 lg:flex-row flex-col">
-        <Goals
-          goalCalories={goalCalories}
-          totalCalories={totalCalories}
-          goalProtein={goalProtein}
-          goalFat={goalFat}
-          goalCarbs={goalCarbs}
-          setGoalCalories={setGoalCalories}
-          setGoalProtein={setGoalProtein}
-          setGoalFat={setGoalFat}
-          setGoalCarbs={setGoalCarbs}
-        />
-
-        <motion.div className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4 lg:w-1/2">
-          <div className="flex border-b border-brand-depth">
-            <button
-              onClick={() => setActiveTab("search")}
-              className={getTabClassName("search")}
-            >
-              Wyszukaj
-            </button>
-            <button
-              onClick={() => setActiveTab("custom")}
-              className={getTabClassName("custom")}
-            >
-              Dodaj własny
-            </button>
-            <button
-              onClick={() => setActiveTab("scan")}
-              className={getTabClassName("scan")}
-            >
-              Skanuj
-            </button>
-          </div>
-
-          <AnimatePresence mode="wait">
-            {activeTab === "search" ? (
-              <FoodSearch
-                key="search"
-                query={query}
-                setQuery={setQuery}
-                loading={loading}
-                error={error}
-                localHits={localHits}
-                addEntryFromFood={addEntryFromFood}
-                setLocalHits={setLocalHits}
-              />
-            ) : activeTab === "custom" ? (
-              <CustomEntry
-                key="custom"
-                customEntry={customEntry}
-                handleCustomEntryChange={handleCustomEntryChange}
-                handleCustomEntrySubmit={handleCustomEntrySubmit}
-              />
-            ) : (
-              <BarcodeScanner key="scan" addEntryFromFood={addEntryFromFood} />
-            )}
-          </AnimatePresence>
-        </motion.div>
+      <section className="mb-4 flex gap-1 lg:flex-row flex-col">
+        <EntriesList entries={entries} removeEntry={removeEntry} />
+        <div className="gap-1 flex flex-col">
+          <Goals
+            goalCalories={goalCalories}
+            totalCalories={totalCalories}
+            goalProtein={goalProtein}
+            goalFat={goalFat}
+            goalCarbs={goalCarbs}
+            setGoalCalories={setGoalCalories}
+            setGoalProtein={setGoalProtein}
+            setGoalFat={setGoalFat}
+            setGoalCarbs={setGoalCarbs}
+          />
+          <motion.div className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4">
+            <div className="flex border-b border-brand-depth">
+              <button
+                onClick={() => setActiveTab("search")}
+                className={getTabClassName("search")}
+              >
+                Wyszukaj
+              </button>
+              <button
+                onClick={() => setActiveTab("custom")}
+                className={getTabClassName("custom")}
+              >
+                Dodaj własny
+              </button>
+              <button
+                onClick={() => setActiveTab("scan")}
+                className={getTabClassName("scan")}
+              >
+                Skanuj
+              </button>
+            </div>
+            <AnimatePresence mode="wait">
+              {activeTab === "search" ? (
+                <FoodSearch
+                  key="search"
+                  query={query}
+                  setQuery={setQuery}
+                  loading={loading}
+                  error={error}
+                  localHits={localHits}
+                  addEntryFromFood={addEntryFromFood}
+                  setLocalHits={setLocalHits}
+                />
+              ) : activeTab === "custom" ? (
+                <CustomEntry
+                  key="custom"
+                  customEntry={customEntry}
+                  handleCustomEntryChange={handleCustomEntryChange}
+                  handleCustomEntrySubmit={handleCustomEntrySubmit}
+                />
+              ) : (
+                <BarcodeScanner
+                  key="scan"
+                  addEntryFromFood={addEntryFromFood}
+                />
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </div>
       </section>
-
-      <EntriesList entries={entries} removeEntry={removeEntry} />
     </motion.div>
   );
 }
