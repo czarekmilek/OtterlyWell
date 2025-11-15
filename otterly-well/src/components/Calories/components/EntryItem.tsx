@@ -36,19 +36,27 @@ export const EntryItem = ({ entry: e, removeEntry }: EntryItemProps) => {
           <p className="text-brand-neutral-light">{e.name}</p>
 
           <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm text-brand-secondary">
-            <span>{e.kcal} kcal</span>
+            <span className="font-semibold bg-brand-accent-3 text-brand-neutral-light px-2 rounded-xl">
+              {e.kcal} kcal
+            </span>
             <span className="text-brand-depth/50" aria-hidden="true">
               |
             </span>
-            <span>B: {e.protein.toFixed(1)}g</span>
+            <span className="font-semibold bg-brand-primary text-brand-neutral-light px-2 rounded-xl">
+              B: {e.protein.toFixed(1)}g
+            </span>
             <span className="text-brand-depth/50" aria-hidden="true">
               |
             </span>
-            <span>T: {e.fat.toFixed(1)}g</span>
+            <span className="font-semibold bg-brand-accent-1 text-brand-neutral-light px-2 rounded-xl">
+              T: {e.fat.toFixed(1)}g
+            </span>
             <span className="text-brand-depth/50" aria-hidden="true">
               |
             </span>
-            <span>W: {e.carbs.toFixed(1)}g</span>
+            <span className="font-semibold bg-brand-accent-2 text-brand-neutral-light px-2 rounded-xl">
+              W: {e.carbs.toFixed(1)}g
+            </span>
           </p>
 
           <div className="mt-2 w-">

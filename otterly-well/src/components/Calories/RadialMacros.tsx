@@ -68,7 +68,7 @@ export function RadialMacros({
           style={{
             width: "125px",
             height: "125px",
-            background: `conic-gradient(var(--color-brand-accent-1) ${kcalPct}%, rgba(255,255,255,0.04) 0)`,
+            background: `conic-gradient(var(--color-brand-accent-3) ${kcalPct}%, rgba(255,255,255,0.04) 0)`,
           }}
         >
           <div
