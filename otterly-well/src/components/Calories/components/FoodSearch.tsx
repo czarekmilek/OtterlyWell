@@ -27,17 +27,15 @@ export const FoodSearch = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.2 }}
-      className="h-96"
+      className="pt-4 px-4 bg-brand-neutral-dark/50 rounded-b-xl"
     >
-      <h2 className="text-lg font-semibold text-brand-neutral-light mb-4">
-        Wyszukaj produkt
-      </h2>
       <input
         type="text"
         placeholder="Szukaj produktu..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light placeholder-brand-secondary focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
+        className="w-full rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light 
+                placeholder-brand-secondary focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
       />
       {loading && <p className="mt-2 text-brand-secondary">Szukam...</p>}
       {error && <p className="mt-2 text-red-500">Błąd: {error}</p>}
@@ -49,7 +47,7 @@ export const FoodSearch = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="mt-4 divide-y divide-white/10 rounded-lg border border-white/10 max-h-64 overflow-y-auto"
+            className="divide-y divide-white/10 rounded-lg border border-white/10 max-h-84 overflow-y-auto"
           >
             {localHits.map(
               (h, index) =>
@@ -62,7 +60,7 @@ export const FoodSearch = ({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.2 }}
-                    className="group p-3 flex items-center gap-3 bg-gray-800/50 hover:bg-gray-700/50 transition"
+                    className="group p-3 flex items-center gap-3 hover:bg-gray-700/50 transition"
                   >
                     {h.imageUrl && (
                       <img

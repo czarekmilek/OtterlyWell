@@ -127,23 +127,23 @@ export default function Calories() {
         />
 
         <motion.div className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4 lg:w-1/2">
-          <div className="flex gap-4 mb-4">
+          <div className="flex border-b border-brand-depth">
             <button
               onClick={() => setActiveTab("search")}
-              className={`px-4 py-2 rounded-md transition-colors ${
+              className={`px-4 py-2 rounded-t-md transition-colors relative -mb-px ${
                 activeTab === "search"
-                  ? "bg-brand-accent-1 text-brand-neutral-dark"
-                  : "bg-brand-secondary text-brand-neutral-dark hover:bg-brand-primary"
+                  ? "bg-brand-neutral-dark/50 text-brand-neutral-light border-x border-t border-brand-depth border-b-transparent"
+                  : "text-brand-neutral-dark hover:bg-brand-accent-3 border-b border-brand-depth cursor-pointer"
               }`}
             >
               Wyszukaj
             </button>
             <button
               onClick={() => setActiveTab("custom")}
-              className={`px-4 py-2 rounded-md transition-colors ${
+              className={`px-4 py-2 rounded-t-md transition-colors relative -mb-px ${
                 activeTab === "custom"
-                  ? "bg-brand-accent-1 text-brand-neutral-dark"
-                  : "bg-brand-secondary text-brand-neutral-dark hover:bg-brand-primary"
+                  ? "bg-brand-neutral-dark/50 text-brand-neutral-light border-x border-t border-brand-depth border-b-transparent"
+                  : "text-brand-neutral-dark hover:bg-brand-accent-3 border-b border-brand-depth cursor-pointer"
               }`}
             >
               Dodaj własny

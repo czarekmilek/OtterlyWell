@@ -36,16 +36,16 @@ function MiniCircle({
       >
         {/* inner circle */}
         <div
-          className="flex flex-col items-center justify-center rounded-full bg-gray-900 text-gray-100 text-xs"
+          className="flex flex-col items-center justify-center rounded-full bg-brand-neutral-dark text-brand-neutral-light text-xs"
           style={{ width: "56px", height: "56px" }}
         >
           <span className="font-semibold">
             {value.toFixed ? value.toFixed(0) : value}
           </span>
-          <span className="text-[10px] text-gray-400">/ {goal}</span>
+          <span className="text-[10px] text-brand-secondary">/ {goal}</span>
         </div>
       </div>
-      <span className="text-xs text-gray-300">{label}</span>
+      <span className="text-xs text-brand-neutral-light">{label}</span>
     </div>
   );
 }
@@ -66,39 +66,41 @@ export function RadialMacros({
         <div
           className="relative flex items-center justify-center rounded-full"
           style={{
-            width: "100px",
-            height: "100px",
-            background: `conic-gradient(rgb(249 115 22) ${kcalPct}%, rgba(255,255,255,0.04) 0)`,
+            width: "125px",
+            height: "125px",
+            background: `conic-gradient(var(--color-brand-accent-1) ${kcalPct}%, rgba(255,255,255,0.04) 0)`,
           }}
         >
           <div
-            className="flex flex-col items-center justify-center rounded-full bg-gray-900 text-gray-100"
-            style={{ width: "68px", height: "68px" }}
+            className="flex flex-col items-center justify-center rounded-full bg-brand-neutral-dark text-brand-neutral-light"
+            style={{ width: "85px", height: "85px" }}
           >
             <span className="text-sm font-semibold">{kcal}</span>
-            <span className="text-[10px] text-gray-400">/ {kcalGoal} kcal</span>
+            <span className="text-[10px] text-brand-secondary">
+              / {kcalGoal} kcal
+            </span>
           </div>
         </div>
-        <span className="text-xs text-gray-300">Kalorie</span>
+        <span className="text-xs text-brand-neutral-light">Kalorie</span>
       </div>
 
       <MiniCircle
         label="Białko"
         value={protein}
         goal={goals.protein}
-        color="rgb(52 211 153)"
+        color="var(--color-brand-primary)"
       />
       <MiniCircle
         label="Tłuszcz"
         value={fat}
         goal={goals.fat}
-        color="rgb(244 63 94)"
+        color="var(--color-brand-accent-1)"
       />
       <MiniCircle
         label="Węglowodany"
         value={carbs}
         goal={goals.carbs}
-        color="rgb(56 189 248)"
+        color="var(--color-brand-accent-2)"
       />
     </div>
   );

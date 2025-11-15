@@ -11,18 +11,18 @@ export const EntriesList = ({ entries, removeEntry }: EntriesListProps) => {
   return (
     <motion.section
       layout
-      className="rounded-xl border border-white/10 bg-gray-800/50 p-4"
+      className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4"
     >
-      <h2 className="text-lg font-semibold text-gray-100 mb-2">
+      <h2 className="text-lg font-semibold text-brand-neutral-light mb-2">
         Historia posiłków
       </h2>
 
       {entries.length === 0 ? (
-        <p className="mt-4 text-gray-400">
+        <p className="mt-4 text-brand-secondary">
           Nic dziś jeszcze nie dodano. Dodaj pierwszy produkt powyżej.
         </p>
       ) : (
-        <ul className="mt-4 divide-y divide-white/5">
+        <ul className="mt-4 divide-y divide-brand-depth/5">
           <AnimatePresence>
             {entries.map((e) => (
               <motion.li
@@ -35,8 +35,8 @@ export const EntriesList = ({ entries, removeEntry }: EntriesListProps) => {
                 className="flex items-center justify-between py-3 gap-4"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-gray-100">{e.name}</p>
-                  <p className="text-sm text-gray-400">
+                  <p className="truncate text-brand-neutral-light">{e.name}</p>
+                  <p className="text-sm text-brand-secondary">
                     {e.kcal} kcal | B {e.protein.toFixed(1)}g | T{" "}
                     {e.fat.toFixed(1)}g | W {e.carbs.toFixed(1)}g
                   </p>
@@ -44,7 +44,8 @@ export const EntriesList = ({ entries, removeEntry }: EntriesListProps) => {
                 <MacroBar protein={e.protein} fat={e.fat} carbs={e.carbs} />
                 <button
                   onClick={() => removeEntry(e.id)}
-                  className="rounded-md border border-white/10 bg-gray-900 px-3 py-1 text-sm text-gray-300 hover:bg-gray-800 hover:cursor-pointer transition:color duration-200"
+                  className="rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-1 text-sm 
+                          text-brand-neutral-light hover:bg-brand-primary hover:cursor-pointer transition:color duration-200"
                 >
                   Usuń
                 </button>

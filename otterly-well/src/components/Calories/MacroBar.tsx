@@ -13,19 +13,19 @@ export function MacroBar({
   const carbsPercent = (carbs / totalCalories) * 100;
 
   return (
-    <div className="h-4 w-full max-w-64 rounded-full bg-gray-700 overflow-hidden flex">
+    <div className="h-4 w-full max-w-64 rounded-full bg-brand-neutral-dark overflow-hidden flex">
       <div
-        className="h-full bg-emerald-400"
+        className="h-full bg-brand-primary"
         style={{ width: `${proteinPercent}%` }}
         title={`Białko ${protein.toFixed(1)}g`}
       />
       <div
-        className="h-full bg-rose-400"
+        className="h-full bg-brand-accent-1"
         style={{ width: `${fatPercent}%` }}
         title={`Tłuszcz ${fat.toFixed(1)}g`}
       />
       <div
-        className="h-full bg-sky-400"
+        className="h-full bg-brand-accent-2"
         style={{ width: `${carbsPercent}%` }}
         title={`Węglowodany ${carbs.toFixed(1)}g`}
       />
