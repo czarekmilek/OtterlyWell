@@ -48,7 +48,12 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
   const sidebarContent = (
     <>
       <div className="flex shrink-0 items-center justify-center gap-x-4 px-6 h-16">
-        <h1 className="text-2xl font-bold text-white">Otterly Well</h1>
+        <h1
+          className="text-2xl font-bold text-brand-neutral-dark 
+                       rounded-full px-3 py-1"
+        >
+          Otterly Well
+        </h1>
       </div>
       <nav className="flex flex-1 flex-col gap-y-5 overflow-y-auto px-4">
         <ul role="list" className="flex flex-1 flex-col">
@@ -59,7 +64,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
                   {item.to === "#" ? (
                     <div
                       className={classNames(
-                        "text-gray-500 cursor-not-allowed",
+                        "text-brand-neutral-dark cursor-not-allowed",
                         "group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6"
                       )}
                       aria-disabled
@@ -76,8 +81,8 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
                       to={item.to}
                       className={classNames(
                         item.current
-                          ? "bg-gray-800 text-white"
-                          : "text-gray-400 hover:bg-gray-800 hover:text-white",
+                          ? "bg-brand-accent-1 text-brand-neutral-dark"
+                          : "text-brand-neutral-dark hover:bg-brand-primary hover:text-brand-neutral-light",
                         "group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6"
                       )}
                       aria-current={item.current ? "page" : undefined}
@@ -118,7 +123,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-gray-900/80" />
+            <div className="fixed inset-0 bg-brand-neutral-dark/80" />
           </TransitionChild>
 
           <div className="fixed inset-0 flex">
@@ -149,14 +154,14 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
                       onClick={() => setMobileOpen(false)}
                     >
                       <span className="sr-only">Close sidebar</span>
-                      <span className="material-symbols-sharp h-6 w-6 text-white">
+                      <span className="material-symbols-sharp h-6 w-6 text-brand-neutral-dark">
                         close
                       </span>
                     </button>
                   </div>
                 </TransitionChild>
 
-                <div className="flex grow flex-col overflow-y-auto bg-gray-900 ring-1 ring-white/10">
+                <div className="flex grow flex-col overflow-y-auto bg-brand-neutral-light ring-1 ring-brand-depth">
                   {sidebarContent}
                 </div>
               </DialogPanel>
@@ -166,7 +171,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
       </Transition>
 
       {/* --- Desktop Sidebar --- */}
-      <aside className="hidden lg:fixed lg:inset-y-0 lg:z-10 lg:flex lg:w-64 lg:flex-col border-r border-white/10 bg-gray-900">
+      <aside className="hidden lg:fixed lg:inset-y-0 lg:z-10 lg:flex lg:w-64 lg:flex-col border-r border-brand-depth bg-brand-neutral-light">
         {sidebarContent}
       </aside>
     </>

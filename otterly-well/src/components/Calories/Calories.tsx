@@ -126,14 +126,14 @@ export default function Calories() {
           setGoalCarbs={setGoalCarbs}
         />
 
-        <motion.div className="rounded-xl border border-white/10 bg-gray-800/50 p-4 lg:w-1/2">
+        <motion.div className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4 lg:w-1/2">
           <div className="flex gap-4 mb-4">
             <button
               onClick={() => setActiveTab("search")}
               className={`px-4 py-2 rounded-md transition-colors ${
                 activeTab === "search"
-                  ? "bg-orange-500 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-brand-accent-1 text-brand-neutral-dark"
+                  : "bg-brand-secondary text-brand-neutral-dark hover:bg-brand-primary"
               }`}
             >
               Wyszukaj
@@ -142,8 +142,8 @@ export default function Calories() {
               onClick={() => setActiveTab("custom")}
               className={`px-4 py-2 rounded-md transition-colors ${
                 activeTab === "custom"
-                  ? "bg-orange-500 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-brand-accent-1 text-brand-neutral-dark"
+                  : "bg-brand-secondary text-brand-neutral-dark hover:bg-brand-primary"
               }`}
             >
               Dodaj własny

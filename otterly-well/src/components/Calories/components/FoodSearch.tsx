@@ -29,7 +29,7 @@ export const FoodSearch = ({
       transition={{ duration: 0.2 }}
       className="h-96"
     >
-      <h2 className="text-lg font-semibold text-gray-100 mb-4">
+      <h2 className="text-lg font-semibold text-brand-neutral-light mb-4">
         Wyszukaj produkt
       </h2>
       <input
@@ -37,10 +37,10 @@ export const FoodSearch = ({
         placeholder="Szukaj produktu..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-md border border-white/10 bg-gray-900 px-3 py-2 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-orange-400/40 focus:outline-none"
+        className="w-full rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light placeholder-brand-secondary focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
       />
-      {loading && <p className="mt-2 text-gray-400">Szukam...</p>}
-      {error && <p className="mt-2 text-red-400">Błąd: {error}</p>}
+      {loading && <p className="mt-2 text-brand-secondary">Szukam...</p>}
+      {error && <p className="mt-2 text-red-500">Błąd: {error}</p>}
 
       {/* Results */}
       <AnimatePresence>
