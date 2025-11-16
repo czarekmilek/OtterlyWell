@@ -19,7 +19,7 @@ export function MacrosOverview({
   goals,
 }: MacrosOverviewProps) {
   return (
-    <div className="flex flex-row items-center gap-6 p-4">
+    <div className="flex flex-col sm:flex-row items-center gap-6 p-4">
       {/* Calorie chart */}
       <BigCircle
         label="Kalorie"

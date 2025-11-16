@@ -56,22 +56,23 @@ export function BigCircle({
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className="relative flex items-center justify-center rounded-full"
+        className="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center rounded-full transition-all"
         style={{
-          width: "125px",
-          height: "125px",
           background: `conic-gradient(${color} ${percent}%, rgba(255,255,255,0.04) 0)`,
         }}
       >
         {/* inner circle */}
         <div
-          className="flex flex-col items-center justify-center rounded-full bg-brand-neutral-dark text-brand-neutral-light"
-          style={{ width: "70px", height: "70px" }}
+          className="flex flex-col p-5 items-center justify-center rounded-full text-brand-neutral-light
+                    w-20 h-20 sm:w-24 sm:h-24 bg-gradient-radial 
+                    from-brand-neutral-dark to-brand-neutral-dark/0 transition-all"
         >
-          <span className="text-sm font-semibold">
+          <span className="text-base sm:text-lg font-semibold">
             {value.toFixed ? value.toFixed(0) : value}
           </span>
-          <span className="text-xs text-brand-secondary">/ {goal}</span>
+          <span className="text-sm sm:text-xs text-brand-secondary">
+            / {goal}
+          </span>
         </div>
       </div>
       <span className="text-xs text-brand-neutral-light">{label}</span>
