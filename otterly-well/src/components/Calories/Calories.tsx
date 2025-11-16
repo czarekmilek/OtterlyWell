@@ -115,7 +115,7 @@ export default function Calories() {
   }
 
   const getTabClassName = (tabName: typeof activeTab) =>
-    `px-4 py-2 rounded-t-md transition-colors relative -mb-px ${
+    `flex-1 text-center px-2 sm:px-4 py-2 rounded-t-md transition-colors relative -mb-px ${
       activeTab === tabName
         ? "bg-brand-neutral-dark/50 text-brand-neutral-light border-x border-t border-brand-depth border-b-transparent"
         : "text-brand-neutral-dark hover:bg-brand-accent-3 border-b border-brand-depth cursor-pointer"

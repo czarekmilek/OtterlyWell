@@ -64,13 +64,12 @@ export function BigCircle({
         {/* inner circle */}
         <div
           className="flex flex-col p-5 items-center justify-center rounded-full text-brand-neutral-light
-                    w-20 h-20 sm:w-24 sm:h-24 bg-gradient-radial 
-                    from-brand-neutral-dark to-brand-neutral-dark/0 transition-all"
+                    w-20 h-20 sm:w-24 sm:h-24 transition-all"
         >
           <span className="text-base sm:text-lg font-semibold">
             {value.toFixed ? value.toFixed(0) : value}
           </span>
-          <span className="text-sm sm:text-xs text-brand-secondary">
+          <span className="text-sm sm:text-xs text-brand-neutral-light">
             / {goal}
           </span>
         </div>
