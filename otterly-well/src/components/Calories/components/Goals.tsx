@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { RadialMacros } from "./MacroTracking/RadialMacros";
+import { MacrosOverview } from "./MacroTracking/MacrosOverview";
 
 interface GoalsProps {
   goalCalories: number;
@@ -53,7 +53,8 @@ export const Goals = ({
           <input
             type="number"
             min={1}
-            className="mt-1 rounded-md border border-brand-depth bg-brand-neutral-dark px-2 py-1 text-brand-neutral-light focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
+            className="mt-1 rounded-md border border-brand-depth bg-brand-neutral-dark px-2 py-1 text-brand-neutral-light focus:ring-2 
+                    focus:ring-brand-accent-1/40 focus:outline-none"
             value={goalCalories}
             onChange={(e) => {
               const v = Number(e.target.value);
@@ -67,7 +68,8 @@ export const Goals = ({
           <input
             type="number"
             min={0}
-            className="mt-1 rounded-md border border-brand-depth bg-brand-neutral-dark px-2 py-1 text-brand-neutral-light focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
+            className="mt-1 rounded-md border border-brand-depth bg-brand-neutral-dark px-2 py-1 text-brand-neutral-light focus:ring-2 
+                    focus:ring-brand-accent-1/40 focus:outline-none"
             value={goalProtein}
             onChange={(e) => setGoalProtein(Number(e.target.value) || 0)}
           />
@@ -78,7 +80,8 @@ export const Goals = ({
           <input
             type="number"
             min={0}
-            className="mt-1 rounded-md border border-brand-depth bg-brand-neutral-dark px-2 py-1 text-brand-neutral-light focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
+            className="mt-1 rounded-md border border-brand-depth bg-brand-neutral-dark px-2 py-1 text-brand-neutral-light focus:ring-2 
+                    focus:ring-brand-accent-1/40 focus:outline-none"
             value={goalFat}
             onChange={(e) => setGoalFat(Number(e.target.value) || 0)}
           />
@@ -89,24 +92,21 @@ export const Goals = ({
           <input
             type="number"
             min={0}
-            className="mt-1 rounded-md border border-brand-depth bg-brand-neutral-dark px-2 py-1 text-brand-neutral-light focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
+            className="mt-1 rounded-md border border-brand-depth bg-brand-neutral-dark px-2 py-1 text-brand-neutral-light focus:ring-2 
+                    focus:ring-brand-accent-1/40 focus:outline-none"
             value={goalCarbs}
             onChange={(e) => setGoalCarbs(Number(e.target.value) || 0)}
           />
         </label>
       </div>
 
-      <RadialMacros
+      <MacrosOverview
         kcal={totalCalories.kcal}
         kcalGoal={goalCalories}
         protein={totalCalories.protein}
         fat={totalCalories.fat}
         carbs={totalCalories.carbs}
-        goals={{
-          protein: goalProtein,
-          fat: goalFat,
-          carbs: goalCarbs,
-        }}
+        goals={{ protein: goalProtein, fat: goalFat, carbs: goalCarbs }}
       />
     </motion.div>
   );

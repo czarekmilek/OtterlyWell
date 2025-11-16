@@ -66,7 +66,7 @@ export function BigCircle({
         {/* inner circle */}
         <div
           className="flex flex-col items-center justify-center rounded-full bg-brand-neutral-dark text-brand-neutral-light"
-          style={{ width: "85px", height: "85px" }}
+          style={{ width: "70px", height: "70px" }}
         >
           <span className="text-sm font-semibold">
             {value.toFixed ? value.toFixed(0) : value}

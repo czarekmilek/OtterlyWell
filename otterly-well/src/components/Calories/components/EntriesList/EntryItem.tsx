@@ -33,11 +33,11 @@ export const EntryItem = ({ entry: e, removeEntry }: EntryItemProps) => {
       >
         {/* Info section */}
         <div className="min-w-0 flex-1">
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-2">
             <p className="text-brand-neutral-light">{e.name}</p>
             <button
               onClick={openModal}
-              className="flex sm:w-auto items-center justify-center rounded-md text-sm text-brand-neutral-light 
+              className="flex sm:w-auto h-fit items-center justify-center rounded-md text-sm text-brand-neutral-light 
                        hover:bg-red-800/20 hover:border-red-500/30 hover:text-red-400
                        transition-colors duration-200 cursor-pointer"
             >
