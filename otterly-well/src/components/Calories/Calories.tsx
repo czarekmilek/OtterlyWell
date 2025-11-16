@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useFoodSearch } from "./useFoodSearch";
-import type { Entry, FoodHit, FoodHitWithGrams } from "../types";
+import { useFoodSearch } from "./hooks/useFoodSearch";
+import type { Entry, FoodHit, FoodHitWithGrams } from "./types/types";
 import {
   Goals,
   FoodSearch,

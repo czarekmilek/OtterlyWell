@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { RadialMacros } from "../RadialMacros";
+import { RadialMacros } from "./MacroTracking/RadialMacros";
 
 interface GoalsProps {
   goalCalories: number;

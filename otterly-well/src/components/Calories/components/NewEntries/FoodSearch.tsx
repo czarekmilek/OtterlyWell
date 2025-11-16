@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import type { FoodHitWithGrams, FoodHit } from "../types";
+import type { FoodHitWithGrams, FoodHit } from "../../types/types";
 
 interface FoodSearchProps {
   query: string;

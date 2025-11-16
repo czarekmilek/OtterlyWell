@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import type { Entry } from "../types";
+import type { Entry } from "../../types/types";
 import { EntryItem } from "./EntryItem";
 
 interface EntriesListProps {

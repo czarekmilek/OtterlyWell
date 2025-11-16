@@ -7,8 +7,8 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import type { FoodHit, FoodHitWithGrams } from "../types";
-import { useBarcodeSearch } from "../useBarcodeSearch";
+import type { FoodHit, FoodHitWithGrams } from "../../types/types";
+import { useBarcodeSearch } from "../../hooks/useBarcodeSearch";
 
 interface BarcodeScannerProps {
   addEntryFromFood: (food: FoodHit, grams: number) => void;

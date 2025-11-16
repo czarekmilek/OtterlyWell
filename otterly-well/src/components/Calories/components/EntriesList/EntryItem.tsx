@@ -1,9 +1,9 @@
 import { useState, Fragment } from "react";
 import { motion } from "framer-motion";
 import { Dialog, Transition } from "@headlessui/react";
-import { DeleteIcon, WarningIcon } from "../../icons";
-import type { Entry } from "../types";
-import { MacroBar } from "../MacroBar";
+import { DeleteIcon, WarningIcon } from "../../../icons/index";
+import type { Entry } from "../../types/types";
+import { MacroBar } from "../MacroTracking/MacroBar";
 
 interface EntryItemProps {
   entry: Entry;

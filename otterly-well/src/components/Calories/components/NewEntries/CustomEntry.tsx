@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import type { Entry } from "../types";
+import type { Entry } from "../../types/types";
 
 interface CustomEntryProps {
   customEntry: Omit<Entry, "id">;
