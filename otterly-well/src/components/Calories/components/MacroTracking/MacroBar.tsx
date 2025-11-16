@@ -7,10 +7,15 @@ export function MacroBar({
   fat: number;
   carbs: number;
 }) {
-  const totalCalories = Math.max(1e-6, protein + fat + carbs);
-  const proteinPercent = (protein / totalCalories) * 100;
-  const fatPercent = (fat / totalCalories) * 100;
-  const carbsPercent = (carbs / totalCalories) * 100;
+  // Converting grams to calories
+  const proteinCals = protein * 4;
+  const fatCals = fat * 9;
+  const carbsCals = carbs * 4;
+
+  const totalCalories = Math.max(1e-6, proteinCals + fatCals + carbsCals);
+  const proteinPercent = (proteinCals / totalCalories) * 100;
+  const fatPercent = (fatCals / totalCalories) * 100;
+  const carbsPercent = (carbsCals / totalCalories) * 100;
 
   return (
     <div className="h-4 w-full rounded-full bg-brand-neutral-dark overflow-hidden flex">
