@@ -11,25 +11,28 @@ export const EntriesList = ({ entries, removeEntry }: EntriesListProps) => {
   return (
     <motion.section
       layout
-      className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4 max-h-204 overflow-y-auto"
+      className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4
+                flex flex-col max-h-[60vh] lg:max-h-none"
     >
       <h2 className="text-lg font-semibold text-brand-neutral-light mb-2">
         Historia posiłków
       </h2>
 
-      {entries.length === 0 ? (
-        <p className="mt-4 text-brand-secondary">
-          Nic dziś jeszcze nie dodano. Dodaj pierwszy produkt na panelu obok.
-        </p>
-      ) : (
-        <ul className="mt-4 divide-y divide-brand-depth/70">
-          <AnimatePresence>
-            {entries.map((e) => (
-              <EntryItem key={e.id} entry={e} removeEntry={removeEntry} />
-            ))}
-          </AnimatePresence>
-        </ul>
-      )}
+      <div className="flex-1 overflow-y-auto mt-2 -mr-2 pr-2">
+        {entries.length === 0 ? (
+          <p className="mt-4 text-brand-secondary">
+            Nic dziś jeszcze nie dodano. Dodaj pierwszy produkt na panelu obok.
+          </p>
+        ) : (
+          <ul className="mt-4 divide-y divide-brand-depth/70">
+            <AnimatePresence>
+              {entries.map((e) => (
+                <EntryItem key={e.id} entry={e} removeEntry={removeEntry} />
+              ))}
+            </AnimatePresence>
+          </ul>
+        )}
+      </div>
     </motion.section>
   );
 };

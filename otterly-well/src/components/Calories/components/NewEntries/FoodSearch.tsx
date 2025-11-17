@@ -56,7 +56,7 @@ export const FoodSearch = ({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.2 }}
-        className="py-4 px-4 bg-brand-neutral-dark/50 rounded-b-xl"
+        className="bg-brand-neutral-dark/50 rounded-b-xl"
       >
         <input
           type="text"
@@ -76,7 +76,7 @@ export const FoodSearch = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="divide-y divide-white/10 rounded-lg border border-white/10 max-h-84 overflow-y-auto"
+              className="divide-y divide-white/10 rounded-lg border border-white/10 max-h-84 overflow-y-scroll"
             >
               {localHits.map(
                 (h) =>
