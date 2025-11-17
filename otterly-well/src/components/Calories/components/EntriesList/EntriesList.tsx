@@ -12,7 +12,7 @@ export const EntriesList = ({ entries, removeEntry }: EntriesListProps) => {
     <motion.section
       layout
       className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4
-                flex flex-col max-h-[60vh] lg:max-h-none"
+                flex flex-col max-h-[75vh]"
     >
       <h2 className="text-lg font-semibold text-brand-neutral-light mb-2">
         Historia posiłków
@@ -24,7 +24,7 @@ export const EntriesList = ({ entries, removeEntry }: EntriesListProps) => {
             Nic dziś jeszcze nie dodano. Dodaj pierwszy produkt na panelu obok.
           </p>
         ) : (
-          <ul className="mt-4 divide-y divide-brand-depth/70">
+          <ul className="divide-y divide-brand-depth/70">
             <AnimatePresence>
               {entries.map((e) => (
                 <EntryItem key={e.id} entry={e} removeEntry={removeEntry} />
