@@ -14,16 +14,44 @@ export const BarcodeScanner = ({ addEntryFromFood }: BarcodeScannerProps) => {
   const [result, setResult] = useState<FoodHitWithGrams | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { loading, hits, error, setHits } = useBarcodeSearch(scannedBarcode);
+  const {
+    loading,
+    hits,
+    error: hookError,
+    setHits,
+  } = useBarcodeSearch(scannedBarcode);
+
+  const [displayError, setDisplayError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (hookError) {
+      setDisplayError(hookError);
+      setResult(null);
+      return;
+    }
+
     if (hits.length > 0) {
-      setResult({ ...hits[0], id: hits[0].sourceId || "result", grams: 100 });
-      setIsOpen(true);
+      const firstHit = hits[0];
+
+      if (firstHit.kcalPer100g != null) {
+        setResult({
+          ...firstHit,
+          id: firstHit.sourceId || "result",
+          grams: 100,
+        });
+        setIsOpen(true);
+        setDisplayError(null);
+      } else {
+        setResult(null);
+        setDisplayError(`"${firstHit.name}" nie zawiera danych o kaloriach.`);
+      }
     } else {
       setResult(null);
+      if (scannedBarcode && !loading) {
+        setDisplayError("Nie znaleziono produktu o podanym kodzie.");
+      }
     }
-  }, [hits]);
+  }, [hits, hookError, scannedBarcode, loading]);
 
   const resetState = () => {
     setScannedBarcode("");
@@ -31,10 +59,12 @@ export const BarcodeScanner = ({ addEntryFromFood }: BarcodeScannerProps) => {
     setResult(null);
     setHits([]);
     setIsOpen(false);
+    setDisplayError(null);
   };
 
   const handleManualSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setDisplayError(null);
     if (manualBarcode) {
       setScannedBarcode(manualBarcode);
     }
@@ -88,8 +118,10 @@ export const BarcodeScanner = ({ addEntryFromFood }: BarcodeScannerProps) => {
           </form>
         )}
 
-        {error && (
-          <p className="mt-4 text-center text-brand-warning">Błąd: {error}</p>
+        {displayError && (
+          <p className="mt-4 text-center text-brand-warning font-semibold T">
+            {displayError}
+          </p>
         )}
         <div className="h-4"></div>
       </motion.div>

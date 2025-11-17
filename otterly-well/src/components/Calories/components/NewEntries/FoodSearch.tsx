@@ -80,7 +80,7 @@ export const FoodSearch = ({
             >
               {localHits.map(
                 (h) =>
-                  h.kcalPer100g &&
+                  h.kcalPer100g != null &&
                   h.id && (
                     <motion.li
                       key={h.id}
@@ -100,11 +100,20 @@ export const FoodSearch = ({
                         />
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="text-brand-neutral-light truncate">
+                        <p className="text-brand-neutral-light">
+                          {h.brand && (
+                            <span>
+                              <span className="text-brand-secondary">
+                                {h.brand}
+                              </span>
+                              <span className="text-brand-neutral-light mx-1">
+                                •
+                              </span>
+                            </span>
+                          )}
                           {h.name}
                         </p>
-                        <p className="text-sm text-brand-secondary truncate">
-                          {h.brand ?? "—"} •{" "}
+                        <p className="text-sm text-brand-secondary">
                           {h.kcalPer100g
                             ? `${h.kcalPer100g} kcal / 100g`
                             : "brak danych"}{" "}

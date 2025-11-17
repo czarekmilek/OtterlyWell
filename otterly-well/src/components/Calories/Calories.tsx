@@ -63,7 +63,7 @@ export default function Calories() {
   );
 
   function addEntryFromFood(food: FoodHit, grams: number) {
-    if (!food.kcalPer100g) return;
+    if (food.kcalPer100g == null) return;
 
     const kcal = (food.kcalPer100g * grams) / 100;
     const protein = ((food.proteinPer100g ?? 0) * grams) / 100;
