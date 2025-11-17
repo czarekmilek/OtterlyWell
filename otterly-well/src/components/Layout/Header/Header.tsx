@@ -6,18 +6,21 @@ interface HeaderProps {
 
 const Header = ({ onMenuClick }: HeaderProps) => {
   return (
-    <div className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/10 bg-gray-900 px-4 shadow-sm sm:px-6 lg:px-8">
+    <div
+      className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-x-6 border-b border-brand-depth 
+                  bg-brand-primary px-4 shadow-sm sm:px-6 lg:px-8"
+    >
       {/* Mobile-only menu button */}
       <button
         type="button"
-        className="-m-2.5 p-2.5 text-gray-400 lg:hidden"
+        className="-m-2.5 p-2.5 text-brand-neutral-dark xl:hidden"
         onClick={onMenuClick}
       >
         <span className="sr-only">Open sidebar</span>
         <MenuIcon className="h-6 w-6" aria-hidden="true" />
       </button>
 
-      <div className="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
+      <div className="h-6 w-px bg-brand-depth xl:hidden" aria-hidden="true" />
 
       {/* <div className="flex flex-1 justify-end gap-x-6">
         <div className="flex items-center gap-x-4">

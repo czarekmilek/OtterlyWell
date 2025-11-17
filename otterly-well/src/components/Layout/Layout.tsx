@@ -10,11 +10,11 @@ const Layout = ({ children }: LayoutProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-brand-secondary">
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
-      <div className="lg:pl-64">
+      <div className="xl:pl-64">
         <Header onMenuClick={() => setMobileOpen(true)} />
-        <main className="py-10">
+        <main>
           <div className="px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>

@@ -29,3 +29,15 @@ export const DashboardIcon: React.FC<IconProps> = ({ className }) => (
 export const MenuIcon: React.FC<IconProps> = ({ className }) => (
   <span className={`material-symbols-sharp ${className}`}>menu</span>
 );
+
+export const QrCodeIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>qr_code_scanner</span>
+);
+
+export const DeleteIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>clear</span>
+);
+
+export const WarningIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>warning</span>
+);
