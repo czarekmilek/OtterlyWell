@@ -1,8 +1,10 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { ProtectedRoute } from "./components/Auth/ProtectedRoute";
 import "./App.css";
 import Layout from "./components/Layout/Layout";
 
+const Login = lazy(() => import("./components/Auth/Login/Login"));
 const Dashboard = lazy(() => import("./components/Dashboard/Dashboard"));
 const Calories = lazy(() => import("./components/Calories/Calories"));
 
@@ -17,8 +19,13 @@ function App() {
     <Layout>
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/calories" element={<Calories />} />
+          <Route path="/login" element={<Login />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/calories" element={<Calories />} />
+          </Route>
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

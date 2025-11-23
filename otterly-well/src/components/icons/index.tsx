@@ -41,3 +41,21 @@ export const DeleteIcon: React.FC<IconProps> = ({ className }) => (
 export const WarningIcon: React.FC<IconProps> = ({ className }) => (
   <span className={`material-symbols-sharp ${className}`}>warning</span>
 );
+
+export const EmailIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>mail</span>
+);
+
+export const LockIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>lock</span>
+);
+
+export const ArrowRightIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>arrow_forward</span>
+);
+
+export const LoadingIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>
+    progress_activity
+  </span>
+);
