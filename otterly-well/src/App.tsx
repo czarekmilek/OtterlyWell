@@ -5,6 +5,7 @@ import "./App.css";
 import Layout from "./components/Layout/Layout";
 
 const Login = lazy(() => import("./components/Auth/Login/Login"));
+const Register = lazy(() => import("./components/Auth/Register/Register"));
 const Dashboard = lazy(() => import("./components/Dashboard/Dashboard"));
 const Calories = lazy(() => import("./components/Calories/Calories"));
 
@@ -20,6 +21,7 @@ function App() {
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Dashboard />} />

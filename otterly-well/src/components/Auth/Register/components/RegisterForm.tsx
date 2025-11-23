@@ -6,38 +6,52 @@ import { Transition } from "@headlessui/react";
 import { EmailIcon, LockIcon, ArrowRightIcon } from "../../../icons";
 import InputField from "../../shared/InputField";
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleLogin = async (e: FormEvent) => {
+  const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setErrorMessage("Hasła nie są identyczne.");
+      return;
+    }
 
     setIsLoading(true);
     setErrorMessage(null);
+    setSuccessMessage(null);
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
     });
 
     if (error) {
-      setErrorMessage("Niepoprawne dane logowania. Spróbuj ponownie.");
+      if (error.code === "weak_password") {
+        setErrorMessage("Hasło powinno zawierać co najmniej 6 znaków.");
+      } else {
+        setErrorMessage("Wystąpił błąd. Spróbuj ponownie.");
+      }
       setIsLoading(false);
     } else {
-      navigate("/");
+      setSuccessMessage("Rejestracja udana! Zaloguj się po przekierowaniu.");
+      setIsLoading(false);
+      setTimeout(() => navigate("/login"), 3333);
     }
   };
 
-  const isDisabled = isLoading || !email || !password;
+  const isDisabled = isLoading || !email || !password || !confirmPassword;
 
   return (
-    <form onSubmit={handleLogin} className="space-y-6">
+    <form onSubmit={handleRegister} className="space-y-6">
       <div className="space-y-4">
         <InputField
           type="email"
@@ -51,6 +65,13 @@ const LoginForm = () => {
           placeholder="Hasło"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          icon={LockIcon}
+        />
+        <InputField
+          type="password"
+          placeholder="Potwierdź hasło"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           icon={LockIcon}
         />
       </div>
@@ -71,6 +92,22 @@ const LoginForm = () => {
         </div>
       </Transition>
 
+      <Transition
+        show={!!successMessage}
+        enter="transition-opacity duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+        <div
+          className="text-center text-brand-success text-sm bg-brand-success/10 py-2 rounded-lg 
+                        border border-brand-success/20"
+        >
+          {successMessage}
+        </div>
+      </Transition>
+
       <motion.button
         whileHover={isDisabled ? undefined : { scale: 1.02, y: -2 }}
         whileTap={isDisabled ? undefined : { scale: 0.98 }}
@@ -88,7 +125,7 @@ const LoginForm = () => {
           />
         ) : (
           <>
-            <span>Zaloguj się</span>
+            <span>Zarejestruj się</span>
             <ArrowRightIcon className="text-lg" />
           </>
         )}
@@ -97,4 +134,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
