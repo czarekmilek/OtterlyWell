@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { FoodHitWithGrams, FoodHit } from "../../types/types";
 import { AddFoodDialog } from "./AddFoodDialog";
@@ -63,11 +63,11 @@ export const FoodSearch = ({
           placeholder="Szukaj produktu..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light 
+          className="w-full border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light 
                 placeholder-brand-secondary focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
         />
-        {loading && <p className="mt-2 text-brand-secondary">Szukam...</p>}
-        {error && <p className="mt-2 text-red-500">Błąd: {error}</p>}
+        {loading && <p className="m-2 text-brand-secondary">Szukam...</p>}
+        {error && <p className="m-2 text-red-500">Błąd: {error}</p>}
 
         {/* Results */}
         <AnimatePresence>
@@ -80,10 +80,9 @@ export const FoodSearch = ({
             >
               {localHits.map(
                 (h) =>
-                  h.kcalPer100g != null &&
-                  h.id && (
+                  h.kcalPer100g != null && (
                     <motion.li
-                      key={h.id}
+                      key={h.listId}
                       layout
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}

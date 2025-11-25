@@ -40,7 +40,7 @@ export default function Calories() {
     () =>
       hits.map((h) => ({
         ...h,
-        id: (h.sourceId ?? "") + h.name,
+        listId: (h.sourceId ?? "") + h.name + (h.id ?? ""),
         grams: 100,
       })),
     [hits]
@@ -105,26 +105,75 @@ export default function Calories() {
     [entries]
   );
 
-  function addEntryFromFood(food: FoodHit, grams: number) {
+  async function addEntryFromFood(food: FoodHit, grams: number) {
     if (food.kcalPer100g == null) return;
+    if (!user) return;
+
+    let foodId = food.id;
+
+    // If external food (no ID yet) try to find it or create new entery in 'foods'
+    if (!foodId && food.sourceId) {
+      // Check if exists by source_id
+      const { data: existing } = await supabase
+        .from("foods")
+        .select("id")
+        .eq("source_id", food.sourceId)
+        .maybeSingle();
+
+      if (existing) {
+        foodId = existing.id;
+      } else {
+        const { data: newFood, error: createError } = await supabase
+          .from("foods")
+          .insert({
+            name: food.name,
+            brand: food.brand,
+            source: "openfoodfacts",
+            source_id: food.sourceId,
+            kcal_per_100g: food.kcalPer100g,
+            protein_g_per_100g: food.proteinPer100g,
+            fat_g_per_100g: food.fatPer100g,
+            carbs_g_per_100g: food.carbsPer100g,
+            image_url: food.imageUrl,
+          })
+          .select("id")
+          .single();
+
+        if (createError) {
+          console.error("Error creating food", createError);
+        } else if (newFood) {
+          foodId = newFood.id;
+        }
+      }
+    }
 
     const kcal = (food.kcalPer100g * grams) / 100;
     const protein = ((food.proteinPer100g ?? 0) * grams) / 100;
     const fat = ((food.fatPer100g ?? 0) * grams) / 100;
     const carbs = ((food.carbsPer100g ?? 0) * grams) / 100;
 
-    setEntries((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        name: `${food.name} (${grams}g)`,
-        kcal: Math.round(kcal),
-        grams,
-        protein: Math.round(protein),
-        fat: Math.round(fat),
-        carbs: Math.round(carbs),
-      },
-    ]);
+    const entryToInsert = {
+      user_id: user.id,
+      food_id: foodId || null,
+      name: `${food.name} (${grams}g)`,
+      kcal: Math.round(kcal),
+      grams,
+      protein: Math.round(protein),
+      fat: Math.round(fat),
+      carbs: Math.round(carbs),
+    };
+
+    const { data: newEntry, error } = await supabase
+      .from("calorie_entries")
+      .insert(entryToInsert)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error inserting entry", error);
+    } else if (newEntry) {
+      setEntries((prev) => [newEntry, ...prev].sort((a, b) => b.kcal - a.kcal));
+    }
   }
 
   const saveGoals = async (updates: {

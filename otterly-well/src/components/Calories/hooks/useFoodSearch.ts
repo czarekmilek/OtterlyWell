@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import type { FoodHit } from "./types";
+import { supabase } from "../../../lib/supabaseClient";
+import type { FoodHit } from "../types/types";
 
 export function useFoodSearch(q: string) {
   const [loading, setLoading] = useState(false);
@@ -17,15 +18,45 @@ export function useFoodSearch(q: string) {
       setError(null);
 
       try {
+        // Search in 'foods' table
+        const { data: localFoods, error: localError } = await supabase
+          .from("foods")
+          .select("*")
+          .ilike("name", `%${q}%`)
+          .limit(15);
+
+        if (localError) throw localError;
+
+        const localHits: FoodHit[] = (localFoods || []).map((f) => ({
+          id: f.id,
+          name: f.name,
+          brand: f.brand,
+          kcalPer100g: f.kcal_per_100g,
+          proteinPer100g: f.protein_g_per_100g,
+          fatPer100g: f.fat_g_per_100g,
+          carbsPer100g: f.carbs_g_per_100g,
+          imageUrl: f.image_url,
+          sourceId: f.source_id,
+        }));
+
+        // Search in OpenFoodFacts
         const base = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL;
         const url = new URL(`${base}/v1/search-food`);
         url.searchParams.set("q", q);
 
         const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        let offHits: FoodHit[] = [];
+        if (res.ok) {
+          const json = await res.json();
+          offHits = json.items ?? [];
+        } else {
+          console.warn("OFF search failed", res.status);
+        }
 
-        const json = await res.json();
-        if (!abort) setHits(json.items ?? []);
+        if (!abort) {
+          // Combine results, dispslay local ones first
+          setHits([...localHits, ...offHits]);
+        }
       } catch (e: Error) {
         if (!abort) setError(e.message);
       } finally {
@@ -33,9 +64,10 @@ export function useFoodSearch(q: string) {
       }
     }
 
-    run();
+    const timer = setTimeout(run, 333);
     return () => {
       abort = true;
+      clearTimeout(timer);
     };
   }, [q]);
 
