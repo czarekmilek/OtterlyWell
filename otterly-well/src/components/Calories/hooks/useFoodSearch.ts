@@ -39,6 +39,11 @@ export function useFoodSearch(q: string) {
           sourceId: f.source_id,
         }));
 
+        // Update state with local results
+        if (!abort) {
+          setHits(localHits);
+        }
+
         // Search in OpenFoodFacts
         const base = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL;
         const url = new URL(`${base}/v1/search-food`);
@@ -54,8 +59,16 @@ export function useFoodSearch(q: string) {
         }
 
         if (!abort) {
-          // Combine results, dispslay local ones first
-          setHits([...localHits, ...offHits]);
+          // Deduplicate results
+          const localSourceIds = new Set(
+            localHits.map((h) => h.sourceId).filter(Boolean)
+          );
+
+          const newOffHits = offHits.filter(
+            (h) => !h.sourceId || !localSourceIds.has(h.sourceId)
+          );
+
+          setHits([...localHits, ...newOffHits]);
         }
       } catch (e: Error) {
         if (!abort) setError(e.message);

@@ -66,8 +66,6 @@ export const FoodSearch = ({
           className="w-full border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light 
                 placeholder-brand-secondary focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
         />
-        {loading && <p className="m-2 text-brand-secondary">Szukam...</p>}
-        {error && <p className="m-2 text-red-500">Błąd: {error}</p>}
 
         {/* Results */}
         <AnimatePresence>
@@ -130,9 +128,15 @@ export const FoodSearch = ({
             </motion.ul>
           )}
         </AnimatePresence>
-        {localHits.length === 0 && loading === false && query !== "" && (
-          <p className="mt-2 text-brand-secondary">Brak wyników</p>
-        )}
+        {localHits.length === 0 &&
+          loading === false &&
+          query !== "" &&
+          error === null && (
+            <p className="m-2 text-brand-secondary">Brak wyników</p>
+          )}
+
+        {loading && <p className="m-2 text-brand-secondary">Szukam w internecie...</p>}
+        {error && <p className="m-2 text-brand-warning">Błąd: {error}</p>}
       </motion.div>
 
       <AddFoodDialog
