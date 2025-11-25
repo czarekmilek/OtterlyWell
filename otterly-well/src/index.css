@@ -2,19 +2,20 @@
 
 @theme {
   /* Core Colors */
-  --color-brand-primary: #4d9691; /* Soft Teal (Primary Action) */
-  --color-brand-secondary: #a3c6c1; /* Sage Green (Background Accent) */
-  --color-brand-accent-1: #e8b763; /* Muted Gold (Achievement/Highlight) */
+  --color-brand-primary: #4d9691;
+  --color-brand-secondary: #a3c6c1;
+  --color-brand-accent-1: #e8b763;
 
   /* Additional Accents & Data */
-  --color-brand-accent-2: #34b476; /* Deep Splash (Success/Positive Alert) */
-  --color-brand-accent-3: #d4a5a5; /* Soft Mauve (Sleep/Nurturing) */
-  --color-brand-warning: #b45454; /* Gentle Brick (Caution/Warning) */
+  --color-brand-accent-2: #34b476;
+  --color-brand-accent-3: #d4a5a5;
+  --color-brand-warning: #b45454;
+  --color-brand-success: #5d905e;
 
   /* Neutrals & Text */
-  --color-brand-neutral-light: #f8f8f4; /* Light Cream (Main Background for Light Mode) */
-  --color-brand-neutral-dark: #2c3e50; /* Deep Charcoal (Text/Icons) */
-  --color-brand-depth: #c7dde3; /* Soft Shadow (Borders/Dividers) */
+  --color-brand-neutral-light: #f8f8f4;
+  --color-brand-neutral-dark: #2c3e50;
+  --color-brand-depth: #c7dde3;
 }
 
 /* --- Light Mode --- */
