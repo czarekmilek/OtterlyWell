@@ -1,11 +1,14 @@
 import type { User } from "@supabase/supabase-js";
 import { LogoutIcon, SettingsIcon } from "../../../icons";
 
+import { useAuth } from "../../../../context/AuthContext";
+
 interface UserProfileProps {
   user: User | null;
 }
 
 const UserProfile = ({ user }: UserProfileProps) => {
+  const { signOut } = useAuth();
   if (!user) return null;
 
   const userEmail = user.email;
@@ -36,6 +39,7 @@ const UserProfile = ({ user }: UserProfileProps) => {
             className="flex items-center justify-center rounded-md p-1 text-brand-neutral-dark 
                     hover:bg-brand-neutral-dark/10 cursor-pointer transition-colors"
             title="Wyloguj"
+            onClick={signOut}
           >
             <LogoutIcon />
           </button>
