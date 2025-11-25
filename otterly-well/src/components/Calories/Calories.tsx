@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, FormEvent } from "react";
+import { useMemo, useState, useEffect, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFoodSearch } from "./hooks/useFoodSearch";
 import type { Entry, FoodHit, FoodHitWithGrams } from "./types/types";
@@ -9,8 +9,13 @@ import {
   BarcodeScanner,
   EntriesList,
 } from "./components";
+import { useAuth } from "../../context/AuthContext";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function Calories() {
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+
   const [goalCalories, setGoalCalories] = useState<number>(2137);
   const [goalProtein, setGoalProtein] = useState(133);
   const [goalFat, setGoalFat] = useState(77);
@@ -42,6 +47,44 @@ export default function Calories() {
   );
 
   const [localHits, setLocalHits] = useState<FoodHitWithGrams[]>(hitsWithGrams);
+
+  useEffect(() => {
+    if (!user) return;
+
+    async function loadData() {
+      if (!user) return;
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("goal_calories, goal_protein, goal_fat, goal_carbs")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profileError) console.error("Error fetching profile", profileError);
+
+      if (profileData) {
+        if (profileData.goal_calories)
+          setGoalCalories(profileData.goal_calories);
+        if (profileData.goal_protein) setGoalProtein(profileData.goal_protein);
+        if (profileData.goal_fat) setGoalFat(profileData.goal_fat);
+        if (profileData.goal_carbs) setGoalCarbs(profileData.goal_carbs);
+      }
+
+      const { data: entriesData, error: entriesError } = await supabase
+        .from("calorie_entries")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (entriesError) console.error("Error fetching entries", entriesError);
+
+      if (entriesData) {
+        setEntries(entriesData);
+      }
+      setIsLoading(false);
+    }
+
+    loadData();
+  }, [user]);
 
   useEffect(() => {
     setLocalHits(hitsWithGrams);
@@ -84,6 +127,50 @@ export default function Calories() {
     ]);
   }
 
+  const saveGoals = async (updates: {
+    goal_calories?: number;
+    goal_protein?: number;
+    goal_fat?: number;
+    goal_carbs?: number;
+  }) => {
+    if (!user) return;
+
+    const { error } = await supabase.from("profiles").upsert({
+      id: user.id,
+      goal_calories: goalCalories,
+      goal_protein: goalProtein,
+      goal_fat: goalFat,
+      goal_carbs: goalCarbs,
+      ...updates,
+    });
+
+    if (error) console.error("Error updating goals", error);
+  };
+
+  const handleSetGoalCalories = (value: number) => {
+    const v = value > 0 ? value : 0;
+    setGoalCalories(v);
+    saveGoals({ goal_calories: v });
+  };
+
+  const handleSetGoalProtein = (value: number) => {
+    const v = value > 0 ? value : 0;
+    setGoalProtein(v);
+    saveGoals({ goal_protein: v });
+  };
+
+  const handleSetGoalFat = (value: number) => {
+    const v = value > 0 ? value : 0;
+    setGoalFat(v);
+    saveGoals({ goal_fat: v });
+  };
+
+  const handleSetGoalCarbs = (value: number) => {
+    const v = value > 0 ? value : 0;
+    setGoalCarbs(v);
+    saveGoals({ goal_carbs: v });
+  };
+
   function handleCustomEntryChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setCustomEntry((prev) => ({
@@ -92,25 +179,48 @@ export default function Calories() {
     }));
   }
 
-  function handleCustomEntrySubmit(e: FormEvent) {
+  async function handleCustomEntrySubmit(e: FormEvent) {
     e.preventDefault();
-    const newEntry: Entry = {
-      id: crypto.randomUUID(),
+    if (!user) return;
+
+    const entryToInsert = {
       ...customEntry,
+      user_id: user.id,
       name: `${customEntry.name} (${customEntry.grams}g)`,
     };
-    setEntries((prev) => [...prev, newEntry].sort((a, b) => b.kcal - a.kcal));
-    setCustomEntry({
-      name: "",
-      kcal: 0,
-      grams: 100,
-      protein: 0,
-      fat: 0,
-      carbs: 0,
-    });
+
+    const { data: newEntry, error } = await supabase
+      .from("calorie_entries")
+      .insert(entryToInsert)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error inserting entry", error);
+    } else if (newEntry) {
+      setEntries((prev) => [newEntry, ...prev].sort((a, b) => b.kcal - a.kcal));
+      setCustomEntry({
+        name: "",
+        kcal: 0,
+        grams: 100,
+        protein: 0,
+        fat: 0,
+        carbs: 0,
+      });
+    }
   }
 
-  function removeEntry(id: string) {
+  async function removeEntry(id: string) {
+    const { error } = await supabase
+      .from("calorie_entries")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error deleting entry", error);
+      return;
+    }
+
     setEntries((prev) => prev.filter((e) => e.id !== id));
   }
 
@@ -126,23 +236,30 @@ export default function Calories() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="py-2 sm:py-4"
+      className="py-2 sm:py-4 h-[calc(100vh)]"
     >
-      <section className="mb-4 flex gap-1 lg:flex-row flex-col">
-        <EntriesList entries={entries} removeEntry={removeEntry} />
-        <div className="gap-1 flex flex-col">
+      <section className="flex lg:flex-row flex-col h-full gap-4">
+        <div className="lg:w-1/3 w-full h-full">
+          <EntriesList
+            entries={entries}
+            removeEntry={removeEntry}
+            isLoading={isLoading}
+          />
+        </div>
+        <div className="lg:w-2/3 w-full gap-4 flex flex-col h-full">
           <Goals
             goalCalories={goalCalories}
             totalCalories={totalCalories}
             goalProtein={goalProtein}
             goalFat={goalFat}
             goalCarbs={goalCarbs}
-            setGoalCalories={setGoalCalories}
-            setGoalProtein={setGoalProtein}
-            setGoalFat={setGoalFat}
-            setGoalCarbs={setGoalCarbs}
+            setGoalCalories={handleSetGoalCalories}
+            setGoalProtein={handleSetGoalProtein}
+            setGoalFat={handleSetGoalFat}
+            setGoalCarbs={handleSetGoalCarbs}
+            isLoading={isLoading}
           />
-          <motion.div className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4">
+          <motion.div className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4 flex-1 flex flex-col min-h-0">
             <div className="flex border-b border-brand-depth">
               <button
                 onClick={() => setActiveTab("search")}
@@ -173,7 +290,6 @@ export default function Calories() {
                   error={error}
                   localHits={localHits}
                   addEntryFromFood={addEntryFromFood}
-                  setLocalHits={setLocalHits}
                 />
               ) : activeTab === "custom" ? (
                 <CustomEntry
