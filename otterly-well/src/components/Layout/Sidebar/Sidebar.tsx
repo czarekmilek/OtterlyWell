@@ -13,6 +13,8 @@ import {
   WorkoutIcon,
 } from "../../icons";
 import { useLocation, Link } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
+import UserProfile from "./components/UserProfile";
 
 const navigationItems = [
   { name: "Dashboard", to: "/", icon: DashboardIcon },
@@ -33,6 +35,7 @@ interface SidebarProps {
 
 const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
   const { pathname } = useLocation();
+  const { user } = useAuth();
 
   const navigation = useMemo(
     () =>
@@ -101,6 +104,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
           </li>
         </ul>
       </nav>
+      <UserProfile user={user} />
     </>
   );
 

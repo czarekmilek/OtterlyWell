@@ -59,3 +59,11 @@ export const LoadingIcon: React.FC<IconProps> = ({ className }) => (
     progress_activity
   </span>
 );
+
+export const SettingsIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>settings</span>
+);
+
+export const LogoutIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>logout</span>
+);
