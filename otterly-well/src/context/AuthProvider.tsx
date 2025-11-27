@@ -6,12 +6,14 @@ import { AuthContext } from "./AuthContext";
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Download the session from Supabase at start
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      setLoading(false);
     });
 
     // Subscribe to session changes
@@ -19,6 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        setLoading(false);
       }
     );
 
@@ -32,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, signOut }}>
+    <AuthContext.Provider value={{ session, user, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./components/Auth/ProtectedRoute";
+import { LoadingSpinner } from "./components/UI/LoadingSpinner";
 import "./App.css";
 import Layout from "./components/Layout/Layout";
 
@@ -8,12 +9,6 @@ const Login = lazy(() => import("./components/Auth/Login/Login"));
 const Register = lazy(() => import("./components/Auth/Register/Register"));
 const Dashboard = lazy(() => import("./components/Dashboard/Dashboard"));
 const Calories = lazy(() => import("./components/Calories/Calories"));
-
-const LoadingSpinner: React.FC = () => (
-  <div className="flex items-center justify-center h-screen">
-    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
-  </div>
-);
 
 function App() {
   return (
