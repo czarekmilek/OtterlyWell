@@ -8,6 +8,7 @@ import {
   CustomEntry,
   BarcodeScanner,
   EntriesList,
+  DateSelector,
 } from "./components";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabaseClient";
@@ -15,6 +16,7 @@ import { supabase } from "../../lib/supabaseClient";
 export default function Calories() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [goalCalories, setGoalCalories] = useState<number>(2137);
   const [goalProtein, setGoalProtein] = useState(133);
@@ -69,10 +71,17 @@ export default function Calories() {
         if (profileData.goal_carbs) setGoalCarbs(profileData.goal_carbs);
       }
 
+      const startOfDay = new Date(selectedDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(selectedDate);
+      endOfDay.setHours(23, 59, 59, 999);
+
       const { data: entriesData, error: entriesError } = await supabase
         .from("calorie_entries")
         .select("*")
         .eq("user_id", user.id)
+        .gte("created_at", startOfDay.toISOString())
+        .lte("created_at", endOfDay.toISOString())
         .order("created_at", { ascending: false });
 
       if (entriesError) console.error("Error fetching entries", entriesError);
@@ -84,7 +93,7 @@ export default function Calories() {
     }
 
     loadData();
-  }, [user]);
+  }, [user, selectedDate]);
 
   useEffect(() => {
     setLocalHits(hitsWithGrams);
@@ -161,6 +170,7 @@ export default function Calories() {
       protein: Math.round(protein),
       fat: Math.round(fat),
       carbs: Math.round(carbs),
+      created_at: selectedDate.toISOString(),
     };
 
     const { data: newEntry, error } = await supabase
@@ -236,6 +246,7 @@ export default function Calories() {
       ...customEntry,
       user_id: user.id,
       name: `${customEntry.name} (${customEntry.grams}g)`,
+      created_at: selectedDate.toISOString(),
     };
 
     const { data: newEntry, error } = await supabase
@@ -285,17 +296,27 @@ export default function Calories() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="py-2 sm:py-4 h-[calc(100vh)]"
+      className="py-2 sm:py-4 lg:h-[calc(100vh)]"
     >
-      <section className="flex lg:flex-row flex-col h-full gap-4">
-        <div className="lg:w-1/3 w-full h-full">
+      <section className="flex lg:flex-row flex-col h-full gap-2">
+        <div className="lg:w-1/3 w-full h-full gap-2 flex flex-col">
+          <DateSelector
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+          />
           <EntriesList
             entries={entries}
             removeEntry={removeEntry}
             isLoading={isLoading}
           />
         </div>
-        <div className="lg:w-2/3 w-full gap-4 flex flex-col h-full">
+        <div className="lg:w-2/3 w-full gap-2 flex flex-col h-full">
+          {/* <div className="hidden lg:block">
+            <DateSelector
+              selectedDate={selectedDate}
+              onDateChange={setSelectedDate}
+            />
+          </div> */}
           <Goals
             goalCalories={goalCalories}
             totalCalories={totalCalories}

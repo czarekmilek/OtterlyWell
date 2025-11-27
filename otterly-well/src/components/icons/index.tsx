@@ -67,3 +67,11 @@ export const SettingsIcon: React.FC<IconProps> = ({ className }) => (
 export const LogoutIcon: React.FC<IconProps> = ({ className }) => (
   <span className={`material-symbols-sharp ${className}`}>logout</span>
 );
+
+export const ChevronLeftIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>chevron_left</span>
+);
+
+export const ChevronRightIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>chevron_right</span>
+);
