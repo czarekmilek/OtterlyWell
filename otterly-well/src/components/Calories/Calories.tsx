@@ -8,6 +8,7 @@ import {
   CustomEntry,
   BarcodeScanner,
   EntriesList,
+  DateSelector,
 } from "./components";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabaseClient";
@@ -15,6 +16,7 @@ import { supabase } from "../../lib/supabaseClient";
 export default function Calories() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [goalCalories, setGoalCalories] = useState<number>(2137);
   const [goalProtein, setGoalProtein] = useState(133);
@@ -40,7 +42,7 @@ export default function Calories() {
     () =>
       hits.map((h) => ({
         ...h,
-        id: (h.sourceId ?? "") + h.name,
+        listId: (h.sourceId ?? "") + h.name + (h.id ?? ""),
         grams: 100,
       })),
     [hits]
@@ -69,10 +71,17 @@ export default function Calories() {
         if (profileData.goal_carbs) setGoalCarbs(profileData.goal_carbs);
       }
 
+      const startOfDay = new Date(selectedDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(selectedDate);
+      endOfDay.setHours(23, 59, 59, 999);
+
       const { data: entriesData, error: entriesError } = await supabase
         .from("calorie_entries")
         .select("*")
         .eq("user_id", user.id)
+        .gte("created_at", startOfDay.toISOString())
+        .lte("created_at", endOfDay.toISOString())
         .order("created_at", { ascending: false });
 
       if (entriesError) console.error("Error fetching entries", entriesError);
@@ -84,7 +93,7 @@ export default function Calories() {
     }
 
     loadData();
-  }, [user]);
+  }, [user, selectedDate]);
 
   useEffect(() => {
     setLocalHits(hitsWithGrams);
@@ -105,26 +114,78 @@ export default function Calories() {
     [entries]
   );
 
-  function addEntryFromFood(food: FoodHit, grams: number) {
+  async function addEntryFromFood(food: FoodHit, grams: number) {
     if (food.kcalPer100g == null) return;
+    if (!user) return;
+
+    let foodId = food.id;
+
+    // If external food (no ID yet) try to find it or create new entery in 'foods'
+    if (!foodId && food.sourceId) {
+      // Check if exists by source_id
+      const { data: existing } = await supabase
+        .from("foods")
+        .select("id")
+        .eq("source_id", food.sourceId)
+        .maybeSingle();
+
+      if (existing) {
+        foodId = existing.id;
+      } else {
+        const { data: newFood, error: createError } = await supabase
+          .from("foods")
+          .insert({
+            name: food.name,
+            brand: food.brand,
+            source: "openfoodfacts",
+            source_id: food.sourceId,
+            kcal_per_100g: food.kcalPer100g,
+            protein_g_per_100g: food.proteinPer100g,
+            fat_g_per_100g: food.fatPer100g,
+            carbs_g_per_100g: food.carbsPer100g,
+            image_url: food.imageUrl,
+            serving_size_g: food.servingSize,
+            serving_unit: food.servingUnit,
+          })
+          .select("id")
+          .single();
+
+        if (createError) {
+          console.error("Error creating food", createError);
+        } else if (newFood) {
+          foodId = newFood.id;
+        }
+      }
+    }
 
     const kcal = (food.kcalPer100g * grams) / 100;
     const protein = ((food.proteinPer100g ?? 0) * grams) / 100;
     const fat = ((food.fatPer100g ?? 0) * grams) / 100;
     const carbs = ((food.carbsPer100g ?? 0) * grams) / 100;
 
-    setEntries((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        name: `${food.name} (${grams}g)`,
-        kcal: Math.round(kcal),
-        grams,
-        protein: Math.round(protein),
-        fat: Math.round(fat),
-        carbs: Math.round(carbs),
-      },
-    ]);
+    const entryToInsert = {
+      user_id: user.id,
+      food_id: foodId || null,
+      name: `${food.name} (${grams}g)`,
+      kcal: Math.round(kcal),
+      grams,
+      protein: Math.round(protein),
+      fat: Math.round(fat),
+      carbs: Math.round(carbs),
+      created_at: selectedDate.toISOString(),
+    };
+
+    const { data: newEntry, error } = await supabase
+      .from("calorie_entries")
+      .insert(entryToInsert)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error inserting entry", error);
+    } else if (newEntry) {
+      setEntries((prev) => [newEntry, ...prev].sort((a, b) => b.kcal - a.kcal));
+    }
   }
 
   const saveGoals = async (updates: {
@@ -179,14 +240,45 @@ export default function Calories() {
     }));
   }
 
-  async function handleCustomEntrySubmit(e: FormEvent) {
+  async function handleCustomEntrySubmit(
+    e: FormEvent,
+    saveData?: { servingName: string; servingWeight: number }
+  ) {
     e.preventDefault();
     if (!user) return;
+
+    let foodId: string | null = null;
+
+    if (saveData) {
+      const { data: newFood, error: createError } = await supabase
+        .from("foods")
+        .insert({
+          name: customEntry.name,
+          source: "user",
+          kcal_per_100g: customEntry.kcal,
+          protein_g_per_100g: customEntry.protein,
+          fat_g_per_100g: customEntry.fat,
+          carbs_g_per_100g: customEntry.carbs,
+          serving_size_g: saveData.servingWeight,
+          serving_unit: saveData.servingName,
+          created_by: user.id,
+        })
+        .select("id")
+        .single();
+
+      if (createError) {
+        console.error("Error creating custom food", createError);
+      } else if (newFood) {
+        foodId = newFood.id;
+      }
+    }
 
     const entryToInsert = {
       ...customEntry,
       user_id: user.id,
+      food_id: foodId,
       name: `${customEntry.name} (${customEntry.grams}g)`,
+      created_at: selectedDate.toISOString(),
     };
 
     const { data: newEntry, error } = await supabase
@@ -236,17 +328,27 @@ export default function Calories() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="py-2 sm:py-4 h-[calc(100vh)]"
+      className="py-2 sm:py-4 lg:h-[calc(100vh)]"
     >
-      <section className="flex lg:flex-row flex-col h-full gap-4">
-        <div className="lg:w-1/3 w-full h-full">
+      <section className="flex lg:flex-row flex-col h-full gap-2">
+        <div className="lg:w-1/3 w-full h-full gap-2 flex flex-col">
+          <DateSelector
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+          />
           <EntriesList
             entries={entries}
             removeEntry={removeEntry}
             isLoading={isLoading}
           />
         </div>
-        <div className="lg:w-2/3 w-full gap-4 flex flex-col h-full">
+        <div className="lg:w-2/3 w-full gap-2 flex flex-col h-full">
+          {/* <div className="hidden lg:block">
+            <DateSelector
+              selectedDate={selectedDate}
+              onDateChange={setSelectedDate}
+            />
+          </div> */}
           <Goals
             goalCalories={goalCalories}
             totalCalories={totalCalories}

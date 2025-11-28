@@ -1,5 +1,6 @@
 export type Entry = {
   id: string;
+  food_id?: string | null;
   name: string;
   kcal: number;
   grams: number;
@@ -9,6 +10,7 @@ export type Entry = {
 };
 
 export type FoodHit = {
+  id?: string;
   name: string;
   brand?: string;
   sourceId?: string;
@@ -17,9 +19,11 @@ export type FoodHit = {
   proteinPer100g?: number;
   fatPer100g?: number;
   carbsPer100g?: number;
+  servingSize?: number;
+  servingUnit?: string;
 };
 
 export type FoodHitWithGrams = FoodHit & {
-  id: string;
+  listId: string;
   grams: number;
 };

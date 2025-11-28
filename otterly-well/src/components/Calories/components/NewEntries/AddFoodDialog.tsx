@@ -1,4 +1,4 @@
-import { FormEvent, Fragment } from "react";
+import { type FormEvent, Fragment, useState, useEffect } from "react";
 import type { FoodHitWithGrams } from "../../types/types";
 import {
   Dialog,
@@ -23,6 +23,45 @@ export const AddFoodDialog = ({
   foodHit,
   onGramsChange,
 }: AddFoodDialogProps) => {
+  const [amount, setAmount] = useState(1);
+  const [mode, setMode] = useState<"grams" | "serving">("grams");
+
+  // Reset state when dialog opens
+  useEffect(() => {
+    if (isOpen && foodHit) {
+      if (foodHit.servingSize) {
+        setMode("serving");
+        setAmount(1);
+        onGramsChange(foodHit.servingSize);
+      } else {
+        setMode("grams");
+        setAmount(100);
+        onGramsChange(100);
+      }
+    }
+  }, [isOpen, foodHit?.id]);
+
+  const handleAmountChange = (val: number) => {
+    setAmount(val);
+    if (mode === "serving" && foodHit?.servingSize) {
+      onGramsChange(val * foodHit.servingSize);
+    } else {
+      onGramsChange(val);
+    }
+  };
+
+  const toggleMode = () => {
+    if (mode === "grams" && foodHit?.servingSize) {
+      setMode("serving");
+      setAmount(1);
+      onGramsChange(foodHit.servingSize);
+    } else {
+      setMode("grams");
+      setAmount(100);
+      onGramsChange(100);
+    }
+  };
+
   return (
     <Transition show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-40" onClose={onClose}>
@@ -76,28 +115,57 @@ export const AddFoodDialog = ({
                     </div>
 
                     <div className="mt-4">
-                      <label
-                        htmlFor="grams"
-                        className="block text-sm font-medium text-brand-secondary"
-                      >
-                        Gramy
-                      </label>
+                      <div className="flex justify-between items-center mb-2">
+                        <label
+                          htmlFor="amount"
+                          className="block text-sm font-medium text-brand-secondary"
+                        >
+                          Ilość{" "}
+                          {mode === "serving"
+                            ? `(${foodHit.servingUnit || "porcji"})`
+                            : "(g)"}
+                        </label>
+                        {foodHit.servingSize && (
+                          <button
+                            type="button"
+                            onClick={toggleMode}
+                            className="text-xs text-brand-accent-1 hover:underline hover:cursor-pointer"
+                          >
+                            {mode === "grams"
+                              ? "Przełącz na porcje"
+                              : "Przełącz na gramy"}
+                          </button>
+                        )}
+                      </div>
+
                       <input
-                        id="grams"
+                        id="amount"
                         type="number"
                         min={1}
-                        className="mt-1 w-full rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light focus:outline-none focus:ring-2 focus:ring-brand-accent-1/40"
-                        placeholder="100"
-                        value={foodHit.grams}
-                        onChange={(e) => onGramsChange(Number(e.target.value))}
+                        step={mode === "serving" ? 0.5 : 1}
+                        className="mt-1 w-full rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-2 
+                                text-brand-neutral-light focus:outline-none focus:ring-2 focus:ring-brand-accent-1/40
+                                transition-focus duration-300"
+                        value={amount}
+                        onChange={(e) =>
+                          handleAmountChange(Number(e.target.value))
+                        }
                       />
+
+                      {mode === "serving" && foodHit.servingSize && (
+                        <p className="text-xs text-brand-secondary mt-1 text-left">
+                          {amount} x {foodHit.servingSize}g ={" "}
+                          {Math.round(amount * foodHit.servingSize)}g
+                        </p>
+                      )}
                     </div>
 
                     {/* Buttons */}
                     <div className="mt-6 flex gap-3">
                       <button
                         type="button"
-                        className="flex-1 justify-center rounded-md border border-brand-secondary px-4 py-2 text-sm font-medium text-brand-secondary hover:bg-brand-secondary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent-1/40"
+                        className="flex-1 justify-center rounded-md border border-brand-secondary px-4 py-2 text-sm font-medium 
+                                text-brand-secondary hover:bg-brand-secondary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent-1/40"
                         onClick={onClose}
                       >
                         Anuluj
@@ -105,7 +173,8 @@ export const AddFoodDialog = ({
                       <button
                         type="submit"
                         disabled={foodHit.grams <= 0}
-                        className="flex-1 justify-center rounded-md bg-brand-accent-1 px-4 py-2 text-sm font-semibold text-brand-neutral-dark hover:bg-brand-accent-1/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent-1/40 disabled:bg-brand-secondary"
+                        className="flex-1 justify-center rounded-md bg-brand-accent-1 px-4 py-2 text-sm font-semibold 
+                                text-brand-neutral-dark hover:bg-brand-accent-1/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent-1/40 disabled:bg-brand-secondary"
                       >
                         Dodaj
                       </button>
