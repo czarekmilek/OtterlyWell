@@ -144,6 +144,8 @@ export default function Calories() {
             fat_g_per_100g: food.fatPer100g,
             carbs_g_per_100g: food.carbsPer100g,
             image_url: food.imageUrl,
+            serving_size_g: food.servingSize,
+            serving_unit: food.servingUnit,
           })
           .select("id")
           .single();
@@ -238,13 +240,43 @@ export default function Calories() {
     }));
   }
 
-  async function handleCustomEntrySubmit(e: FormEvent) {
+  async function handleCustomEntrySubmit(
+    e: FormEvent,
+    saveData?: { servingName: string; servingWeight: number }
+  ) {
     e.preventDefault();
     if (!user) return;
+
+    let foodId: string | null = null;
+
+    if (saveData) {
+      const { data: newFood, error: createError } = await supabase
+        .from("foods")
+        .insert({
+          name: customEntry.name,
+          source: "user",
+          kcal_per_100g: customEntry.kcal,
+          protein_g_per_100g: customEntry.protein,
+          fat_g_per_100g: customEntry.fat,
+          carbs_g_per_100g: customEntry.carbs,
+          serving_size_g: saveData.servingWeight,
+          serving_unit: saveData.servingName,
+          created_by: user.id,
+        })
+        .select("id")
+        .single();
+
+      if (createError) {
+        console.error("Error creating custom food", createError);
+      } else if (newFood) {
+        foodId = newFood.id;
+      }
+    }
 
     const entryToInsert = {
       ...customEntry,
       user_id: user.id,
+      food_id: foodId,
       name: `${customEntry.name} (${customEntry.grams}g)`,
       created_at: selectedDate.toISOString(),
     };

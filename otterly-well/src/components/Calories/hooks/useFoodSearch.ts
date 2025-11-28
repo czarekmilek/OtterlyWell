@@ -37,6 +37,8 @@ export function useFoodSearch(q: string) {
           carbsPer100g: f.carbs_g_per_100g,
           imageUrl: f.image_url,
           sourceId: f.source_id,
+          servingSize: f.serving_size_g,
+          servingUnit: f.serving_unit,
         }));
 
         // Update state with local results

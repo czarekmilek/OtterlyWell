@@ -17,7 +17,7 @@ export const EntriesList = ({
     <motion.section
       layout
       className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4
-                flex flex-col h-full"
+                flex flex-col flex-1 min-h-0"
     >
       <h2 className="text-lg font-semibold text-brand-neutral-light mb-2">
         Historia posiłków

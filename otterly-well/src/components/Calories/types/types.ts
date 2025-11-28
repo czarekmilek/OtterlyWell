@@ -19,6 +19,8 @@ export type FoodHit = {
   proteinPer100g?: number;
   fatPer100g?: number;
   carbsPer100g?: number;
+  servingSize?: number;
+  servingUnit?: string;
 };
 
 export type FoodHitWithGrams = FoodHit & {
