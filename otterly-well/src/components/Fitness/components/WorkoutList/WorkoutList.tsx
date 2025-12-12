@@ -1,16 +1,15 @@
 import { useState, Fragment } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, Transition } from "@headlessui/react";
-import { DeleteIcon, WarningIcon } from "../../../icons/index";
-import type { Entry } from "../../types/types";
-import { MacroBar } from "../MacroTracking/MacroBar";
+import { DeleteIcon, WarningIcon } from "../../../icons";
+import type { WorkoutEntry } from "../../types/types";
 
-interface EntryItemProps {
-  entry: Entry;
-  removeEntry: (id: string) => void;
+interface WorkoutItemProps {
+  entry: WorkoutEntry;
+  onRemoveEntry: (id: string) => void;
 }
 
-export const EntryItem = ({ entry: e, removeEntry }: EntryItemProps) => {
+const WorkoutItem = ({ entry, onRemoveEntry }: WorkoutItemProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -18,66 +17,63 @@ export const EntryItem = ({ entry: e, removeEntry }: EntryItemProps) => {
 
   const handleRemoveClick = () => {
     closeModal();
-    setTimeout(() => removeEntry(e.id), 150);
+    setTimeout(() => onRemoveEntry(entry.id), 150);
   };
 
   return (
     <>
-      <motion.li
+      <motion.div
         layout
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.2 }}
-        className="flex flex-col sm:flex-row sm:items-start sm:justify-between py-3 gap-3"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="mb-2 last:mb-0 bg-brand-neutral-dark border border-brand-depth rounded-lg p-3 group relative overflow-hidden"
       >
-        {/* Info section */}
-        <div className="min-w-0 flex-1">
-          <div className="flex justify-between gap-2">
-            <p className="text-brand-neutral-light">{e.name}</p>
-            <button
-              onClick={openModal}
-              className="flex sm:w-auto h-fit items-center justify-center rounded-md text-sm text-brand-neutral-light 
+        <div className="flex justify-between items-start z-10 relative">
+          <div>
+            <h4 className="font-bold text-brand-neutral-light text-lg">
+              {entry.exercise?.name || "Nieznane ćwiczenie"}
+            </h4>
+            <p className="text-sm text-brand-neutral-light/70 uppercase tracking-wider">
+              {entry.exercise?.muscle_group} •{" "}
+              {entry.exercise?.type === "strength" ? "Siłowe" : "Cardio"}
+            </p>
+          </div>
+          <button
+            onClick={openModal}
+            className="flex sm:w-auto h-fit items-center justify-center rounded-md text-sm text-brand-neutral-light 
                        hover:bg-red-800/20 hover:border-red-500/30 hover:text-red-400
                        transition-colors duration-200 cursor-pointer"
-            >
-              <DeleteIcon className="text-base" />
-            </button>
+          >
+            <DeleteIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="mt-3 flex gap-4">
+          <div className="bg-brand-depth/30 rounded px-2 py-1">
+            <span className="text-brand-accent-1 font-bold">{entry.sets}</span>
+            <span className="text-xs text-brand-neutral-light/50 ml-1">
+              SERIE
+            </span>
           </div>
-
-          <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-brand-secondary">
-            <span className="font-semibold bg-brand-accent-3 text-brand-neutral-light px-2 rounded-xl">
-              {e.kcal} kcal
+          <div className="bg-brand-depth/30 rounded px-2 py-1">
+            <span className="text-brand-accent-1 font-bold">{entry.reps}</span>
+            <span className="text-xs text-brand-neutral-light/50 ml-1">
+              POWT.
             </span>
-            <span className="text-brand-depth/50" aria-hidden="true">
-              |
+          </div>
+          <div className="bg-brand-depth/30 rounded px-2 py-1">
+            <span className="text-brand-accent-1 font-bold">
+              {entry.weight_kg}
             </span>
-            <span className="font-semibold bg-brand-primary text-brand-neutral-light px-2 rounded-xl">
-              B: {e.protein.toFixed(1)}g
-            </span>
-            <span className="text-brand-depth/50" aria-hidden="true">
-              |
-            </span>
-            <span className="font-semibold bg-brand-accent-1 text-brand-neutral-light px-2 rounded-xl">
-              T: {e.fat.toFixed(1)}g
-            </span>
-            <span className="text-brand-depth/50" aria-hidden="true">
-              |
-            </span>
-            <span className="font-semibold bg-brand-accent-2 text-brand-neutral-light px-2 rounded-xl">
-              W: {e.carbs.toFixed(1)}g
-            </span>
-          </p>
-
-          <div className="mt-2 w-">
-            <MacroBar protein={e.protein} fat={e.fat} carbs={e.carbs} />
+            <span className="text-xs text-brand-neutral-light/50 ml-1">KG</span>
           </div>
         </div>
-      </motion.li>
+      </motion.div>
 
       {/* Confirmation popup */}
       <Transition appear show={isModalOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog as="div" className="relative z-50" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -103,7 +99,7 @@ export const EntryItem = ({ entry: e, removeEntry }: EntryItemProps) => {
               >
                 <Dialog.Panel
                   className="w-full max-w-md transform overflow-hidden rounded-2xl border border-brand-depth 
-                              bg-brand-neutral-dark p-6 text-left align-middle shadow-xl transition-all"
+                            bg-brand-neutral-dark p-6 text-left align-middle shadow-xl transition-all"
                 >
                   <Dialog.Title
                     as="h3"
@@ -116,7 +112,7 @@ export const EntryItem = ({ entry: e, removeEntry }: EntryItemProps) => {
                     <p className="text-sm text-brand-secondary">
                       Czy na pewno chcesz usunąć{" "}
                       <strong className="text-brand-neutral-light">
-                        {e.name}
+                        {entry.exercise?.name || "ćwiczenie"}
                       </strong>
                       ? Tej akcji nie można cofnąć.
                     </p>
@@ -150,3 +146,45 @@ export const EntryItem = ({ entry: e, removeEntry }: EntryItemProps) => {
     </>
   );
 };
+
+interface WorkoutListProps {
+  entries: WorkoutEntry[];
+  onRemoveEntry: (id: string) => void;
+  isLoading: boolean;
+}
+
+export default function WorkoutList({
+  entries,
+  onRemoveEntry,
+  isLoading,
+}: WorkoutListProps) {
+  if (isLoading) {
+    return (
+      <div className="flex-1 bg-brand-neutral-dark/50 border border-brand-depth rounded-xl p-4 flex items-center justify-center">
+        <p className="text-brand-neutral-light/50">Ładowanie treningów...</p>
+      </div>
+    );
+  }
+
+  if (entries.length === 0) {
+    return (
+      <div className="flex-1 bg-brand-neutral-dark/50 border border-brand-depth rounded-xl p-4 flex items-center justify-center">
+        <p className="text-brand-neutral-light/50">Brak treningów tego dnia</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 bg-brand-neutral-dark/50 border border-brand-depth rounded-xl p-4 overflow-y-auto custom-scrollbar">
+      <AnimatePresence mode="popLayout">
+        {entries.map((entry) => (
+          <WorkoutItem
+            key={entry.id}
+            entry={entry}
+            onRemoveEntry={onRemoveEntry}
+          />
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+}

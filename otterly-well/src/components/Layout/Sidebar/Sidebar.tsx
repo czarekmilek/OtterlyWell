@@ -19,7 +19,7 @@ import UserProfile from "./components/UserProfile";
 const navigationItems = [
   { name: "Dashboard", to: "/", icon: DashboardIcon },
   { name: "Kalorie", to: "/calories", icon: CalorieIcon },
-  { name: "Treningi", to: "#", icon: WorkoutIcon },
+  { name: "Treningi", to: "/fitness", icon: WorkoutIcon },
   { name: "Finanse", to: "#", icon: FinanceIcon },
   { name: "Zadania", to: "#", icon: TaskIcon },
 ];
