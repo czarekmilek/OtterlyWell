@@ -90,25 +90,23 @@ export default function Fitness() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="py-2 sm:py-4 lg:h-[calc(100vh)]"
+      className="flex flex-col lg:flex-row gap-4 py-2 sm:py-4 h-full lg:h-[calc(100vh-1rem)] w-full overflow-hidden"
     >
-      <section className="flex lg:flex-row flex-col h-full gap-2">
-        <div className="lg:w-1/3 w-full h-full gap-2 flex flex-col">
-          <DateSelector
-            selectedDate={selectedDate}
-            onDateChange={setSelectedDate}
-          />
-          <WorkoutList
-            entries={entries}
-            onRemoveEntry={handleRemoveEntry}
-            isLoading={isLoading}
-          />
-        </div>
-        <div className="lg:w-2/3 w-full gap-2 flex flex-col h-full">
-          <FitnessGoals entries={entries} />
-          <NewWorkoutTabs onAddExercise={handleAddExercise} />
-        </div>
-      </section>
+      <div className="lg:w-1/3 w-full h-full flex flex-col gap-2 overflow-hidden order-2 lg:order-1">
+        <DateSelector
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
+        />
+        <WorkoutList
+          entries={entries}
+          onRemoveEntry={handleRemoveEntry}
+          isLoading={isLoading}
+        />
+      </div>
+      <div className="lg:w-2/3 w-full h-full flex flex-col gap-2 overflow-hidden order-1 lg:order-2">
+        <FitnessGoals entries={entries} />
+        <NewWorkoutTabs onAddExercise={handleAddExercise} />
+      </div>
     </motion.div>
   );
 }
