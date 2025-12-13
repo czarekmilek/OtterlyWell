@@ -87,3 +87,7 @@ export const SearchIcon: React.FC<IconProps> = ({ className }) => (
 export const CloseIcon: React.FC<IconProps> = ({ className }) => (
   <span className={`material-symbols-sharp ${className}`}>close</span>
 );
+
+export const HistoryIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>history</span>
+);

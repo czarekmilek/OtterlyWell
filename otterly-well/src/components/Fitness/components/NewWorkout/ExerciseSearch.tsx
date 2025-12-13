@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useExerciseSearch } from "../../hooks/useExerciseSearch";
-import { SearchIcon } from "../../../icons";
+import { SearchIcon, HistoryIcon } from "../../../icons";
 import type { Exercise } from "../../types/types";
 
 interface ExerciseSearchProps {
@@ -21,7 +21,7 @@ export default function ExerciseSearch({
   onCreateExercise,
 }: ExerciseSearchProps) {
   const [query, setQuery] = useState("");
-  const { loading, hits, error } = useExerciseSearch(query);
+  const { loading, hits, error, isRecent } = useExerciseSearch(query);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
     null
   );
@@ -55,7 +55,7 @@ export default function ExerciseSearch({
           >
             <div className="p-3 border-b border-brand-depth bg-brand-neutral-dark relative flex gap-2">
               <div className="relative flex-1">
-                <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-neutral-light/50" />
+                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-neutral-light/50" />
                 <input
                   type="text"
                   placeholder="Szukaj ćwiczenia..."
@@ -75,12 +75,21 @@ export default function ExerciseSearch({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
-              {loading && (
-                <p className="text-brand-neutral-light/50 text-center py-8 text-sm animate-pulse">
-                  Szukanie...
-                </p>
-              )}
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1 relative">
+              <AnimatePresence>
+                {loading && query.length >= 2 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 z-10 flex items-center justify-center bg-brand-neutral-dark/60 backdrop-blur-xs"
+                  >
+                    <p className="text-brand-neutral-light/70 font-medium animate-pulse">
+                      Szukanie...
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               {error && (
                 <p className="text-red-400 text-center py-4 text-sm">
                   Błąd: {error}
@@ -97,12 +106,22 @@ export default function ExerciseSearch({
                   }}
                   whileTap={{ scale: 0.99 }}
                   onClick={() => setSelectedExercise(exercise)}
-                  className="p-4 rounded-lg bg-brand-neutral-dark border border-brand-depth/50 
+                  className={`p-4 rounded-lg bg-brand-neutral-dark border 
                             cursor-pointer transition-colors group shadow-sm hover:shadow-md hover:border-brand-accent-3/30
-                            hover:bg-brand-neutral-dark/90"
+                            hover:bg-brand-neutral-dark/90 ${
+                              isRecent
+                                ? "border-brand-accent-1/20 bg-brand-accent-1/5"
+                                : "border-brand-depth/50"
+                            }`}
                 >
                   <div className="flex justify-between items-center">
-                    <span className="font-medium text-brand-neutral-light group-hover:text-brand-accent-3 transition-colors">
+                    <span
+                      className="font-medium text-brand-neutral-light group-hover:text-brand-accent-3 
+                                    transition-colors flex items-center gap-2"
+                    >
+                      {isRecent && (
+                        <HistoryIcon className="text-base text-brand-neutral-light/40" />
+                      )}
                       {exercise.name}
                     </span>
                     <span className="text-lg sm:text-xs font-bold text-brand-neutral-dark/80 bg-brand-depth px-2 py-1 rounded-full uppercase tracking-wide">
@@ -112,14 +131,14 @@ export default function ExerciseSearch({
                 </motion.div>
               ))}
 
-              {!loading && query && hits.length === 0 && (
+              {!loading && !isRecent && hits.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-8 text-brand-neutral-light/40">
                   <SearchIcon className="text-4xl mb-2 opacity-20" />
                   <p className="text-sm">Brak wyników</p>
                 </div>
               )}
 
-              {!loading && !query && (
+              {!loading && isRecent && hits.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-12 text-brand-neutral-light/30">
                   <SearchIcon className="text-5xl mb-3 opacity-20" />
                   <p className="text-sm">Wpisz nazwę aby wyszukać</p>
