@@ -1,0 +1,98 @@
+import { useState, useEffect } from "react";
+import { supabase } from "../../../lib/supabaseClient";
+import type { ExerciseSet } from "../types/types";
+
+export function useWorkoutSets(query: string) {
+  const [loading, setLoading] = useState(false);
+  const [sets, setSets] = useState<ExerciseSet[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchSets = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      let queryBuilder = supabase
+        .from("workout_sets")
+        .select(
+          `
+          *,
+          items:workout_set_items (
+            *,
+            exercise:exercises (*)
+          )
+        `
+        )
+        .order("created_at", { ascending: false });
+      ``;
+
+      if (query) {
+        queryBuilder = queryBuilder.ilike("name", `%${query}%`);
+      }
+
+      const { data, error } = await queryBuilder;
+
+      if (error) throw error;
+      setSets(data || []);
+    } catch (err: any) {
+      console.error("Error searching sets:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const debounce = setTimeout(fetchSets, 300);
+    return () => clearTimeout(debounce);
+  }, [query]);
+
+  const refreshSets = () => {
+    fetchSets();
+  };
+
+  const createSet = async (name: string, description: string, items: any[]) => {
+    const { data: set, error: setError } = await supabase
+      .from("workout_sets")
+      .insert({
+        name,
+        description,
+        created_by: (await supabase.auth.getUser()).data.user?.id,
+      })
+      .select()
+      .single();
+
+    if (setError) throw setError;
+
+    if (items.length > 0) {
+      const setItems = items.map((item, index) => ({
+        set_id: set.id,
+        exercise_id: item.exercise.id,
+        order_index: index,
+        sets: item.sets,
+        reps: item.reps,
+        weight_kg: item.weight,
+        duration_min: item.duration,
+      }));
+
+      const { error: itemsError } = await supabase
+        .from("workout_set_items")
+        .insert(setItems);
+
+      if (itemsError) throw itemsError;
+    }
+
+    refreshSets();
+    return set;
+  };
+
+  const deleteSet = async (setId: string) => {
+    const { error } = await supabase
+      .from("workout_sets")
+      .delete()
+      .eq("id", setId);
+    if (error) throw error;
+    refreshSets();
+  };
+
+  return { loading, sets, error, refreshSets, createSet, deleteSet };
+}

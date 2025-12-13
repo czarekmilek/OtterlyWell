@@ -83,3 +83,7 @@ export const ChevronDownIcon: React.FC<IconProps> = ({ className }) => (
 export const SearchIcon: React.FC<IconProps> = ({ className }) => (
   <span className={`material-symbols-sharp ${className}`}>search</span>
 );
+
+export const CloseIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>close</span>
+);

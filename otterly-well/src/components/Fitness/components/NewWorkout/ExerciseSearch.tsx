@@ -11,9 +11,13 @@ interface ExerciseSearchProps {
     reps: number,
     weight: number
   ) => void;
+  submitButtonText?: string;
 }
 
-export default function ExerciseSearch({ onAddExercise }: ExerciseSearchProps) {
+export default function ExerciseSearch({
+  onAddExercise,
+  submitButtonText = "Dodaj ćwiczenie",
+}: ExerciseSearchProps) {
   const [query, setQuery] = useState("");
   const { loading, hits, error } = useExerciseSearch(query);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
@@ -138,7 +142,13 @@ export default function ExerciseSearch({ onAddExercise }: ExerciseSearchProps) {
               </button>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 mb-6">
+            <div
+              className={`grid gap-3 mb-6 ${
+                selectedExercise.type === "strength"
+                  ? "grid-cols-3"
+                  : "grid-cols-2"
+              }`}
+            >
               <div className="flex flex-col p-3 rounded-lg bg-brand-neutral-dark/90 border border-brand-depth">
                 <label className="text-xs font-bold text-brand-neutral-light/70 uppercase text-center">
                   Liczba serii
@@ -161,17 +171,21 @@ export default function ExerciseSearch({ onAddExercise }: ExerciseSearchProps) {
                   className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
                 />
               </div>
-              <div className="flex flex-col p-3 rounded-lg bg-brand-neutral-dark/90 border border-brand-depth">
-                <label className="text-xs font-bold text-brand-neutral-light/70 uppercase text-center">
-                  Ciężar (kg)
-                </label>
-                <input
-                  type="number"
-                  value={weight}
-                  onChange={(e) => setWeight(Number(e.target.value))}
-                  className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
-                />
-              </div>
+
+              {(selectedExercise.type === "strength" ||
+                (!selectedExercise.type && true)) && (
+                <div className="flex flex-col p-3 rounded-lg bg-brand-neutral-dark/90 border border-brand-depth">
+                  <label className="text-xs font-bold text-brand-neutral-light/70 uppercase text-center">
+                    Ciężar (kg)
+                  </label>
+                  <input
+                    type="number"
+                    value={weight}
+                    onChange={(e) => setWeight(Number(e.target.value))}
+                    className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
+                  />
+                </div>
+              )}
             </div>
 
             <motion.button
@@ -181,7 +195,7 @@ export default function ExerciseSearch({ onAddExercise }: ExerciseSearchProps) {
               className="mt-auto w-full py-3.5 bg-brand-accent-1 hover:bg-brand-accent-2 cursor-pointer text-white font-bold rounded-xl 
                          shadow-lg hover:shadow-brand-accent-1/20 transition-all flex items-center justify-center gap-2"
             >
-              Dodaj trening
+              {submitButtonText}
             </motion.button>
           </motion.div>
         )}
