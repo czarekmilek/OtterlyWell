@@ -12,11 +12,13 @@ interface ExerciseSearchProps {
     weight: number
   ) => void;
   submitButtonText?: string;
+  onCreateExercise?: () => void;
 }
 
 export default function ExerciseSearch({
   onAddExercise,
   submitButtonText = "Dodaj ćwiczenie",
+  onCreateExercise,
 }: ExerciseSearchProps) {
   const [query, setQuery] = useState("");
   const { loading, hits, error } = useExerciseSearch(query);
@@ -51,17 +53,26 @@ export default function ExerciseSearch({
             transition={{ duration: 0.2 }}
             className="flex flex-col h-full"
           >
-            <div className="p-3 border-b border-brand-depth bg-brand-neutral-dark relative">
-              <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-neutral-light/50" />
-              <input
-                type="text"
-                placeholder="Szukaj ćwiczenia..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-lg bg-brand-depth/30 border border-brand-depth/50 text-brand-neutral-light 
-                          placeholder-brand-neutral-light/30 focus:outline-none focus:ring-1 focus:ring-brand-accent-1 focus:border-brand-accent-1 
-                          transition-all"
-              />
+            <div className="p-3 border-b border-brand-depth bg-brand-neutral-dark relative flex gap-2">
+              <div className="relative flex-1">
+                <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-neutral-light/50" />
+                <input
+                  type="text"
+                  placeholder="Szukaj ćwiczenia..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-brand-depth/30 border border-brand-depth/50 text-brand-neutral-light 
+                            placeholder-brand-neutral-light/30 focus:outline-none focus:ring-1 focus:ring-brand-accent-1 focus:border-brand-accent-1 
+                            transition-all"
+                />
+              </div>
+              <button
+                onClick={onCreateExercise}
+                className="bg-brand-accent-1 hover:bg-brand-accent-2 text-white p-3 rounded-lg transition-colors shadow-lg cursor-pointer"
+                title="Stwórz nowe ćwiczenie"
+              >
+                +
+              </button>
             </div>
 
             <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import ExerciseSearch from "./ExerciseSearch";
-import CustomExercise from "./CustomExercise";
 import SetSearch from "./SetSearch";
 import CreateSetModal from "./CreateSetModal";
+import CreateExerciseModal from "./CreateExerciseModal";
 import type { Exercise, ExerciseSet } from "../../types/types";
 
 interface NewWorkoutTabsProps {
@@ -19,10 +19,9 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
   const [activeCategory, setActiveCategory] = useState<"exercises" | "sets">(
     "exercises"
   );
-  const [activeExerciseTab, setActiveExerciseTab] = useState<
-    "search" | "custom"
-  >("search");
   const [isCreateSetModalOpen, setIsCreateSetModalOpen] = useState(false);
+  const [isCreateExerciseModalOpen, setIsCreateExerciseModalOpen] =
+    useState(false);
 
   const getTabClassName = (isActive: boolean) =>
     `flex-1 text-center px-2 sm:px-4 py-2 rounded-t-md transition-colors relative -mb-px ${
@@ -61,14 +60,11 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
           <div className="flex flex-col h-full overflow-hidden">
             <div className="flex-1 overflow-hidden relative">
               <AnimatePresence mode="wait">
-                {activeExerciseTab === "search" ? (
-                  <ExerciseSearch key="search" onAddExercise={onAddExercise} />
-                ) : (
-                  <CustomExercise
-                    key="custom"
-                    onExerciseCreated={() => setActiveExerciseTab("search")}
-                  />
-                )}
+                <ExerciseSearch
+                  key="search"
+                  onAddExercise={onAddExercise}
+                  onCreateExercise={() => setIsCreateExerciseModalOpen(true)}
+                />
               </AnimatePresence>
             </div>
           </div>
@@ -87,6 +83,12 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
           <CreateSetModal
             onClose={() => setIsCreateSetModalOpen(false)}
             onCreated={() => setIsCreateSetModalOpen(false)}
+          />
+        )}
+        {isCreateExerciseModalOpen && (
+          <CreateExerciseModal
+            onClose={() => setIsCreateExerciseModalOpen(false)}
+            onCreated={() => setIsCreateExerciseModalOpen(false)}
           />
         )}
       </AnimatePresence>
