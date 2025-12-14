@@ -32,13 +32,13 @@ export const CustomEntry = ({
       // Direct grams input
       handleCustomEntryChange({
         target: { name: "grams", value: amount.toString() },
-      });
+      } as any);
     } else {
       // grams = amount * servingWeight
       const totalGrams = amount * servingWeight;
       handleCustomEntryChange({
         target: { name: "grams", value: totalGrams.toString() },
-      });
+      } as any);
     }
   }, [mode, amount, servingWeight]);
 

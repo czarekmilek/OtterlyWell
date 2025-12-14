@@ -12,7 +12,7 @@ const UserProfile = ({ user }: UserProfileProps) => {
   if (!user) return null;
 
   const userEmail = user.email;
-  const userInitial = userEmail.charAt(0).toUpperCase();
+  const userInitial = (userEmail || "?").charAt(0).toUpperCase();
 
   return (
     <div className="mt-auto border-t border-brand-depth bg-brand-neutral-light p-2">

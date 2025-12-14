@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import type { FoodHit } from "../types/types";
 
 export function useBarcodeSearch(barcode: string) {
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ export function useBarcodeSearch(barcode: string) {
 
         const json = await res.json();
         if (!abort) setHits(json.items ?? []);
-      } catch (e: Error) {
+      } catch (e: any) {
         if (!abort) setError(e.message);
       } finally {
         if (!abort) setLoading(false);
