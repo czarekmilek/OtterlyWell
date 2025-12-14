@@ -75,3 +75,19 @@ export const ChevronLeftIcon: React.FC<IconProps> = ({ className }) => (
 export const ChevronRightIcon: React.FC<IconProps> = ({ className }) => (
   <span className={`material-symbols-sharp ${className}`}>chevron_right</span>
 );
+
+export const ChevronDownIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>expand_more</span>
+);
+
+export const SearchIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>search</span>
+);
+
+export const CloseIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>close</span>
+);
+
+export const HistoryIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>history</span>
+);

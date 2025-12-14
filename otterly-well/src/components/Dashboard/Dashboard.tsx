@@ -26,6 +26,7 @@ const modules: TileData[] = [
     icon: WorkoutIcon,
     color: "text-brand-primary",
     bgColor: "hover:bg-brand-primary/10",
+    to: "/fitness",
   },
   {
     title: "Finanse",

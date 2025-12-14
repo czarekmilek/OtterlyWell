@@ -9,6 +9,7 @@ const Login = lazy(() => import("./components/Auth/Login/Login"));
 const Register = lazy(() => import("./components/Auth/Register/Register"));
 const Dashboard = lazy(() => import("./components/Dashboard/Dashboard"));
 const Calories = lazy(() => import("./components/Calories/Calories"));
+const Fitness = lazy(() => import("./components/Fitness/Fitness"));
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/calories" element={<Calories />} />
+            <Route path="/fitness" element={<Fitness />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
