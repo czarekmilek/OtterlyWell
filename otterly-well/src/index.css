@@ -16,6 +16,12 @@
   --color-brand-neutral-light: #f8f8f4;
   --color-brand-neutral-dark: #2c3e50;
   --color-brand-depth: #c7dde3;
+
+  --color-brand-positive: oklch(69.6% 0.17 162.48); /* Tailwind emerald-600 */
+  --color-brand-positive-lighter: oklch(
+    76.5% 0.177 163.223
+  ); /* Tailwind emerald-400 */
+  --color-brand-negative: oklch(70.4% 0.191 22.216); /* Tailwind red-600 */
 }
 
 /* --- Light Mode --- */
