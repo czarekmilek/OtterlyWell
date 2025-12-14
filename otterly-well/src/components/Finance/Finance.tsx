@@ -6,7 +6,7 @@ import EntryModal from "./EntryModal";
 import BudgetPlanner from "./BudgetPlanner";
 import type { FinanceType } from "./types";
 import { MonthSelector } from "./MonthSelector";
-import { FinanceStats } from "./components/FinanceStats";
+import { FinanceStats } from "./FinanceStats/FinanceStats";
 
 export default function Finance() {
   const {
