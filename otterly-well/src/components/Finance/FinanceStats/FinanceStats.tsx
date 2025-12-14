@@ -18,8 +18,8 @@ export function FinanceStats({
     <div className="bg-brand-neutral-dark/40 border border-brand-depth rounded-2xl p-6 relative">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-0">
         <div className="flex flex-col gap-4 order-2 lg:order-1">
-          <FinanceIOPeek stats={{ income: stats.income }} />
-          <FinanceIOPeek stats={{ expense: stats.expense }} />
+          <FinanceIOPeek type="income" amount={stats.income} />
+          <FinanceIOPeek type="expense" amount={stats.expense} />
         </div>
 
         <motion.div
