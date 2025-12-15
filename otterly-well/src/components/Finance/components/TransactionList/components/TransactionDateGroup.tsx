@@ -1,4 +1,4 @@
-import type { FinanceTransaction } from "../../types/types";
+import type { FinanceTransaction } from "../../../types/types";
 import { TransactionItem } from "./TransactionItem";
 
 interface TransactionDateGroupProps {

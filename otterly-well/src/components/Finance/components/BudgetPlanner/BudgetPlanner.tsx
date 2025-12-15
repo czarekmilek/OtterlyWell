@@ -1,5 +1,7 @@
 import { useState } from "react";
-import type { FinanceBudget, FinanceCategory } from "./types";
+import type { FinanceBudget, FinanceCategory } from "../../types/types";
+import { getCategoryColor } from "../../constants/categoryColors";
+import { getCategoryIcon } from "../../constants/categoryIcons";
 
 interface BudgetPlannerProps {
   categories: FinanceCategory[];
@@ -35,6 +37,8 @@ export default function BudgetPlanner({
         const budget = budgets.find((b) => b.category_id === cat.id);
         const amount = budget ? budget.amount : 0;
         const isEditing = editingId === cat.id;
+        const categoryColor = getCategoryColor(cat.name);
+        const categoryIcon = getCategoryIcon(cat.name);
 
         return (
           <div
@@ -46,12 +50,12 @@ export default function BudgetPlanner({
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center text-brand-neutral-light shadow-sm"
                 style={{
-                  backgroundColor: `${cat.color || "#555"}21`,
-                  color: cat.color || "#555",
+                  backgroundColor: `${categoryColor}21`,
+                  color: categoryColor,
                 }}
               >
                 <span className="material-symbols-sharp text-xl">
-                  {cat.icon || "category"}
+                  {categoryIcon}
                 </span>
               </div>
               <span className="font-semibold text-brand-neutral-light">

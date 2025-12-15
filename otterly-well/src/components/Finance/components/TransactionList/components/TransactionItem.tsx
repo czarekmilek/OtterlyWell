@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { DeleteIcon } from "../../../icons";
-import type { FinanceTransaction } from "../../types/types";
-import { getCategoryColor } from "../../constants/categoryColors";
-import { getCategoryIcon } from "../../constants/categoryIcons";
+import { DeleteIcon } from "../../../../icons";
+import type { FinanceTransaction } from "../../../types/types";
+import { getCategoryColor } from "../../../constants/categoryColors";
+import { getCategoryIcon } from "../../../constants/categoryIcons";
 
 interface TransactionItemProps {
   transaction: FinanceTransaction;

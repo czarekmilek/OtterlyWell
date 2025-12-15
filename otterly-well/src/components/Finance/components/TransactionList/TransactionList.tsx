@@ -1,4 +1,4 @@
-import type { FinanceTransaction } from "../types/types";
+import type { FinanceTransaction } from "../../types/types";
 import { TransactionDateGroup } from "./components/TransactionDateGroup";
 import { TransactionListSkeleton } from "./components/TransactionListSkeleton";
 

@@ -6,7 +6,11 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import type { FinanceCategory, FinanceTransaction, FinanceType } from "./types";
+import type {
+  FinanceCategory,
+  FinanceTransaction,
+  FinanceType,
+} from "./types/types";
 import { CloseIcon, FinanceIcon } from "../icons";
 
 interface EntryModalProps {

@@ -1,12 +1,12 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useFinance } from "./hooks/useFinance";
-import TransactionList from "./TransactionList/TransactionList";
-import EntryModal from "./EntryModal";
-import BudgetPlanner from "./BudgetPlanner";
+import TransactionList from "./components/TransactionList/TransactionList";
+import EntryModal from "./components/EntryModal";
+import BudgetPlanner from "./components/BudgetPlanner/BudgetPlanner";
 import type { FinanceType } from "./types/types";
-import { MonthSelector } from "./MonthSelector";
-import { FinanceStats } from "./FinanceStats/FinanceStats";
+import { MonthSelector } from "./components/MonthSelector";
+import { FinanceStats } from "./components/FinanceStats/FinanceStats";
 
 export default function Finance() {
   const {
