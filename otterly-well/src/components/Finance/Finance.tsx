@@ -1,10 +1,10 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useFinance } from "./hooks/useFinance";
-import TransactionList from "./TransactionList";
+import TransactionList from "./TransactionList/TransactionList";
 import EntryModal from "./EntryModal";
 import BudgetPlanner from "./BudgetPlanner";
-import type { FinanceType } from "./types";
+import type { FinanceType } from "./types/types";
 import { MonthSelector } from "./MonthSelector";
 import { FinanceStats } from "./FinanceStats/FinanceStats";
 
@@ -60,7 +60,6 @@ export default function Finance() {
       transition={{ duration: 0.5 }}
       className="py-6 lg:p-8 mx-auto space-y-3 xl:h-[calc(100vh)]"
     >
-      {/* Header & Date Selection */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         <MonthSelector
           selectedDate={selectedDate}
@@ -73,7 +72,7 @@ export default function Finance() {
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 font-medium 
                       transition-colors border border-red-500/20 cursor-pointer"
           >
-            <span className="material-symbols-sharp text-xl">remove</span>
+            <span className="material-symbols-sharp">remove</span>
             <span>Wydatek</span>
           </button>
           <button
@@ -81,13 +80,12 @@ export default function Finance() {
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 font-medium 
                       transition-colors border border-emerald-500/20 cursor-pointer"
           >
-            <span className="material-symbols-sharp text-xl">add</span>
+            <span className="material-symbols-sharp">add</span>
             <span>Przychód</span>
           </button>
         </div>
       </div>
 
-      {/* Main Stats Overview */}
       <FinanceStats
         stats={stats}
         moneyLeft={moneyLeft}
@@ -95,14 +93,20 @@ export default function Finance() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Transactions List */}
         <div className="">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-brand-neutral-light bg-brand-neutral-dark/40 border border-brand-depth rounded-t-xl py-2 px-4">
+          <div className="flex items-end lg:justify-end">
+            {/* // bg-brand-neutral-dark/40 border border-brand-depth rounded-2xl p-6 */}
+            <h2
+              className="bg-brand-neutral-dark/50 text-xl font-bold text-brand-neutral-light border border-brand-depth 
+                          rounded-t-xl py-2 px-4"
+            >
               Historia
             </h2>
           </div>
-          <div className="bg-brand-neutral-dark/30 border border-brand-depth rounded-b-2xl rounded-tr-2xl p-4 flex-grow overflow-y-auto">
+          <div
+            className="flex-grow overflow-y-auto max-h-[80vh] lg:max-h-[57vh] bg-brand-neutral-dark/40 border border-brand-depth 
+                        rounded-b-2xl rounded-tr-2xl lg:rounded-tr-none lg:rounded-tl-2xl p-4 py-8 lg:py-4 md:px-6"
+          >
             <TransactionList
               transactions={monthTransactions}
               isLoading={isLoading}
@@ -111,14 +115,13 @@ export default function Finance() {
           </div>
         </div>
 
-        {/* Budget Planner */}
         <div>
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-brand-neutral-light bg-brand-neutral-dark/40 border border-brand-depth rounded-t-xl py-2 px-4">
+            <h2 className="bg-brand-neutral-dark/50 text-xl font-bold text-brand-neutral-light border border-brand-depth rounded-t-xl py-2 px-4">
               Budżet
             </h2>
           </div>
-          <div className="bg-brand-neutral-dark/30 border border-brand-depth rounded-b-2xl rounded-tr-2xl p-4 overflow-y-auto">
+          <div className="overflow-y-auto bg-brand-neutral-dark/40 border border-brand-depth rounded-b-2xl rounded-tr-2xl p-4 md:px-6">
             <BudgetPlanner
               categories={categories}
               budgets={budgets}

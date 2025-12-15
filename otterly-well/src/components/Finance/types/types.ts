@@ -5,8 +5,6 @@ export interface FinanceCategory {
   user_id: string;
   name: string;
   type: FinanceType;
-  color: string | null;
-  icon: string | null;
   created_at: string;
 }
 
