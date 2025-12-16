@@ -46,6 +46,15 @@ export default function Finance() {
     return budgets.reduce((acc, b) => acc + (b.amount || 0), 0);
   }, [budgets]);
 
+  const categorySpending = useMemo(() => {
+    return monthTransactions.reduce((acc, t) => {
+      if (t.type === "expense" && t.category_id) {
+        acc[t.category_id] = (acc[t.category_id] || 0) + t.amount;
+      }
+      return acc;
+    }, {} as Record<string, number>);
+  }, [monthTransactions]);
+
   const moneyLeft = totalBudget - stats.expense;
 
   const handleOpenModal = (type: FinanceType) => {
@@ -104,7 +113,7 @@ export default function Finance() {
             </h2>
           </div>
           <div
-            className="flex-grow overflow-y-auto max-h-[80vh] lg:max-h-[57vh] bg-brand-neutral-dark/40 border border-brand-depth 
+            className="flex-grow overflow-y-auto max-h-[86vh] lg:max-h-[57vh] bg-brand-neutral-dark/40 border border-brand-depth 
                         rounded-b-2xl rounded-tr-2xl lg:rounded-tr-none lg:rounded-tl-2xl p-4 py-8 lg:py-4 md:px-6"
           >
             <TransactionList
@@ -121,11 +130,12 @@ export default function Finance() {
               Budżet
             </h2>
           </div>
-          <div className="overflow-y-auto bg-brand-neutral-dark/40 border border-brand-depth rounded-b-2xl rounded-tr-2xl p-4 md:px-6">
+          <div className="overflow-y-auto max-h-[86vh] lg:max-h-[57vh] bg-brand-neutral-dark/40 border border-brand-depth rounded-b-2xl rounded-tr-2xl p-4 md:px-6">
             <BudgetPlanner
               categories={categories}
               budgets={budgets}
               onSaveBudget={saveBudget}
+              categorySpending={categorySpending}
             />
           </div>
         </div>
