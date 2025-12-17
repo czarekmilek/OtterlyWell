@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { getCategoryColor } from "../../../constants/categoryColors";
 import { getCategoryIcon } from "../../../constants/categoryIcons";
 import type { FinanceCategory } from "../../../types/types";
@@ -7,33 +6,24 @@ interface BudgetCategoryOverviewProps {
   category: FinanceCategory;
   amount: number;
   spent: number;
-  onSave: (amount: number) => Promise<void>;
+  onSave?: (amount: number) => Promise<void>;
+  editMode: boolean;
+  editValue?: string;
+  onEdit?: (value: string) => void;
 }
 
 export default function BudgetCategoryOverview({
   category,
   amount,
   spent,
-  onSave,
+  editMode,
+  editValue,
+  onEdit,
 }: BudgetCategoryOverviewProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editAmount, setEditAmount] = useState("");
-
   const categoryColor = getCategoryColor(category.name);
-
   const categoryIcon = getCategoryIcon(category.name);
 
-  const handleEdit = () => {
-    setIsEditing(true);
-    setEditAmount(amount.toString());
-  };
-
-  const handleSave = async () => {
-    const val = parseFloat(editAmount);
-    if (isNaN(val) || val < 0) return;
-    await onSave(val);
-    setIsEditing(false);
-  };
+  const displayValue = editValue !== undefined ? editValue : amount.toString();
 
   return (
     <div>
@@ -62,23 +52,37 @@ export default function BudgetCategoryOverview({
           {/* <p className="text-xs text-brand-secondary font-medium uppercase tracking-wider mb-0.5">
             Limit
           </p> */}
-          <p className="text-md font-bold text-brand-neutral-light/60">
-            <span
-              className={`md:text-xl font-medium uppercase     
+          {editMode ? (
+            <input
+              type="number"
+              value={displayValue}
+              onChange={(e) => onEdit?.(e.target.value)}
+              className="w-full bg-brand-neutral-light/5 border border-brand-depth rounded-lg px-3 py-2 text-sm text-brand-neutral-light focus:outline-none 
+                        focus:border-brand-accent-2 transition-colors"
+              autoFocus
+              placeholder="0"
+            />
+          ) : (
+            <p className="text-md font-bold text-brand-neutral-light/60">
+              <span
+                className={`md:text-xl font-medium uppercase     
                             tracking-wider mt-0.5 ${
                               spent > amount
                                 ? "text-brand-negative"
                                 : "text-brand-neutral-light"
                             }`}
-            >
-              {spent.toFixed(0)}
-            </span>
-            <span className="text-sm mx-1 text-brand-neutral-light/60">/</span>
-            {amount.toFixed(0)}{" "}
-            <span className="text-sm font-normal text-brand-secondary">
-              PLN
-            </span>
-          </p>
+              >
+                {spent.toFixed(0)}
+              </span>
+              <span className="text-sm mx-1 text-brand-neutral-light/60">
+                /
+              </span>
+              {amount.toFixed(0)}{" "}
+              <span className="text-sm font-normal text-brand-secondary">
+                PLN
+              </span>
+            </p>
+          )}
         </div>
       </div>
     </div>
