@@ -53,11 +53,59 @@ export function useCategories() {
     return data;
   };
 
+  const toggleCategory = async (name: string, type: "income" | "expense") => {
+    if (!user) return;
+
+    const existingCategory = categories.find(
+      (c) => c.name === name && c.type === type
+    );
+
+    if (existingCategory) {
+      const newStatus = !existingCategory.is_active;
+      const { data, error } = await supabase
+        .from("finance_categories")
+        .update({ is_active: newStatus })
+        .eq("id", existingCategory.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error toggling category:", error);
+        throw error;
+      }
+
+      setCategories((prev) =>
+        prev.map((c) => (c.id === existingCategory.id ? data : c))
+      );
+    } else {
+      const newCategory = {
+        name,
+        type,
+        is_active: true,
+        user_id: user.id,
+      };
+
+      const { data, error } = await supabase
+        .from("finance_categories")
+        .insert(newCategory)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error creating category:", error);
+        throw error;
+      }
+
+      setCategories((prev) => [...prev, data]);
+    }
+  };
+
   return {
     categories,
     categoriesLoading,
     categoriesError,
     fetchCategories,
     addCategory,
+    toggleCategory,
   };
 }

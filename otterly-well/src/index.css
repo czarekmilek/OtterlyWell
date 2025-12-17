@@ -15,6 +15,7 @@
   /* Neutrals & Text */
   --color-brand-neutral-light: #f8f8f4;
   --color-brand-neutral-dark: #2c3e50;
+  --color-brand-neutral-darker: #1a1d2d;
   --color-brand-depth: #c7dde3;
 
   --color-brand-positive: oklch(69.6% 0.17 162.48); /* Tailwind emerald-600 */

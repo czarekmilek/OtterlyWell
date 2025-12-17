@@ -10,6 +10,7 @@ export function useFinance() {
     categoriesError,
     fetchCategories,
     addCategory,
+    toggleCategory,
   } = useCategories();
 
   const { budgets, budgetsLoading, budgetsError, fetchBudgets, saveBudget } =
@@ -38,6 +39,7 @@ export function useFinance() {
     isLoading,
     error,
     addCategory,
+    toggleCategory,
     addTransaction,
     deleteTransaction,
     saveBudget,

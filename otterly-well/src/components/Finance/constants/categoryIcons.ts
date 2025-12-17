@@ -2,18 +2,19 @@
 export const DEFAULT_CATEGORY_ICON = "payments";
 
 export const CATEGORY_ICONS: Record<string, string> = {
-  Jedzenie: "restaurant",
+  Płatności: "payments",
   Transport: "directions_car",
-  Mieszkanie: "home",
-  Zakupy: "shopping_cart",
+  Jedzenie: "restaurant",
+  Codzienne: "shopping_cart",
   Zdrowie: "medical_services",
-  Rozrywka: "theater_comedy",
-  Edukacja: "academic_cap",
-
+  Dom: "home",
   Samorozwój: "person",
+  Rozrywka: "theater_comedy",
+  Oszczędności: "save",
 
   Wynagrodzenie: "payments",
-  Inwestycje: "investment",
+  Inwestycje: "",
+  Prezenty: "",
 
   Inne: "category",
 };

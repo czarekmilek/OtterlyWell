@@ -17,6 +17,7 @@ export default function Finance() {
     addTransaction,
     deleteTransaction,
     saveBudget,
+    toggleCategory,
   } = useFinance();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<FinanceType>("expense");
@@ -136,6 +137,7 @@ export default function Finance() {
               budgets={budgets}
               onSaveBudget={saveBudget}
               categorySpending={categorySpending}
+              onToggleCategory={toggleCategory}
             />
           </div>
         </div>

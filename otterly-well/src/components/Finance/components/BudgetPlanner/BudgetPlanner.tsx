@@ -2,12 +2,15 @@ import { useState } from "react";
 import type { FinanceBudget, FinanceCategory } from "../../types/types";
 import BudgetCategoryCard from "./components/BudgetCategoryCard";
 import BudgetCategoryOverview from "./components/BudgetCategoryOverview";
+import CategoryManager from "../CategoryManager/CategoryManager";
 
 interface BudgetPlannerProps {
   categories: FinanceCategory[];
   budgets: FinanceBudget[];
   onSaveBudget: (categoryId: string, amount: number) => Promise<void>;
+
   categorySpending: Record<string, number>;
+  onToggleCategory: (categoryName: string, type: "income" | "expense") => void;
 }
 
 export default function BudgetPlanner({
@@ -15,9 +18,16 @@ export default function BudgetPlanner({
   budgets,
   onSaveBudget,
   categorySpending,
+
+  onToggleCategory,
 }: BudgetPlannerProps) {
-  const expenseCategories = categories.filter((c) => c.type === "expense");
-  const incomeCategories = categories.filter((c) => c.type === "income");
+  const [isCategoryManagerOpen, setIsCategoryManagerOpen] = useState(false);
+
+  const activeCategories = categories.filter((c) => c.is_active);
+  const expenseCategories = activeCategories.filter(
+    (c) => c.type === "expense"
+  );
+  const incomeCategories = activeCategories.filter((c) => c.type === "income");
 
   const [selectedTransactionType, setSelectedTransactionType] =
     useState("expense");
@@ -54,9 +64,9 @@ export default function BudgetPlanner({
 
   return (
     // <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       <div className="flex gap-2 items-center justify-between text-brand-neutral-light font-semibold">
-        <button
+        {/* <button
           className="px-4 py-2 rounded-lg bg-brand-secondary/80 hover:bg-brand-neutral-dark/70 transition-colors cursor-pointer"
           onClick={() =>
             selectedTransactionType === "expense"
@@ -65,7 +75,15 @@ export default function BudgetPlanner({
           }
         >
           {selectedTransactionType === "expense" ? "Przychody" : "Wydatki"}
+        </button> */}
+
+        <button
+          className="px-4 py-2 rounded-lg bg-brand-secondary/80 hover:bg-brand-neutral-dark/70 transition-colors cursor-pointer"
+          onClick={() => setIsCategoryManagerOpen(true)}
+        >
+          Kategorie
         </button>
+
         <button
           className="px-4 py-2 rounded-lg bg-brand-secondary/80 hover:bg-brand-neutral-dark/70 transition-colors cursor-pointer"
           onClick={handleEditModeToggle}
@@ -114,6 +132,13 @@ export default function BudgetPlanner({
               );
             })}
       </div>
+
+      <CategoryManager
+        isOpen={isCategoryManagerOpen}
+        onClose={() => setIsCategoryManagerOpen(false)}
+        categories={categories}
+        onToggleCategory={onToggleCategory}
+      />
     </div>
   );
 }

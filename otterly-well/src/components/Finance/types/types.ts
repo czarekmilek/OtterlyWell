@@ -5,6 +5,7 @@ export interface FinanceCategory {
   user_id: string;
   name: string;
   type: FinanceType;
+  is_active: boolean;
   created_at: string;
 }
 
