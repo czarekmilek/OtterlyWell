@@ -44,8 +44,14 @@ export default function Finance() {
   }, [monthTransactions]);
 
   const totalBudget = useMemo(() => {
-    return budgets.reduce((acc, b) => acc + (b.amount || 0), 0);
-  }, [budgets]);
+    return budgets.reduce((acc, b) => {
+      const category = categories.find((c) => c.id === b.category_id);
+      if (category?.is_active) {
+        return acc + (b.amount || 0);
+      }
+      return acc;
+    }, 0);
+  }, [budgets, categories]);
 
   const categorySpending = useMemo(() => {
     return monthTransactions.reduce((acc, t) => {
