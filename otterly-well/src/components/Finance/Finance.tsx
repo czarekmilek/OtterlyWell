@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useFinance } from "./hooks/useFinance";
 import TransactionList from "./components/TransactionList/TransactionList";
-import EntryModal from "./components/EntryModal";
+import EntryModal from "./components/EntryModal/EntryModal";
 import BudgetPlanner from "./components/BudgetPlanner/BudgetPlanner";
 import type { FinanceType } from "./types/types";
 import { MonthSelector } from "./components/MonthSelector";
