@@ -20,6 +20,7 @@ export default function BudgetCategoryOverview({
   const [editAmount, setEditAmount] = useState("");
 
   const categoryColor = getCategoryColor(category.name);
+
   const categoryIcon = getCategoryIcon(category.name);
 
   const handleEdit = () => {
@@ -36,13 +37,19 @@ export default function BudgetCategoryOverview({
 
   return (
     <div>
-      <div className="flex items-center gap-4">
+      <div
+        className="flex items-center gap-2 rounded-xl bg-brand-neutral-dark/40 hover:bg-brand-neutral-dark/80 transition-colors"
+        // style={
+        //   {
+        //     // backgroundColor: `${categoryColor}80`,
+        //   }
+        // }
+      >
         <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center 
-                    text-brand-neutral-light shadow-sm"
+          className="w-10 min-h-10 ml-1 rounded-l-xl flex items-center justify-center 
+                    text-brand-neutral-light"
           style={{
-            backgroundColor: `${categoryColor}21`,
-            color: categoryColor,
+            color: `${categoryColor}`,
           }}
         >
           <span className="material-symbols-sharp text-xl">{categoryIcon}</span>
@@ -51,13 +58,13 @@ export default function BudgetCategoryOverview({
           {category.name}
         </span>
 
-        <div className="flex justify-between items-center ml-auto">
+        <div className="flex justify-between items-center min-h-10 ml-auto  px-4 py-1.5 rounded-r-xl">
           {/* <p className="text-xs text-brand-secondary font-medium uppercase tracking-wider mb-0.5">
             Limit
           </p> */}
           <p className="text-md font-bold text-brand-neutral-light/60">
             <span
-              className={`text-xl font-medium uppercase     
+              className={`md:text-xl font-medium uppercase     
                             tracking-wider mt-0.5 ${
                               spent > amount
                                 ? "text-brand-negative"
