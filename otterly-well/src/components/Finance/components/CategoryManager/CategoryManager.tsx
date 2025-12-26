@@ -7,6 +7,8 @@ interface CategoryManagerProps {
   isOpen: boolean;
   onClose: () => void;
   categories: FinanceCategory[];
+  showIncomeCategories?: boolean;
+  onToggleAll?: (type: "income" | "expense", newState: boolean) => void;
   onToggleCategory: (categoryName: string, type: "income" | "expense") => void;
 }
 
@@ -15,30 +17,38 @@ export default function CategoryManager({
   onClose,
   categories,
   onToggleCategory,
+  showIncomeCategories = false,
+  onToggleAll,
 }: CategoryManagerProps) {
-  const expenseCategoriesList = [
-    "Płatności",
-    "Transport",
-    "Jedzenie",
-    "Codzienne",
-    "Zdrowie",
-    "Dom",
-    "Samorozwój",
-    "Rozrywka",
-    "Oszczędności",
-    "Inne",
-  ];
+  // Deriving categories from props now instead of hardcoding as before
+  const expenseCategoriesList = categories
+    .filter((c) => c.type === "expense")
+    .map((c) => c.name);
 
-  const incomeCategoriesList = [
-    "Wynagrodzenie",
-    "Inwestycje",
-    "Prezenty",
-    "Inne",
-  ];
+  const incomeCategoriesList = categories
+    .filter((c) => c.type === "income")
+    .map((c) => c.name);
+
+  // names are unique, but just in case
+  const uniqueExpenseCategories = Array.from(new Set(expenseCategoriesList));
+  const uniqueIncomeCategories = Array.from(new Set(incomeCategoriesList));
 
   const isCategoryActive = (name: string, type: "income" | "expense") => {
     const cat = categories.find((c) => c.name === name && c.type === type);
     return cat ? cat.is_active : false;
+  };
+
+  const areAllActive = (type: "income" | "expense") => {
+    const list =
+      type === "expense" ? uniqueExpenseCategories : uniqueIncomeCategories;
+    return list.every((name) => isCategoryActive(name, type));
+  };
+
+  const handleToggleAll = (type: "income" | "expense") => {
+    if (onToggleAll) {
+      const newState = !areAllActive(type);
+      onToggleAll(type, newState);
+    }
   };
 
   return (
@@ -77,27 +87,24 @@ export default function CategoryManager({
 
               <div className="flex-1 overflow-y-auto p-6 space-y-8">
                 <section>
-                  <h3 className="text-sm uppercase tracking-wider text-brand-positive-lighter/80 font-semibold mb-4 px-1">
-                    Przychody
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {incomeCategoriesList.map((name) => (
-                      <CategoryToggleRow
-                        key={`income-${name}`}
-                        name={name}
-                        isActive={isCategoryActive(name, "income")}
-                        onToggle={() => onToggleCategory(name, "income")}
-                      />
-                    ))}
+                  {/* TODO: can extract this out later since it repeats twice */}
+                  <div className="flex items-center justify-between mb-4 px-1">
+                    <h3 className="text-sm uppercase tracking-wider text-brand-negative font-semibold">
+                      Wydatki
+                    </h3>
+                    {onToggleAll && (
+                      <button
+                        onClick={() => handleToggleAll("expense")}
+                        className="text-xs font-medium text-brand-accent-1 hover:text-brand-accent-2 transition-colors cursor-pointer"
+                      >
+                        {areAllActive("expense")
+                          ? "Odznacz wszystkie"
+                          : "Zaznacz wszystkie"}
+                      </button>
+                    )}
                   </div>
-                </section>
-
-                <section>
-                  <h3 className="text-sm uppercase tracking-wider text-brand-negative font-semibold mb-4 px-1">
-                    Wydatki
-                  </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {expenseCategoriesList.map((name) => (
+                    {uniqueExpenseCategories.map((name) => (
                       <CategoryToggleRow
                         key={`expense-${name}`}
                         name={name}
@@ -107,12 +114,41 @@ export default function CategoryManager({
                     ))}
                   </div>
                 </section>
+
+                {showIncomeCategories && (
+                  <section>
+                    <div className="flex items-center justify-between mb-4 px-1 border-t border-brand-depth pt-6">
+                      <h3 className="text-sm uppercase tracking-wider text-brand-positive font-semibold">
+                        Przychody
+                      </h3>
+                      {onToggleAll && (
+                        <button
+                          onClick={() => handleToggleAll("income")}
+                          className="text-xs font-medium text-brand-accent-1 hover:text-brand-accent-2 transition-colors cursor-pointer"
+                        >
+                          {areAllActive("income")
+                            ? "Odznacz wszystkie"
+                            : "Zaznacz wszystkie"}
+                        </button>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {uniqueIncomeCategories.map((name) => (
+                        <CategoryToggleRow
+                          key={`income-${name}`}
+                          name={name}
+                          isActive={isCategoryActive(name, "income")}
+                          onToggle={() => onToggleCategory(name, "income")}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )}
               </div>
 
               <div className="p-4 border-t border-brand-depth bg-brand-neutral-dark/30 text-center">
                 <p className="text-xs text-brand-neutral-light/50">
-                  Ukryte kategorie nie są wliczane do budżetu, ale ich historia
-                  jest zachowana.
+                  Wybierz kategorie, które chcesz widzieć.
                 </p>
               </div>
             </div>

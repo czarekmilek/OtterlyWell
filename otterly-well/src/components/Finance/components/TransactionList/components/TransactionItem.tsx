@@ -20,14 +20,14 @@ export function TransactionItem({
   return (
     <div
       onClick={() => setIsExpanded(!isExpanded)}
-      className={`flex justify-between gap-3 p-3 rounded-lg 
+      className={`grid grid-cols-2 p-2 rounded-lg
                    hover:bg-brand-neutral-dark/90 transition-colors duration-300 cursor-pointer ${
                      isExpanded
                        ? "bg-brand-neutral-dark/60"
                        : "bg-brand-neutral-dark/40"
                    }`}
     >
-      <div className="flex items-center gap-4 flex-1">
+      <div className="flex items-center gap-2 flex-1 self-start">
         <div
           className="flex items-center justify-center w-10 h-10 shrink-0 rounded-full text-brand-neutral-light"
           style={{
@@ -41,27 +41,25 @@ export function TransactionItem({
             {categoryIcon}
           </span>
         </div>
-        <div className="flex flex-col">
-          <span className="font-medium text-brand-neutral-light text-sm">
+        <div className="flex flex-col justify-center">
+          <span
+            className="font-medium text-brand-neutral-light text-sm line-clamp-2 overflow-hidden 
+                          text-ellipsis"
+          >
             {transaction.title}
           </span>
 
           <span className="text-xs text-brand-secondary">
-            {transaction.finance_categories?.name}
+            {/* Placeholder for no category to maintain proper height */}
+            {transaction.finance_categories
+              ? transaction.finance_categories.name
+              : "Nieskategoryzowane"}
           </span>
-
-          {isExpanded && transaction.description && (
-            <span className="text-xs text-brand-secondary/80 mt-2 text-wrap break-words">
-              {transaction.description}
-            </span>
-          )}
         </div>
       </div>
 
-      <div className="flex-col flex justify-between gap-2">
-        <div
-          className={`flex items-center self-start ${isExpanded ? "pt-1" : ""}`}
-        >
+      <div className="flex flex-col items-end justify-start h-full gap-1">
+        <div className="flex items-center">
           <span
             className={`font-bold text-sm whitespace-nowrap ${
               transaction.type === "income"
@@ -88,6 +86,25 @@ export function TransactionItem({
           </div>
         ) : null}
       </div>
+
+      {isExpanded ? (
+        <div
+          // if title is too long (more than one row of characters) we add a little margin to maintain proportions
+          className={`col-span-2 bg-brand-neutral-dark/40 p-2 -mx-2 -mb-2 rounded-b-lg ${
+            transaction.title.length > 15 ? "mt-2" : ""
+          }`}
+        >
+          {/* we cut the title in the list to make space for transaction amount,
+            displaying it here to allow user to actually see the title if curious */}
+          <div className="text-sm text-brand-neutral-light font-semibold text-wrap break-words px-1">
+            {transaction.title}
+          </div>
+          {/* description optional but if exists - showing it below the expanded title */}
+          <div className="text-xs text-brand-secondary/80 text-wrap break-words p-1">
+            {transaction.description ? transaction.description : "Brak opisu"}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

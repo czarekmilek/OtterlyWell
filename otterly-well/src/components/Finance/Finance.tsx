@@ -7,6 +7,9 @@ import BudgetPlanner from "./components/BudgetPlanner/BudgetPlanner";
 import type { FinanceType } from "./types/types";
 import { MonthSelector } from "./components/MonthSelector";
 import { FinanceStats } from "./components/FinanceStats/FinanceStats";
+import { NewTransactionModal } from "./components/NewTransactionModal";
+import TabButton from "./components/TabButton";
+import BilanceBreakdown from "./components/BilanceBreakdown/BilanceBreakdown";
 
 export default function Finance() {
   const {
@@ -22,7 +25,9 @@ export default function Finance() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<FinanceType>("expense");
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTab, setSelectedTab] = useState("budget");
 
+  // most people use budgeting monthly rather than weekly/daily, so will we
   const monthTransactions = useMemo(() => {
     const month = selectedDate.getMonth();
     const year = selectedDate.getFullYear();
@@ -44,18 +49,14 @@ export default function Finance() {
   }, [monthTransactions]);
 
   const totalBudget = useMemo(() => {
-    return budgets.reduce((acc, b) => {
-      const category = categories.find((c) => c.id === b.category_id);
-      if (category?.is_active) {
-        return acc + (b.amount || 0);
-      }
-      return acc;
-    }, 0);
-  }, [budgets, categories]);
+    // we sum overall budget here, the specific categories
+    // will be summed in BudgetPlanner
+    return budgets.reduce((acc, b) => acc + (b.amount || 0), 0);
+  }, [budgets]);
 
   const categorySpending = useMemo(() => {
     return monthTransactions.reduce((acc, t) => {
-      if (t.type === "expense" && t.category_id) {
+      if (t.category_id) {
         acc[t.category_id] = (acc[t.category_id] || 0) + t.amount;
       }
       return acc;
@@ -83,22 +84,14 @@ export default function Finance() {
         />
 
         <div className="flex gap-3">
-          <button
-            onClick={() => handleOpenModal("expense")}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 font-medium 
-                      transition-colors border border-red-500/20 cursor-pointer"
-          >
-            <span className="material-symbols-sharp">remove</span>
-            <span>Wydatek</span>
-          </button>
-          <button
-            onClick={() => handleOpenModal("income")}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 font-medium 
-                      transition-colors border border-emerald-500/20 cursor-pointer"
-          >
-            <span className="material-symbols-sharp">add</span>
-            <span>Przychód</span>
-          </button>
+          <NewTransactionModal
+            handleOpenModal={handleOpenModal}
+            incOrExp="expense"
+          />
+          <NewTransactionModal
+            handleOpenModal={handleOpenModal}
+            incOrExp="income"
+          />
         </div>
       </div>
 
@@ -121,7 +114,7 @@ export default function Finance() {
           </div>
           <div
             className="flex-grow overflow-y-auto max-h-[86vh] lg:max-h-[57vh] bg-brand-neutral-dark/40 border border-brand-depth 
-                        rounded-b-2xl rounded-tr-2xl lg:rounded-tr-none lg:rounded-tl-2xl p-4 py-8 lg:py-4 md:px-6"
+                        rounded-b-2xl rounded-tr-2xl lg:rounded-tr-none lg:rounded-tl-2xl p-4 sm:pb-8 lg:py-4 md:px-6"
           >
             <TransactionList
               transactions={monthTransactions}
@@ -133,18 +126,36 @@ export default function Finance() {
 
         <div>
           <div className="flex items-center justify-between">
-            <h2 className="bg-brand-neutral-dark/50 text-xl font-bold text-brand-neutral-light border border-brand-depth rounded-t-xl py-2 px-4">
-              Budżet
-            </h2>
+            <div className="flex items-center">
+              <TabButton
+                label="Budżet"
+                value="budget"
+                isSelected={selectedTab === "budget"}
+                setSelectedTab={setSelectedTab}
+              />
+              <TabButton
+                label="Zestawienie"
+                value="stats"
+                isSelected={selectedTab === "stats"}
+                setSelectedTab={setSelectedTab}
+              />
+            </div>
           </div>
           <div className="overflow-y-auto max-h-[86vh] lg:max-h-[57vh] bg-brand-neutral-dark/40 border border-brand-depth rounded-b-2xl rounded-tr-2xl p-4 md:px-6">
-            <BudgetPlanner
-              categories={categories}
-              budgets={budgets}
-              onSaveBudget={saveBudget}
-              categorySpending={categorySpending}
-              onToggleCategory={toggleCategory}
-            />
+            {selectedTab === "budget" ? (
+              <BudgetPlanner
+                categories={categories}
+                budgets={budgets}
+                onSaveBudget={saveBudget}
+                categorySpending={categorySpending}
+                onToggleCategory={toggleCategory}
+              />
+            ) : (
+              <BilanceBreakdown
+                categories={categories}
+                categorySpending={categorySpending}
+              />
+            )}
           </div>
         </div>
       </div>

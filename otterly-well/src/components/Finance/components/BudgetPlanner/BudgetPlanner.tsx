@@ -18,7 +18,6 @@ export default function BudgetPlanner({
   budgets,
   onSaveBudget,
   categorySpending,
-
   onToggleCategory,
 }: BudgetPlannerProps) {
   const [isCategoryManagerOpen, setIsCategoryManagerOpen] = useState(false);
@@ -27,7 +26,17 @@ export default function BudgetPlanner({
   const expenseCategories = activeCategories.filter(
     (c) => c.type === "expense"
   );
+  // only to display - we won't set any limits on those
   const incomeCategories = activeCategories.filter((c) => c.type === "income");
+
+  // totals to show current status of specific categories budget
+  const totalSpentFromActiveBudget = expenseCategories.reduce(
+    (sum, c) => sum + (categorySpending[c.id] || 0),
+    0
+  );
+  const totalActiveBudget = budgets
+    .filter((b) => activeCategories.some((c) => c.id === b.category_id))
+    .reduce((sum, b) => sum + b.amount, 0);
 
   const [selectedTransactionType, setSelectedTransactionType] =
     useState("expense");
@@ -84,6 +93,18 @@ export default function BudgetPlanner({
           Kategorie
         </button>
 
+        {/* TODO: adjust later */}
+        <span
+          className="hidden sm:block text-brand-neutral-light bg-brand-neutral-dark px-8 py-2 -mb-7 rounded-t-full 
+                      font-semibold text-xl lg:text-lg text-center"
+        >
+          {totalSpentFromActiveBudget} /{" "}
+          <span className="text-brand-accent-1 font-bold">
+            {totalActiveBudget}
+          </span>
+          <span className="text-xs ml-1 font-normal">PLN</span>
+        </span>
+
         <button
           className="px-4 py-2 rounded-lg bg-brand-secondary/80 hover:bg-brand-neutral-dark/70 transition-colors cursor-pointer"
           onClick={handleEditModeToggle}
@@ -91,7 +112,32 @@ export default function BudgetPlanner({
           {editMode ? "Zapisz" : "Edytuj"}
         </button>
       </div>
+
+      {/* Mobile only - same as above but hidden for desktops
+          Had to do it like this, since in between the buttons there is not enough space on narrower screns */}
+      <span
+        className="block sm:hidden mx-auto mt-1 text-brand-neutral-light bg-brand-neutral-dark px-8 pt-2 pb-1 -mb-3 max-w-60 
+                      rounded-t-full font-semibold text-lg text-center"
+      >
+        {totalSpentFromActiveBudget} /{" "}
+        <span className="text-brand-accent-1 font-bold">
+          {totalActiveBudget}
+        </span>
+        <span className="text-xs ml-1 font-normal">PLN</span>
+      </span>
+
       <div className="flex flex-col gap-2">
+        {/* copied from MacroBar - TODO: make it reusable */}
+        <div className="h-5 w-full rounded-full bg-brand-neutral-dark overflow-hidden flex mb-1">
+          <div
+            className="h-full bg-brand-accent-3"
+            style={{
+              width: `${
+                (totalSpentFromActiveBudget / totalActiveBudget) * 100
+              }%`,
+            }}
+          />
+        </div>
         {selectedTransactionType === "expense"
           ? expenseCategories.map((cat) => {
               const budget = budgets.find((b) => b.category_id === cat.id);
