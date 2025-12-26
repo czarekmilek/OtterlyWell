@@ -72,7 +72,7 @@ export function useFoodSearch(q: string) {
 
           setHits([...localHits, ...newOffHits]);
         }
-      } catch (e: Error) {
+      } catch (e: any) {
         if (!abort) setError(e.message);
       } finally {
         if (!abort) setLoading(false);

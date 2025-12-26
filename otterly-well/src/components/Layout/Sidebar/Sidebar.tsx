@@ -20,7 +20,7 @@ const navigationItems = [
   { name: "Dashboard", to: "/", icon: DashboardIcon },
   { name: "Kalorie", to: "/calories", icon: CalorieIcon },
   { name: "Treningi", to: "/fitness", icon: WorkoutIcon },
-  { name: "Finanse", to: "#", icon: FinanceIcon },
+  { name: "Finanse", to: "/finance", icon: FinanceIcon },
   { name: "Zadania", to: "#", icon: TaskIcon },
 ];
 
