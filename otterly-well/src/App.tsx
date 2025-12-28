@@ -11,6 +11,7 @@ const Dashboard = lazy(() => import("./components/Dashboard/Dashboard"));
 const Calories = lazy(() => import("./components/Calories/Calories"));
 const Fitness = lazy(() => import("./components/Fitness/Fitness"));
 const Finance = lazy(() => import("./components/Finance/Finance"));
+const Tasks = lazy(() => import("./components/Tasks/Tasks"));
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/calories" element={<Calories />} />
             <Route path="/fitness" element={<Fitness />} />
             <Route path="/finance" element={<Finance />} />
+            <Route path="/tasks" element={<Tasks />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

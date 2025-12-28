@@ -91,3 +91,15 @@ export const CloseIcon: React.FC<IconProps> = ({ className }) => (
 export const HistoryIcon: React.FC<IconProps> = ({ className }) => (
   <span className={`material-symbols-sharp ${className}`}>history</span>
 );
+
+export const CheckIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>check</span>
+);
+
+export const ArchiveIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>archive</span>
+);
+
+export const TrashIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>delete</span>
+);
