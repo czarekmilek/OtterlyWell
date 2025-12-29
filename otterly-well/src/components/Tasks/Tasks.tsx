@@ -19,6 +19,7 @@ export default function Tasks() {
     addCategory,
     dismissTask,
     deleteCategory,
+    restoreTask,
   } = useTasks();
 
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -35,30 +36,32 @@ export default function Tasks() {
     );
   };
 
-  // filtering based on date - if task is uncompleted, it is always relevant
-  // if task is completed, it is relevant if it was completed on the selected date (ONLY!)
+  // OLD LOGIC: filtering based on date -
+  //            if task is uncompleted, it is always relevant
+  //            if task is completed, it is relevant if it was completed on the selected date (ONLY!)
+  // NEW LOGIC: completed tasks stay on the board until dismissed
   const filteredTasks = useMemo(() => {
     return tasks.filter((t) => {
       if (t.is_dismissed) return false;
 
-      const isUncompleted = !t.is_completed;
+      // const isUncompleted = !t.is_completed;
 
-      let isRelevantDate = false;
-      if (isUncompleted) {
-        isRelevantDate = true;
-      } else {
-        if (t.completed_at) {
-          isRelevantDate = isSameDay(new Date(t.completed_at), selectedDate);
-        }
-      }
+      // let isRelevantDate = false;
+      // if (isUncompleted) {
+      //   isRelevantDate = true;
+      // } else {
+      //   if (t.completed_at) {
+      //     isRelevantDate = isSameDay(new Date(t.completed_at), selectedDate);
+      //   }
+      // }
 
-      if (!isRelevantDate) return false;
+      // if (!isRelevantDate) return false;
 
       if (viewMode === "active") return !t.is_completed;
       if (viewMode === "completed") return t.is_completed;
       return true;
     });
-  }, [tasks, selectedDate, viewMode]);
+  }, [tasks, viewMode]);
 
   const activeCategories = useMemo(
     () => categories.filter((c) => c.is_active),
@@ -74,10 +77,11 @@ export default function Tasks() {
     >
       <div className="flex flex-col xl:flex-row items-center justify-between gap-3">
         <div className="flex-1 flex flex-col sm:flex-row items-center gap-4 w-auto xl:w-full">
-          <DaySelector
+          {/* we don't use day selector anymore, tasks are maintained by user based on his widzimisie */}
+          {/* <DaySelector
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
-          />
+          /> */}
           <ViewModeSwitcher currentMode={viewMode} onModeChange={setViewMode} />
         </div>
 
@@ -145,6 +149,8 @@ export default function Tasks() {
         onClose={() => setIsHistoricalModalOpen(false)}
         categories={categories}
         tasks={tasks}
+        onRestore={restoreTask}
+        onDelete={deleteTask}
       />
     </motion.div>
   );

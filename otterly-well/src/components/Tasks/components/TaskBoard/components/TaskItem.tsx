@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Task } from "../../../types/types";
-import { ArchiveIcon, CheckIcon, DeleteIcon } from "../../../../icons";
+import {
+  ArchiveIcon,
+  CheckIcon,
+  ClipBoardIcon,
+  DeleteIcon,
+} from "../../../../icons";
 
 interface TaskItemProps {
   task: Task;
@@ -174,6 +179,17 @@ export default function TaskItem({
       {/* TODO: make better for mobile, icons are over the name */}
       {isCompleted && (
         <div className="absolute top-2 right-2 flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+          {/* <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDismiss(task.id);
+            }}
+            className="p-1 hover:bg-brand-accent-1/20 rounded-full text-brand-neutral-light/60 hover:text-brand-accent-1/70
+                    text-xs transition-all cursor-pointer flex items-center justify-center"
+            title="Usuń"
+          >
+            <ClipBoardIcon className="scale-85" />
+          </button> */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -181,18 +197,7 @@ export default function TaskItem({
             }}
             className="p-1 hover:bg-brand-negative/20 rounded-full text-brand-neutral-light/60 hover:text-brand-negative-darker 
                     text-xs transition-all cursor-pointer flex items-center justify-center"
-            title="Usuń zadanie"
-          >
-            <ArchiveIcon className="scale-85" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(task.id);
-            }}
-            className="p-1 hover:bg-brand-negative/20 rounded-full text-brand-neutral-light/60 hover:text-brand-negative-darker 
-                    text-xs transition-all cursor-pointer flex items-center justify-center"
-            title="Usuń zadanie"
+            title="Usuń"
           >
             <DeleteIcon className="scale-85" />
           </button>

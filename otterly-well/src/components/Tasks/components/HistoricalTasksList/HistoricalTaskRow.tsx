@@ -1,10 +1,13 @@
 import { motion } from "framer-motion";
 import type { Task, TaskCategory } from "../../types/types";
+import { DeleteIcon, RestoreIcon } from "../../../icons";
 
 interface HistoricalTaskRowProps {
   task: Task;
   category?: TaskCategory;
   onClick: () => void;
+  onRestore: (taskId: string) => void;
+  onDelete: (taskId: string) => void;
   isExpanded: boolean;
 }
 
@@ -12,6 +15,8 @@ export function HistoricalTaskRow({
   task,
   category,
   onClick,
+  onRestore,
+  onDelete,
   isExpanded,
 }: HistoricalTaskRowProps) {
   return (
@@ -48,8 +53,8 @@ export function HistoricalTaskRow({
           </div>
         </div>
 
-        <div className="text-right flex-shrink-0">
-          <div className="text-xs text-brand-neutral-light/40 flex flex-col items-end">
+        <div className="text-right flex-shrink-0 flex items-center gap-2">
+          <div className="hidden sm:flex text-xs text-brand-neutral-light/40 flex-col items-end">
             <span>Termin:</span>
             <span>
               {task.deadline
@@ -57,6 +62,31 @@ export function HistoricalTaskRow({
                 : "Brak"}
             </span>
           </div>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRestore(task.id);
+            }}
+            className="flex items-center justify-center p-1 rounded-full hover:bg-brand-accent-1/20 
+                    text-brand-neutral-light/60 hover:text-brand-accent-1 
+                      transition-colors cursor-pointer"
+            title="Przywróć zadanie"
+          >
+            <RestoreIcon className="scale-90" />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(task.id);
+            }}
+            className="flex items-center justify-center p-1 rounded-full hover:bg-brand-negative/20 
+                    text-brand-neutral-light/60 hover:text-brand-negative 
+                      transition-colors cursor-pointer"
+            title="Usuń zadanie"
+          >
+            <DeleteIcon className="scale-90" />
+          </button>
         </div>
       </motion.div>
 

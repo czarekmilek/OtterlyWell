@@ -133,10 +133,41 @@ export function useTaskMutations({
     [tasks, setTasks]
   );
 
+  const restoreTask = useCallback(
+    async (taskId: string) => {
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      setTasks((prev) =>
+        prev.map((t) => (t.id === taskId ? { ...t, is_dismissed: false } : t))
+      );
+
+      try {
+        const { error } = await supabase
+          .from("tasks")
+          .update({ is_dismissed: false })
+          .eq("id", taskId);
+
+        if (error) {
+          setTasks((prev) =>
+            prev.map((t) =>
+              t.id === taskId ? { ...t, is_dismissed: true } : t
+            )
+          );
+          throw error;
+        }
+      } catch (error) {
+        console.error("Error restoring task:", error);
+      }
+    },
+    [tasks, setTasks]
+  );
+
   return {
     addTask,
     toggleTaskCompletion,
     deleteTask,
     dismissTask,
+    restoreTask,
   };
 }

@@ -103,3 +103,17 @@ export const ArchiveIcon: React.FC<IconProps> = ({ className }) => (
 export const TrashIcon: React.FC<IconProps> = ({ className }) => (
   <span className={`material-symbols-sharp ${className}`}>delete</span>
 );
+
+export const RestoreIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>restore</span>
+);
+
+export const CalendarIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>calendar_month</span>
+);
+
+export const ClipBoardIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>
+    assignment_turned_in
+  </span>
+);

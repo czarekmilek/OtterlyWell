@@ -6,8 +6,13 @@ export function useTasks() {
   const { tasks, setTasks, categories, setCategories, isLoading, user } =
     useTaskData();
 
-  const { addTask, toggleTaskCompletion, deleteTask, dismissTask } =
-    useTaskMutations({ user, tasks, setTasks });
+  const {
+    addTask,
+    toggleTaskCompletion,
+    deleteTask,
+    dismissTask,
+    restoreTask,
+  } = useTaskMutations({ user, tasks, setTasks });
 
   const {
     toggleCategory,
@@ -35,5 +40,6 @@ export function useTasks() {
     addCategory,
     deleteCategory,
     dismissTask,
+    restoreTask,
   };
 }

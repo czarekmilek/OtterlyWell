@@ -25,7 +25,7 @@ export function ViewModeSwitcher({
           <button
             key={mode.id}
             onClick={() => onModeChange(mode.id)}
-            className={`relative flex-1 sm:flex-none px-2 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+            className={`relative flex-1 sm:flex-none px-2 sm:px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               isActive
                 ? "text-brand-neutral-light"
                 : "text-brand-neutral-light/60 hover:text-brand-neutral-light cursor-pointer"
