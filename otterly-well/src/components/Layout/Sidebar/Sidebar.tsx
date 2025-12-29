@@ -21,7 +21,7 @@ const navigationItems = [
   { name: "Kalorie", to: "/calories", icon: CalorieIcon },
   { name: "Treningi", to: "/fitness", icon: WorkoutIcon },
   { name: "Finanse", to: "/finance", icon: FinanceIcon },
-  { name: "Zadania", to: "#", icon: TaskIcon },
+  { name: "Zadania", to: "/tasks", icon: TaskIcon },
 ];
 
 function classNames(...classes: string[]) {
