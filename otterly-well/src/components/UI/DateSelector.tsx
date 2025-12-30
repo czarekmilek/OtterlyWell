@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ChevronLeftIcon, ChevronRightIcon } from "../../icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "../icons";
 
 interface DateSelectorProps {
   selectedDate: Date;

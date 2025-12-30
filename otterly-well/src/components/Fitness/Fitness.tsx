@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { DateSelector } from "../Calories/components/DateSelector";
+import { DateSelector } from "../UI/DateSelector";
 import WorkoutList from "./components/WorkoutList/WorkoutList";
 import NewWorkoutTabs from "./components/NewWorkout/NewWorkoutTabs";
 import FitnessGoals from "./components/Goals/FitnessGoals";
@@ -90,9 +90,9 @@ export default function Fitness() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="flex flex-col lg:flex-row gap-4 py-2 sm:py-4 h-full lg:h-[calc(100vh-1rem)] w-full overflow-hidden"
+      className="flex flex-col lg:flex-row gap-6 py-2 sm:py-4 h-full lg:h-[calc(100vh-1rem)] w-full overflow-hidden"
     >
-      <div className="lg:w-1/3 w-full h-full flex flex-col gap-2 overflow-hidden order-2 lg:order-1">
+      <div className="lg:w-1/3 w-full h-full flex flex-col gap-4 overflow-hidden order-2 lg:order-1">
         <DateSelector
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
@@ -103,7 +103,7 @@ export default function Fitness() {
           isLoading={isLoading}
         />
       </div>
-      <div className="lg:w-2/3 w-full h-full flex flex-col gap-2 overflow-hidden order-1 lg:order-2">
+      <div className="lg:w-2/3 w-full h-full flex flex-col gap-4 overflow-hidden order-1 lg:order-2">
         <FitnessGoals entries={entries} />
         <NewWorkoutTabs onAddExercise={handleAddExercise} />
       </div>

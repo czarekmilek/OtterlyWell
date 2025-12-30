@@ -330,8 +330,8 @@ export default function Calories() {
       transition={{ duration: 0.5 }}
       className="py-2 sm:py-4 lg:h-[calc(100vh)]"
     >
-      <section className="flex lg:flex-row flex-col h-full gap-2">
-        <div className="lg:w-1/3 w-full h-full gap-2 flex flex-col">
+      <section className="flex lg:flex-row flex-col h-full gap-6">
+        <div className="lg:w-1/3 w-full h-full gap-4 flex flex-col">
           <DateSelector
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
@@ -342,7 +342,7 @@ export default function Calories() {
             isLoading={isLoading}
           />
         </div>
-        <div className="lg:w-2/3 w-full gap-2 flex flex-col h-full">
+        <div className="lg:w-2/3 w-full gap-4 flex flex-col h-full">
           {/* <div className="hidden lg:block">
             <DateSelector
               selectedDate={selectedDate}
