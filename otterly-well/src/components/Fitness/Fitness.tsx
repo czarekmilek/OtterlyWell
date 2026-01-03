@@ -96,6 +96,7 @@ export default function Fitness() {
         <DateSelector
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
+          format="day"
         />
         <WorkoutList
           entries={entries}

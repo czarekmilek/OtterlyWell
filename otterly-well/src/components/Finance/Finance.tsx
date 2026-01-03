@@ -5,11 +5,11 @@ import TransactionList from "./components/TransactionList/TransactionList";
 import EntryModal from "./components/EntryModal/EntryModal";
 import BudgetPlanner from "./components/BudgetPlanner/BudgetPlanner";
 import type { FinanceType } from "./types/types";
-import { MonthSelector } from "./components/MonthSelector";
 import { FinanceStats } from "./components/FinanceStats/FinanceStats";
 import { NewTransactionModal } from "./components/NewTransactionModal";
 import TabButton from "./components/TabButton";
 import BilanceBreakdown from "./components/BilanceBreakdown/BilanceBreakdown";
+import { DateSelector } from "../UI/DateSelector";
 
 export default function Finance() {
   const {
@@ -78,9 +78,10 @@ export default function Finance() {
       className="py-6 lg:p-8 mx-auto space-y-3 xl:h-[calc(100vh)]"
     >
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-        <MonthSelector
+        <DateSelector
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
+          format="month"
         />
 
         <div className="flex gap-3">

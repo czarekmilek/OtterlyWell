@@ -66,7 +66,7 @@ export default function CustomSelect({
             {icon && (
               <span className="text-brand-neutral-light/70">{icon}</span>
             )}
-            <span className="truncate">
+            <span className="truncate text-sm md:text-base">
               {selectedOption ? selectedOption.label : placeholder}
             </span>
           </div>

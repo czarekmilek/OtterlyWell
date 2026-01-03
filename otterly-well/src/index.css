@@ -26,6 +26,15 @@
   --color-brand-negative-darker: #450a0a; /* Tailwind red-950 */
 }
 
+@layer components {
+  .glass-panel {
+    @apply bg-brand-neutral-dark/40 border border-brand-depth backdrop-blur-sm;
+  }
+  .glass-header {
+    @apply bg-brand-neutral-dark/50 text-brand-neutral-light border border-brand-depth font-bold;
+  }
+}
+
 /* --- Light Mode --- */
 body {
   background-color: var(--color-brand-neutral-light);
