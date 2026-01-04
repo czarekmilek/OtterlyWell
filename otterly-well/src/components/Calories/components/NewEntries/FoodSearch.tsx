@@ -58,16 +58,17 @@ export const FoodSearch = ({
         transition={{ duration: 0.2 }}
         className="bg-brand-neutral-dark/50 rounded-b-xl"
       >
-        <input
-          type="text"
-          placeholder="Szukaj produktu..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light 
-                placeholder-brand-secondary focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
-        />
+        <div className="p-4">
+          <input
+            type="text"
+            placeholder="Szukaj produktu..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light
+                  placeholder-brand-secondary focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
+          />
+        </div>
 
-        {/* Results */}
         <AnimatePresence>
           {localHits.length > 0 && (
             <motion.ul
@@ -135,7 +136,9 @@ export const FoodSearch = ({
             <p className="m-2 text-brand-secondary">Brak wyników</p>
           )}
 
-        {loading && <p className="m-2 text-brand-secondary">Szukam w internecie...</p>}
+        {loading && (
+          <p className="m-2 text-brand-secondary">Szukam w internecie...</p>
+        )}
         {error && <p className="m-2 text-brand-warning">Błąd: {error}</p>}
       </motion.div>
 

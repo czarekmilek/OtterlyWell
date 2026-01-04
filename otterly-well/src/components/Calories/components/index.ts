@@ -1,4 +1,4 @@
-export * from "./Goals";
+export * from "./Goals/Goals";
 export * from "./EntriesList/EntriesList";
 export * from "./NewEntries/FoodSearch";
 export * from "./NewEntries/CustomEntry";

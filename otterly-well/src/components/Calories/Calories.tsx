@@ -31,40 +31,40 @@ export default function Calories() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="py-2 sm:py-4 lg:h-[calc(100vh)]"
+      className="py-6 lg:p-8 mx-auto space-y-3 lg:h-[calc(100vh)] flex flex-col"
     >
-      <section className="flex lg:flex-row flex-col h-full gap-6">
-        <div className="lg:w-1/3 w-full h-full gap-4 flex flex-col">
-          <DateSelector
-            selectedDate={selectedDate}
-            onDateChange={setSelectedDate}
-            format="day"
-          />
-          <EntriesList
-            entries={entries}
-            removeEntry={removeEntry}
-            isLoading={isLoading}
-          />
-        </div>
-        <div className="lg:w-2/3 w-full gap-4 flex flex-col h-full">
-          <Goals
-            goalCalories={goals.calories}
-            totalCalories={totalCalories}
-            goalProtein={goals.protein}
-            goalFat={goals.fat}
-            goalCarbs={goals.carbs}
-            setGoalCalories={handleSetGoalCalories}
-            setGoalProtein={handleSetGoalProtein}
-            setGoalFat={handleSetGoalFat}
-            setGoalCarbs={handleSetGoalCarbs}
-            isLoading={isLoading}
-          />
-          <AddDataSection
-            addEntryFromFood={addEntryFromFood}
-            addCustomEntry={addCustomEntry}
-          />
-        </div>
-      </section>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <DateSelector
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
+          format="day"
+        />
+      </div>
+
+      <Goals
+        goalCalories={goals.calories}
+        totalCalories={totalCalories}
+        goalProtein={goals.protein}
+        goalFat={goals.fat}
+        goalCarbs={goals.carbs}
+        setGoalCalories={handleSetGoalCalories}
+        setGoalProtein={handleSetGoalProtein}
+        setGoalFat={handleSetGoalFat}
+        setGoalCarbs={handleSetGoalCarbs}
+        isLoading={isLoading}
+      />
+
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-0">
+        <EntriesList
+          entries={entries}
+          removeEntry={removeEntry}
+          isLoading={isLoading}
+        />
+        <AddDataSection
+          addEntryFromFood={addEntryFromFood}
+          addCustomEntry={addCustomEntry}
+        />
+      </div>
     </motion.div>
   );
 }

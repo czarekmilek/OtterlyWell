@@ -20,7 +20,6 @@ export function LinearMacroProgress({
 
   return (
     <div className="w-full">
-      {/* Label, progress and goal */}
       <div className="text-sm flex justify-between items-baseline mb-1">
         <span className="font-semibold text-brand-neutral-light">{label}</span>
         <span className="text-brand-neutral-light">
@@ -29,8 +28,7 @@ export function LinearMacroProgress({
         </span>
       </div>
 
-      {/* Progress bar */}
-      <div className="h-4 w-full rounded-full bg-brand-neutral-dark overflow-hidden">
+      <div className="h-4 w-full rounded-full bg-brand-neutral-light/20 overflow-hidden">
         <div
           className="h-full rounded-full"
           style={{ width: `${percent}%`, backgroundColor: color }}
