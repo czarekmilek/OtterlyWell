@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CheckIcon } from "../../../icons";
+import { CheckIcon } from "../../../../icons";
 
 interface EditGoalsFormProps {
   isLoading: boolean;

@@ -37,7 +37,7 @@ export const EntriesList = ({
               obok.
             </p>
           ) : (
-            <ul className="divide-y divide-brand-depth/70">
+            <ul className="divide-y divide-brand-depth/70 space-y-2">
               <AnimatePresence>
                 {entries.map((e) => (
                   <EntryItem key={e.id} entry={e} removeEntry={removeEntry} />

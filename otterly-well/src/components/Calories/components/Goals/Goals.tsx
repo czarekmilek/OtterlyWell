@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { EditIcon, CloseIcon } from "../../../icons";
-import { EditGoalsForm } from "./EditGoalsForm";
-import { GoalsStats } from "./GoalsStats";
+import { EditGoalsForm } from "./components/EditGoalsForm";
+import { GoalsStats } from "./components/GoalsStats";
 
 interface GoalsProps {
   goalCalories: number;

@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import { LinearMacroProgress } from "../MacroTracking/LinearMacroProgress";
+import { LinearMacroProgress } from "../../MacroTracking/LinearMacroProgress";
 import { StatsCard } from "./StatsCard";
 import { CaloriesCircle } from "./CaloriesCircle";
-import { CalculateIcon, TimelineIcon } from "../../../icons";
+import { CalculateIcon, TimelineIcon } from "../../../../icons";
 
 interface GoalsStatsProps {
   goalCalories: number;

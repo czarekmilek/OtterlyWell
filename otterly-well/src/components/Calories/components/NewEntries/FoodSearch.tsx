@@ -56,16 +56,16 @@ export const FoodSearch = ({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.2 }}
-        className="bg-brand-neutral-dark/50 rounded-b-xl"
+        className="bg-brand-neutral-dark/40 rounded-xl rounded-tl-none"
       >
-        <div className="p-4">
+        <div className="px-3 pt-4 pb-4">
           <input
             type="text"
             placeholder="Szukaj produktu..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light
-                  placeholder-brand-secondary focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none"
+                  placeholder-brand-secondary focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none rounded-lg"
           />
         </div>
 
@@ -75,7 +75,7 @@ export const FoodSearch = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="divide-y divide-white/10 rounded-lg border border-white/10 max-h-84 overflow-y-scroll"
+              className="divide-y divide-white/10 rounded-lg border border-white/10 max-h-94 overflow-y-scroll"
             >
               {localHits.map(
                 (h) =>
