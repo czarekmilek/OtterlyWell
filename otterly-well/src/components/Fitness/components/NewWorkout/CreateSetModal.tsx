@@ -4,6 +4,7 @@ import ExerciseSearch from "./ExerciseSearch";
 import { useWorkoutSets } from "../../hooks/useWorkoutSets";
 import type { Exercise } from "../../types/types";
 import { CloseIcon, DeleteIcon } from "../../../icons";
+import type { ExerciseInputData } from "./AddExerciseToList";
 
 interface CreateSetModalProps {
   onClose: () => void;
@@ -16,6 +17,8 @@ interface NewSetItem {
   sets: number;
   reps: number;
   weight: number;
+  duration: number;
+  distance: number;
 }
 
 export default function CreateSetModal({
@@ -30,18 +33,15 @@ export default function CreateSetModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleAddExercise = (
-    exercise: Exercise,
-    sets: number,
-    reps: number,
-    weight: number
-  ) => {
+  const handleAddExercise = (exercise: Exercise, data: ExerciseInputData) => {
     const newItem: NewSetItem = {
       id: Math.random().toString(36).substr(2, 9),
       exercise,
-      sets,
-      reps,
-      weight,
+      sets: data.sets,
+      reps: data.reps,
+      weight: data.weight,
+      duration: data.duration,
+      distance: data.distance,
     };
     setItems((prev) => [...prev, newItem]);
     setStep("details");
@@ -173,8 +173,15 @@ export default function CreateSetModal({
                                 {item.exercise.name}
                               </p>
                               <p className="text-xs text-brand-neutral-light/60">
-                                {item.sets} x {item.reps}{" "}
-                                {item.weight > 0 && `| ${item.weight}kg`}
+                                {item.exercise.type === "cardio"
+                                  ? `${item.duration} min | ${item.distance} km`
+                                  : item.exercise.type === "stretching"
+                                  ? `${item.duration} min`
+                                  : `${item.sets} x ${item.reps} ${
+                                      item.weight > 0
+                                        ? `| ${item.weight}kg`
+                                        : ""
+                                    }`}
                               </p>
                             </div>
                           </div>

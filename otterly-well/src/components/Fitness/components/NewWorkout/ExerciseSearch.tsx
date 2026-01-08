@@ -2,15 +2,12 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useExerciseSearch } from "../../hooks/useExerciseSearch";
 import { SearchIcon, HistoryIcon } from "../../../icons";
+import AddExerciseToList from "./AddExerciseToList";
+import type { ExerciseInputData } from "./AddExerciseToList";
 import type { Exercise } from "../../types/types";
 
 interface ExerciseSearchProps {
-  onAddExercise: (
-    exercise: Exercise,
-    sets: number,
-    reps: number,
-    weight: number
-  ) => void;
+  onAddExercise: (exercise: Exercise, data: ExerciseInputData) => void;
   submitButtonText?: string;
   onCreateExercise?: () => void;
 }
@@ -25,19 +22,12 @@ export default function ExerciseSearch({
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
     null
   );
-  const [sets, setSets] = useState(3);
-  const [reps, setReps] = useState(10);
-  const [weight, setWeight] = useState(0);
 
-  const handleAdd = () => {
+  const handleCreateExercise = (data: ExerciseInputData) => {
     if (selectedExercise) {
-      onAddExercise(selectedExercise, sets, reps, weight);
+      onAddExercise(selectedExercise, data);
       setSelectedExercise(null);
       setQuery("");
-      // Reset defaults
-      setSets(3);
-      setReps(10);
-      setWeight(0);
     }
   };
 
@@ -117,14 +107,11 @@ export default function ExerciseSearch({
                   <div className="flex justify-between items-center">
                     <span
                       className="font-medium text-brand-neutral-light group-hover:text-brand-accent-3 
-                                    transition-colors flex items-center gap-2"
+                                    transition-colors flex items-center gap-2 truncate"
                     >
-                      {isRecent && (
-                        <HistoryIcon className="text-base text-brand-neutral-light/40" />
-                      )}
                       {exercise.name}
                     </span>
-                    <span className="text-lg sm:text-xs font-bold text-brand-neutral-dark/80 bg-brand-depth px-2 py-1 rounded-full uppercase tracking-wide">
+                    <span className="text-xs font-bold text-brand-neutral-dark/80 bg-brand-depth px-2 py-1 rounded-full uppercase tracking-wide">
                       {exercise.muscle_group}
                     </span>
                   </div>
@@ -147,87 +134,12 @@ export default function ExerciseSearch({
             </div>
           </motion.div>
         ) : (
-          <motion.div
-            key="details"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-col h-full p-4"
-          >
-            <div className="flex items-center justify-between border-b border-brand-depth pb-4 mb-4">
-              <div>
-                <h3 className="text-lg sm:text-xl font-bold text-brand-neutral-light">
-                  {selectedExercise.name}
-                </h3>
-                <p className="text-xs text-brand-neutral-light/60 uppercase tracking-wider mt-1">
-                  Dodaj szczegóły
-                </p>
-              </div>
-              <button
-                onClick={() => setSelectedExercise(null)}
-                className="text-sm text-brand-neutral-light/60 hover:text-brand-neutral-light hover:underline transition-all cursor-pointer"
-              >
-                Anuluj
-              </button>
-            </div>
-
-            <div
-              className={`grid gap-3 mb-6 ${
-                selectedExercise.type === "strength"
-                  ? "grid-cols-3"
-                  : "grid-cols-2"
-              }`}
-            >
-              <div className="flex flex-col p-3 rounded-lg bg-brand-neutral-dark/90 border border-brand-depth">
-                <label className="text-xs font-bold text-brand-neutral-light/70 uppercase text-center">
-                  Liczba serii
-                </label>
-                <input
-                  type="number"
-                  value={sets}
-                  onChange={(e) => setSets(Number(e.target.value))}
-                  className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
-                />
-              </div>
-              <div className="flex flex-col p-3 rounded-lg bg-brand-neutral-dark/90 border border-brand-depth">
-                <label className="text-xs font-bold text-brand-neutral-light/70 uppercase text-center">
-                  Powtórzenia
-                </label>
-                <input
-                  type="number"
-                  value={reps}
-                  onChange={(e) => setReps(Number(e.target.value))}
-                  className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
-                />
-              </div>
-
-              {(selectedExercise.type === "strength" ||
-                (!selectedExercise.type && true)) && (
-                <div className="flex flex-col p-3 rounded-lg bg-brand-neutral-dark/90 border border-brand-depth">
-                  <label className="text-xs font-bold text-brand-neutral-light/70 uppercase text-center">
-                    Ciężar (kg)
-                  </label>
-                  <input
-                    type="number"
-                    value={weight}
-                    onChange={(e) => setWeight(Number(e.target.value))}
-                    className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
-                  />
-                </div>
-              )}
-            </div>
-
-            <motion.button
-              onClick={handleAdd}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="mt-auto w-full py-3.5 bg-brand-accent-1 hover:bg-brand-accent-2 cursor-pointer text-white font-bold rounded-xl 
-                         shadow-lg hover:shadow-brand-accent-1/20 transition-all flex items-center justify-center gap-2"
-            >
-              {submitButtonText}
-            </motion.button>
-          </motion.div>
+          <AddExerciseToList
+            exercise={selectedExercise}
+            onCancel={() => setSelectedExercise(null)}
+            onAdd={handleCreateExercise}
+            submitButtonText={submitButtonText}
+          />
         )}
       </AnimatePresence>
     </div>

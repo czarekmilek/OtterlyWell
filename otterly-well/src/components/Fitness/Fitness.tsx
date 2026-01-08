@@ -7,6 +7,7 @@ import FitnessGoals from "./components/Goals/FitnessGoals";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabaseClient";
 import type { WorkoutEntry, Exercise } from "./types/types";
+import type { ExerciseInputData } from "./components/NewWorkout/AddExerciseToList";
 
 export default function Fitness() {
   const { user } = useAuth();
@@ -47,18 +48,18 @@ export default function Fitness() {
 
   const handleAddExercise = async (
     exercise: Exercise,
-    sets: number,
-    reps: number,
-    weight: number
+    inputData: ExerciseInputData
   ) => {
     if (!user) return;
 
     const newEntry = {
       user_id: user.id,
       exercise_id: exercise.id,
-      sets,
-      reps,
-      weight_kg: weight,
+      sets: inputData.sets,
+      reps: inputData.reps,
+      weight_kg: inputData.weight,
+      duration_min: inputData.duration,
+      distance_km: inputData.distance,
       created_at: selectedDate.toISOString(),
     };
 
@@ -92,7 +93,7 @@ export default function Fitness() {
       transition={{ duration: 0.5 }}
       className="flex flex-col lg:flex-row gap-6 py-2 sm:py-4 h-full lg:h-[calc(100vh-1rem)] w-full overflow-hidden"
     >
-      <div className="lg:w-1/3 w-full h-full flex flex-col gap-4 overflow-hidden order-2 lg:order-1">
+      <div className="lg:w-1/3 w-full h-full flex flex-col gap-4 overflow-hidden order-1">
         <DateSelector
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
@@ -105,7 +106,7 @@ export default function Fitness() {
         />
       </div>
       <div className="lg:w-2/3 w-full h-full flex flex-col gap-4 overflow-hidden order-1 lg:order-2">
-        <FitnessGoals entries={entries} />
+        <FitnessGoals entries={entries} selectedDate={selectedDate} />
         <NewWorkoutTabs onAddExercise={handleAddExercise} />
       </div>
     </motion.div>

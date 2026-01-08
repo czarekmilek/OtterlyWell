@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import type { ExerciseSet } from "../types/types";
+import { useAuth } from "../../../context/AuthContext";
 
 export function useWorkoutSets(query: string) {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [sets, setSets] = useState<ExerciseSet[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const fetchSets = async () => {
+    if (!user) return;
     setLoading(true);
     setError(null);
     try {
@@ -44,19 +47,21 @@ export function useWorkoutSets(query: string) {
   useEffect(() => {
     const debounce = setTimeout(fetchSets, 300);
     return () => clearTimeout(debounce);
-  }, [query]);
+  }, [query, user]);
 
   const refreshSets = () => {
     fetchSets();
   };
 
   const createSet = async (name: string, description: string, items: any[]) => {
+    if (!user) throw new Error("Użytkownik nie jest zalogowany"); // in polish, since app displays this
+
     const { data: set, error: setError } = await supabase
       .from("workout_sets")
       .insert({
         name,
         description,
-        created_by: (await supabase.auth.getUser()).data.user?.id,
+        created_by: user.id,
       })
       .select()
       .single();

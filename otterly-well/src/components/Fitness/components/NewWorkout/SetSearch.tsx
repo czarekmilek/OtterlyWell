@@ -92,7 +92,7 @@ export default function SetSearch({ onAddSet, onCreateSet }: SetSearchProps) {
                       )}
                     </div>
                     <span className="text-xs font-bold text-brand-neutral-dark/80 bg-brand-depth px-2 py-1 rounded-full uppercase tracking-wide whitespace-nowrap">
-                      {set.items?.length || 0} ćwiczeń
+                      {set.items?.length || 0} ćw.
                     </span>
                   </div>
                 </motion.div>
