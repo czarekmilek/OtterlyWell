@@ -22,6 +22,15 @@ export default function WorkoutItem({
     onRemoveEntry(entry.id);
   };
 
+  const MUSCLE_GROUPS = [
+    { label: "Klatka", value: "chest" },
+    { label: "Plecy", value: "back" },
+    { label: "Nogi", value: "legs" },
+    { label: "Barki", value: "shoulders" },
+    { label: "Ramiona", value: "arms" },
+    { label: "Brzuch", value: "core" },
+    { label: "Cardio", value: "cardio" },
+  ];
   return (
     <>
       <motion.div
@@ -37,7 +46,13 @@ export default function WorkoutItem({
               {entry.exercise?.name || "Nieznane ćwiczenie"}
             </h4>
             <p className="text-sm text-brand-neutral-light/70 uppercase tracking-wider">
-              {entry.exercise?.muscle_group} •{" "}
+              {entry.exercise?.type === "strength"
+                ? `${
+                    MUSCLE_GROUPS.find(
+                      (group) => group.value === entry.exercise?.muscle_group
+                    )?.label
+                  } • `
+                : ""}
               {entry.exercise?.type === "strength"
                 ? "Siłowe"
                 : entry.exercise?.type === "stretching"

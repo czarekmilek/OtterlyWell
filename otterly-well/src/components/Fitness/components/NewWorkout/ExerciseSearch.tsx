@@ -107,13 +107,48 @@ export default function ExerciseSearch({
                   <div className="flex justify-between items-center">
                     <span
                       className="font-medium text-brand-neutral-light group-hover:text-brand-accent-3 
-                                    transition-colors flex items-center gap-2 truncate"
+                                    transition-colors truncate flex-1 min-w-0 mr-2"
                     >
                       {exercise.name}
                     </span>
-                    <span className="text-xs font-bold text-brand-neutral-dark/80 bg-brand-depth px-2 py-1 rounded-full uppercase tracking-wide">
-                      {exercise.muscle_group}
-                    </span>
+                    {(() => {
+                      let label: string = exercise.type;
+                      let className =
+                        "text-brand-neutral-dark/80 bg-brand-depth";
+
+                      // Displaying the msucle group only for strenght based exercises, rest just shows a type
+                      if (exercise.type === "strength") {
+                        const MUSCLE_GROUPS = [
+                          { label: "Klatka", value: "chest" },
+                          { label: "Plecy", value: "back" },
+                          { label: "Nogi", value: "legs" },
+                          { label: "Barki", value: "shoulders" },
+                          { label: "Ramiona", value: "arms" },
+                          { label: "Brzuch", value: "core" },
+                          { label: "Cardio", value: "cardio" },
+                        ];
+                        label =
+                          MUSCLE_GROUPS.find(
+                            (g) => g.value === exercise.muscle_group
+                          )?.label || exercise.muscle_group;
+                      } else if (exercise.type === "cardio") {
+                        label = "Cardio";
+                        className =
+                          "bg-brand-accent-1 text-brand-neutral-darker";
+                      } else if (exercise.type === "stretching") {
+                        label = "Rozciąganie";
+                        className =
+                          "bg-brand-accent-2 text-brand-neutral-darker";
+                      }
+
+                      return (
+                        <span
+                          className={`text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wide ${className}`}
+                        >
+                          {label}
+                        </span>
+                      );
+                    })()}
                   </div>
                 </motion.div>
               ))}
