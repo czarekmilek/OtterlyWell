@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./components/Auth/ProtectedRoute";
 import { LoadingSpinner } from "./components/UI/LoadingSpinner";
+import { ModuleProvider } from "./context/ModuleContext";
 import "./App.css";
 import Layout from "./components/Layout/Layout";
 
@@ -15,24 +16,26 @@ const Tasks = lazy(() => import("./components/Tasks/Tasks"));
 
 function App() {
   return (
-    <Layout>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+    <ModuleProvider>
+      <Layout>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/calories" element={<Calories />} />
-            <Route path="/fitness" element={<Fitness />} />
-            <Route path="/finance" element={<Finance />} />
-            <Route path="/tasks" element={<Tasks />} />
-          </Route>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/calories" element={<Calories />} />
+              <Route path="/fitness" element={<Fitness />} />
+              <Route path="/finance" element={<Finance />} />
+              <Route path="/tasks" element={<Tasks />} />
+            </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
-    </Layout>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </Layout>
+    </ModuleProvider>
   );
 }
 

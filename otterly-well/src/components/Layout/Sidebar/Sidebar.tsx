@@ -1,4 +1,6 @@
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useState } from "react";
+import ConfigureModules from "./components/ConfigureModules";
+import { useModuleContext } from "../../../context/ModuleContext";
 import {
   Dialog,
   DialogPanel,
@@ -36,16 +38,33 @@ interface SidebarProps {
 const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
   const { pathname } = useLocation();
   const { user } = useAuth();
+  const { visibleModules } = useModuleContext();
+  const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   const navigation = useMemo(
     () =>
-      navigationItems.map((item) => ({
-        ...item,
-        current:
-          item.to !== "#" &&
-          (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)),
-      })),
-    [pathname]
+      navigationItems
+        .filter((item) => {
+          if (item.to === "/") return true; // dashboard should be always visible
+
+          const moduleMap: Record<string, string> = {
+            "/calories": "calories",
+            "/fitness": "fitness",
+            "/finance": "finance",
+            "/tasks": "tasks",
+          };
+          const moduleName = moduleMap[item.to];
+          return moduleName
+            ? visibleModules[moduleName as keyof typeof visibleModules]
+            : true;
+        })
+        .map((item) => ({
+          ...item,
+          current:
+            item.to !== "#" &&
+            (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)),
+        })),
+    [pathname, visibleModules]
   );
 
   const sidebarContent = (
@@ -102,22 +121,37 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
               ))}
             </ul>
           </li>
+          <li className="mt-auto mb-2">
+            <button
+              onClick={() => setIsConfigOpen(true)}
+              className="w-full group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6 text-brand-neutral-dark hover:bg-brand-neutral-dark 
+              hover:text-brand-neutral-light transition-colors cursor-pointer"
+            >
+              {/* material icon, extract later to icons file */}
+              <span className="material-symbols-sharp h-6 w-6 shrink-0">
+                tune
+              </span>
+              Konfiguruj widok
+            </button>
+          </li>
         </ul>
       </nav>
       <UserProfile user={user} />
+      <ConfigureModules
+        isOpen={isConfigOpen}
+        onClose={() => setIsConfigOpen(false)}
+      />
     </>
   );
 
   return (
     <>
-      {/* Mobile sidebar */}
       <Transition show={mobileOpen} as={Fragment}>
         <Dialog
           as="div"
           className="relative z-40 xl:hidden"
           onClose={setMobileOpen}
         >
-          {/* Backdrop */}
           <TransitionChild
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
@@ -141,7 +175,6 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
               leaveTo="-translate-x-full"
             >
               <DialogPanel className="relative mr-16 flex w-full max-w-xs flex-1">
-                {/* Close button */}
                 <TransitionChild
                   as={Fragment}
                   enter="ease-in-out duration-300"
@@ -174,7 +207,6 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
         </Dialog>
       </Transition>
 
-      {/* Desktop sidebar */}
       <aside className="hidden xl:fixed xl:inset-y-0 xl:z-10 xl:flex xl:w-64 xl:flex-col border-r border-brand-depth bg-brand-neutral-light">
         {sidebarContent}
       </aside>

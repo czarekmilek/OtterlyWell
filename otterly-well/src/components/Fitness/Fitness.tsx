@@ -1,89 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { DateSelector } from "../UI/DateSelector";
 import WorkoutList from "./components/WorkoutList/WorkoutList";
 import NewWorkoutTabs from "./components/NewWorkout/NewWorkoutTabs";
 import FitnessGoals from "./components/Goals/FitnessGoals";
 import { useAuth } from "../../context/AuthContext";
-import { supabase } from "../../lib/supabaseClient";
-import type { WorkoutEntry, Exercise } from "./types/types";
+import { useFitnessDaily } from "./hooks/useFitnessDaily";
+import type { Exercise } from "./types/types";
 import type { ExerciseInputData } from "./components/NewWorkout/AddExerciseToList";
 
 export default function Fitness() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [entries, setEntries] = useState<WorkoutEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (!user) return;
-
-    async function loadData() {
-      if (!user) return;
-      setIsLoading(true);
-
-      const startOfDay = new Date(selectedDate);
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = new Date(selectedDate);
-      endOfDay.setHours(23, 59, 59, 999);
-
-      const { data, error } = await supabase
-        .from("workout_logs")
-        .select("*, exercise:exercises(*)")
-        .eq("user_id", user.id)
-        .gte("created_at", startOfDay.toISOString())
-        .lte("created_at", endOfDay.toISOString())
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching workout logs", error);
-      } else if (data) {
-        setEntries(data);
-      }
-      setIsLoading(false);
-    }
-
-    loadData();
-  }, [user, selectedDate]);
+  const { entries, isLoading, addEntry, removeEntry } =
+    useFitnessDaily(selectedDate);
 
   const handleAddExercise = async (
     exercise: Exercise,
     inputData: ExerciseInputData
   ) => {
-    if (!user) return;
-
-    const newEntry = {
-      user_id: user.id,
-      exercise_id: exercise.id,
-      sets: inputData.sets,
-      reps: inputData.reps,
-      weight_kg: inputData.weight,
-      duration_min: inputData.duration,
-      distance_km: inputData.distance,
-      created_at: selectedDate.toISOString(),
-    };
-
-    const { data, error } = await supabase
-      .from("workout_logs")
-      .insert(newEntry)
-      .select("*, exercise:exercises(*)")
-      .single();
-
-    if (error) {
-      console.error("Error adding workout log", error);
-    } else if (data) {
-      setEntries((prev) => [data, ...prev]);
-    }
+    await addEntry(exercise, inputData);
   };
 
   const handleRemoveEntry = async (id: string) => {
-    const { error } = await supabase.from("workout_logs").delete().eq("id", id);
-
-    if (error) {
-      console.error("Error deleting workout log", error);
-    } else {
-      setEntries((prev) => prev.filter((e) => e.id !== id));
-    }
+    await removeEntry(id);
   };
 
   return (
