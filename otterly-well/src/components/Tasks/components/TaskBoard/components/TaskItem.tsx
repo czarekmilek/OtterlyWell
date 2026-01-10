@@ -1,12 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Task } from "../../../types/types";
-import {
-  ArchiveIcon,
-  CheckIcon,
-  ClipBoardIcon,
-  DeleteIcon,
-} from "../../../../icons";
+import { CheckIcon, DeleteIcon } from "../../../../icons";
+import ConfirmDeleteDialog from "../../../../UI/ConfirmDeleteDialog";
 
 interface TaskItemProps {
   task: Task;
@@ -79,90 +75,92 @@ export default function TaskItem({
     : priorityColors[task.priority];
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      onClick={() => setIsExpanded(!isExpanded)}
-      className={`relative p-3 rounded-xl border ${containerStyle} 
-                  group hover:shadow-md transition-all cursor-pointer select-none`}
-    >
-      <div className="flex items-start gap-3">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onComplete(task.id);
-          }}
-          className={`mt-1 w-5 h-5 rounded-full border-2 transition-all flex-shrink-0 flex items-center justify-center cursor-pointer
-                     ${
-                       isCompleted
-                         ? "bg-brand-positive border-brand-positive text-brand-neutral-darker"
-                         : "border-brand-neutral-light/50 hover:border-brand-accent-1 hover:bg-brand-accent-1/20"
-                     }`}
-        >
-          {isCompleted && <CheckIcon className="scale-75" />}
-        </button>
-
-        <div className="flex-grow min-w-0">
-          <p
-            className={`text-brand-neutral-light text-sm font-medium leading-tight break-words transition-all
-                      ${
-                        isCompleted
-                          ? "line-through text-brand-neutral-light/50 truncate pr-17"
-                          : "truncate"
-                      }`}
+    <>
+      <motion.div
+        layout
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={`relative p-3 rounded-xl border ${containerStyle} 
+                    group hover:shadow-md transition-all cursor-pointer select-none`}
+      >
+        <div className="flex items-start gap-3">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onComplete(task.id);
+            }}
+            className={`mt-1 w-5 h-5 rounded-full border-2 transition-all flex-shrink-0 flex items-center justify-center cursor-pointer
+                       ${
+                         isCompleted
+                           ? "bg-brand-positive border-brand-positive text-brand-neutral-darker"
+                           : "border-brand-neutral-light/50 hover:border-brand-accent-1 hover:bg-brand-accent-1/20"
+                       }`}
           >
-            {/* we cut this to fit the buttons, the full description visible when expanded */}
-            {task.description}
-          </p>
+            {isCompleted && <CheckIcon className="scale-75" />}
+          </button>
 
-          {isExpanded && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              className="mt-2 text-xs text-brand-neutral-light/70 whitespace-pre-wrap border-l-2 border-brand-neutral-light/20 pl-2"
+          <div className="flex-grow min-w-0">
+            <p
+              className={`text-brand-neutral-light text-sm font-medium leading-tight break-words transition-all
+                        ${
+                          isCompleted
+                            ? "line-through text-brand-neutral-light/50 truncate pr-17"
+                            : "truncate"
+                        }`}
             >
-              <span className="block mt-1 pt-1 border-t border-brand-neutral-light/10">
-                {task.description}
-              </span>
-            </motion.div>
-          )}
+              {/* we cut this to fit the buttons, the full description visible when expanded */}
+              {task.description}
+            </p>
 
-          <div className="flex items-center gap-2 mt-2">
-            {!isCompleted && (
-              <span
-                className={`text-[10px] font-bold px-1.5 py-0.5 rounded
-                             ${
-                               task.priority === 3
-                                 ? "text-brand-negative-darker/60 bg-brand-negative/30"
-                                 : task.priority === 2
-                                 ? "text-brand-accent-1/90 bg-brand-accent-3/30"
-                                 : "text-brand-neutral-light/80 bg-brand-accent-2/30"
-                             }`}
+            {isExpanded && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="mt-2 text-xs text-brand-neutral-light/70 whitespace-pre-wrap border-l-2 border-brand-neutral-light/20 pl-2"
               >
-                {priorityLabel[task.priority]} priorytet
-              </span>
+                <span className="block mt-1 pt-1 border-t border-brand-neutral-light/10">
+                  {task.description}
+                </span>
+              </motion.div>
             )}
 
-            {deadlineInfo && !isCompleted && (
-              <span className={`text-[10px] ${deadlineInfo.className}`}>
-                {deadlineInfo.text}
-              </span>
-            )}
+            <div className="flex items-center gap-2 mt-2">
+              {!isCompleted && (
+                <span
+                  className={`text-[10px] font-bold px-1.5 py-0.5 rounded
+                               ${
+                                 task.priority === 3
+                                   ? "text-brand-negative-darker/60 bg-brand-negative/30"
+                                   : task.priority === 2
+                                   ? "text-brand-accent-1/90 bg-brand-accent-3/30"
+                                   : "text-brand-neutral-light/80 bg-brand-accent-2/30"
+                               }`}
+                >
+                  {priorityLabel[task.priority]} priorytet
+                </span>
+              )}
 
-            {isCompleted && task.completed_at && (
-              <span className="text-[10px] text-brand-neutral-light/40">
-                Ukończono: {new Date(task.completed_at).toLocaleDateString()}
-              </span>
-            )}
+              {deadlineInfo && !isCompleted && (
+                <span className={`text-[10px] ${deadlineInfo.className}`}>
+                  {deadlineInfo.text}
+                </span>
+              )}
+
+              {isCompleted && task.completed_at && (
+                <span className="text-[10px] text-brand-neutral-light/40">
+                  Ukończono: {new Date(task.completed_at).toLocaleDateString()}
+                </span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* <div className="absolute top-2 right-2 flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* <div className="absolute top-2 right-2 flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -176,10 +174,10 @@ export default function TaskItem({
         </button>
       </div> */}
 
-      {/* TODO: make better for mobile, icons are over the name */}
-      {isCompleted && (
-        <div className="absolute top-2 right-2 flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-          {/* <button
+        {/* TODO: make better for mobile, icons are over the name */}
+        {isCompleted && (
+          <div className="absolute top-2 right-2 flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* <button
             onClick={(e) => {
               e.stopPropagation();
               onDismiss(task.id);
@@ -190,19 +188,45 @@ export default function TaskItem({
           >
             <ClipBoardIcon className="scale-85" />
           </button> */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDismiss(task.id);
-            }}
-            className="p-1 hover:bg-brand-negative/20 rounded-full text-brand-neutral-light/60 hover:text-brand-negative-darker 
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsModalOpen(true);
+              }}
+              className="p-1 hover:bg-brand-negative/20 rounded-full text-brand-neutral-light/60 hover:text-brand-negative-darker 
                     text-xs transition-all cursor-pointer flex items-center justify-center"
-            title="Usuń"
-          >
-            <DeleteIcon className="scale-85" />
-          </button>
-        </div>
-      )}
-    </motion.div>
+              title="Usuń"
+            >
+              <DeleteIcon className="scale-85" />
+            </button>
+          </div>
+        )}
+      </motion.div>
+
+      <ConfirmDeleteDialog
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={() => onDismiss(task.id)}
+        title="Przenieś do historii"
+        confirmLabel="Przenieś"
+        description={
+          <p>
+            Czy na pewno chcesz przenieść to zadanie{" "}
+            {task.description ? (
+              <>
+                (
+                <strong className="text-brand-neutral-light truncate inline-block max-w-[200px] align-bottom">
+                  {task.description}
+                </strong>
+                )
+              </>
+            ) : (
+              ""
+            )}{" "}
+            do historii?
+          </p>
+        }
+      />
+    </>
   );
 }
