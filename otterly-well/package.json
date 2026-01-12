@@ -2,7 +2,7 @@
   "name": "otterly-well",
   "private": true,
   "version": "1.0.0",
-  "homepage": "https://czarekmilek.github.io/otterlywell",
+  "homepage": "https://czarekmilek.github.io/OtterlyWell",
   "type": "module",
   "scripts": {
     "dev": "vite",
