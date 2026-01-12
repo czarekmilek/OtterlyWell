@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useExerciseSearch } from "../../hooks/useExerciseSearch";
-import { SearchIcon, HistoryIcon } from "../../../icons";
+import { SearchIcon } from "../../../icons";
 import AddExerciseToList from "./AddExerciseToList";
 import type { ExerciseInputData } from "./AddExerciseToList";
 import type { Exercise } from "../../types/types";

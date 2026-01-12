@@ -10,7 +10,6 @@ interface TaskColumnProps {
   allCategories: TaskCategory[];
   onComplete: (taskId: string) => void;
   onDismiss: (taskId: string) => void;
-  onDelete: (taskId: string) => void;
   onEdit: (taskId: string, updates: Partial<Task>) => void;
   currentDate: Date;
 }
@@ -21,7 +20,6 @@ export default function TaskColumn({
   allCategories,
   onComplete,
   onDismiss,
-  onDelete,
   onEdit,
   currentDate,
 }: TaskColumnProps) {
@@ -84,7 +82,6 @@ export default function TaskColumn({
               categories={allCategories}
               onComplete={onComplete}
               onDismiss={onDismiss}
-              onDelete={onDelete}
               onEdit={onEdit}
               currentDate={currentDate}
             />

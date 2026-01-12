@@ -37,6 +37,7 @@ export const BarcodeScanner = ({ addEntryFromFood }: BarcodeScannerProps) => {
         setResult({
           ...firstHit,
           id: firstHit.sourceId || "result",
+          listId: "scanner",
           grams: 100,
         });
         setIsOpen(true);

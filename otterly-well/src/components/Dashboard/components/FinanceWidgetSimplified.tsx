@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FinanceCircle } from "../../Finance/components/FinanceStats/components/FinanceCircle";
+
 import { FinanceBudget } from "../../Finance/components/FinanceStats/components/FinanceBudget";
 import { FinanceIOPeek } from "../../Finance/components/FinanceStats/components/FinanceIOPeek";
 

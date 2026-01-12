@@ -10,7 +10,7 @@ interface TaskItemProps {
   categories: TaskCategory[];
   onComplete: (taskId: string) => void;
   onDismiss: (taskId: string) => void;
-  onDelete: (taskId: string) => void;
+
   onEdit: (taskId: string, updates: Partial<Task>) => void;
   currentDate: Date;
 }
@@ -20,7 +20,6 @@ export default function TaskItem({
   categories,
   onComplete,
   onDismiss,
-  onDelete,
   onEdit,
   currentDate,
 }: TaskItemProps) {

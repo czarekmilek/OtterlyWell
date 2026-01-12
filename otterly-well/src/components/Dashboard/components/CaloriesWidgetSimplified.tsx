@@ -1,6 +1,4 @@
 import { motion } from "framer-motion";
-import { StatsCard } from "../../Calories/components/Goals/components/StatsCard";
-import { CalculateIcon, TimelineIcon } from "../../icons";
 import { CaloriesCircle } from "../../Calories/components/Goals/components/CaloriesCircle";
 import { LinearMacroProgress } from "../../Calories/components/MacroTracking/LinearMacroProgress";
 

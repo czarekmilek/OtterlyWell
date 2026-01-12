@@ -115,7 +115,6 @@ export default function Tasks() {
           onComplete={toggleTaskCompletion}
           currentDate={new Date()}
           onDismiss={dismissTask}
-          onDelete={deleteTask}
           onEdit={editTask}
         />
       </div>

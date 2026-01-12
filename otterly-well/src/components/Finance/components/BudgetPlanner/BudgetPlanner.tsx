@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { FinanceBudget, FinanceCategory } from "../../types/types";
-import BudgetCategoryCard from "./components/BudgetCategoryCard";
 import BudgetCategoryOverview from "./components/BudgetCategoryOverview";
 import CategoryManager from "../CategoryManager/CategoryManager";
 
@@ -38,8 +37,7 @@ export default function BudgetPlanner({
     .filter((b) => activeCategories.some((c) => c.id === b.category_id))
     .reduce((sum, b) => sum + b.amount, 0);
 
-  const [selectedTransactionType, setSelectedTransactionType] =
-    useState("expense");
+  const [selectedTransactionType] = useState("expense");
   const [editMode, setEditMode] = useState(false);
   const [edits, setEdits] = useState<Record<string, string>>({});
 

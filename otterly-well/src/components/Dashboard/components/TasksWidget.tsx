@@ -5,8 +5,7 @@ import { Link } from "react-router-dom";
 import { ChevronLeftIcon, ChevronRightIcon, TaskIcon } from "../../icons";
 
 export default function TasksWidget() {
-  const { tasks, categories, toggleTaskCompletion, deleteTask, dismissTask } =
-    useTasks();
+  const { tasks, categories, toggleTaskCompletion, dismissTask } = useTasks();
 
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
 
@@ -79,9 +78,10 @@ export default function TasksWidget() {
               <TaskColumn
                 category={currentCategory}
                 tasks={tasksForCategory}
-                onComplete={() => {}}
-                onDismiss={() => {}}
-                onDelete={() => {}}
+                onComplete={toggleTaskCompletion}
+                onDismiss={dismissTask}
+                allCategories={categories}
+                onEdit={() => {}}
                 currentDate={new Date()} // Not strictly used for filtering in widget but passed as prop just in case
               />
             </div>

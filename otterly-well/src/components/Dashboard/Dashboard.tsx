@@ -1,4 +1,3 @@
-import React from "react";
 import CaloriesWidget from "./components/CaloriesWidget";
 import FitnessWidget from "./components/FitnessWidget";
 import FinanceWidget from "./components/FinanceWidget";

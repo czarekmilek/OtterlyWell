@@ -6,7 +6,6 @@ interface TaskBoardProps {
   categories: TaskCategory[];
   onComplete: (taskId: string) => void;
   onDismiss: (taskId: string) => void;
-  onDelete: (taskId: string) => void;
   onEdit: (taskId: string, updates: Partial<Task>) => void;
   currentDate: Date;
 }
@@ -17,7 +16,6 @@ export function TaskBoard({
   onComplete,
   currentDate,
   onDismiss,
-  onDelete,
   onEdit,
 }: TaskBoardProps) {
   const getGridClass = () => {
@@ -52,7 +50,6 @@ export function TaskBoard({
                 allCategories={categories}
                 onComplete={onComplete}
                 onDismiss={onDismiss}
-                onDelete={onDelete}
                 onEdit={onEdit}
                 currentDate={currentDate}
               />

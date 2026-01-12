@@ -10,7 +10,7 @@ import type { Exercise } from "./types/types";
 import type { ExerciseInputData } from "./components/NewWorkout/AddExerciseToList";
 
 export default function Fitness() {
-  const { user } = useAuth();
+  useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { entries, isLoading, addEntry, removeEntry, editEntry } =
     useFitnessDaily(selectedDate);

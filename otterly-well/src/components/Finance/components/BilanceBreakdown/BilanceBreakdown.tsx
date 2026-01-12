@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { FinanceCategory } from "../../types/types";
 import { BreakdownListElement } from "./BreakdownListElement";
 
