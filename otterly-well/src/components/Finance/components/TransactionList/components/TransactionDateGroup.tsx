@@ -1,16 +1,23 @@
-import type { FinanceTransaction } from "../../../types/types";
+import type { FinanceTransaction, FinanceCategory } from "../../../types/types";
 import { TransactionItem } from "./TransactionItem";
 
 interface TransactionDateGroupProps {
   date: string;
   transactions: FinanceTransaction[];
+  categories: FinanceCategory[];
   onDelete: (id: string) => void;
+  onEdit: (
+    id: string,
+    updatedTransaction: Partial<FinanceTransaction>
+  ) => Promise<any>;
 }
 
 export function TransactionDateGroup({
   date,
   transactions,
+  categories,
   onDelete,
+  onEdit,
 }: TransactionDateGroupProps) {
   const dateFormatter = new Intl.DateTimeFormat("pl-PL", {
     weekday: "long",
@@ -33,7 +40,9 @@ export function TransactionDateGroup({
           <TransactionItem
             key={transaction.id}
             transaction={transaction}
+            categories={categories}
             onDelete={onDelete}
+            onEdit={onEdit}
           />
         ))}
       </div>

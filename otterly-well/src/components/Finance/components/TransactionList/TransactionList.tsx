@@ -6,14 +6,21 @@ import CategoryManager from "../CategoryManager/CategoryManager";
 
 interface TransactionListProps {
   transactions: FinanceTransaction[];
+  categories: FinanceCategory[];
   isLoading: boolean;
   onDelete: (id: string) => void;
+  onEdit: (
+    id: string,
+    updatedTransaction: Partial<FinanceTransaction>
+  ) => Promise<any>;
 }
 
 export default function TransactionList({
   transactions,
+  categories,
   isLoading,
   onDelete,
+  onEdit,
 }: TransactionListProps) {
   const [hiddenCategoryKeys, setHiddenCategoryKeys] = useState<Set<string>>(
     new Set()
@@ -151,7 +158,9 @@ export default function TransactionList({
             key={date}
             date={date}
             transactions={groupedTransactions[date]}
+            categories={categories}
             onDelete={onDelete}
+            onEdit={onEdit}
           />
         ))
       ) : (

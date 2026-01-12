@@ -2,17 +2,13 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import ExerciseSearch from "./ExerciseSearch";
 import SetSearch from "./SetSearch";
-import CreateSetModal from "./CreateSetModal";
+import SetModal from "./SetModal";
 import CreateExerciseModal from "./CreateExerciseModal";
 import type { Exercise, ExerciseSet } from "../../types/types";
+import type { ExerciseInputData } from "./AddExerciseToList";
 
 interface NewWorkoutTabsProps {
-  onAddExercise: (
-    exercise: Exercise,
-    sets: number,
-    reps: number,
-    weight: number
-  ) => void;
+  onAddExercise: (exercise: Exercise, data: ExerciseInputData) => void;
 }
 
 export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
@@ -33,7 +29,13 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
   const handleAddSet = (set: ExerciseSet) => {
     set.items?.forEach((item) => {
       if (item.exercise) {
-        onAddExercise(item.exercise, item.sets, item.reps, item.weight_kg || 0);
+        onAddExercise(item.exercise, {
+          sets: item.sets,
+          reps: item.reps,
+          weight: item.weight_kg || 0,
+          duration: item.duration_min || 0,
+          distance: item.distance_km || 0,
+        });
       }
     });
   };
@@ -80,9 +82,9 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
 
       <AnimatePresence>
         {isCreateSetModalOpen && (
-          <CreateSetModal
+          <SetModal
             onClose={() => setIsCreateSetModalOpen(false)}
-            onCreated={() => setIsCreateSetModalOpen(false)}
+            onSuccess={() => setIsCreateSetModalOpen(false)}
           />
         )}
         {isCreateExerciseModalOpen && (

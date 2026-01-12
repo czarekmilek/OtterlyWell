@@ -117,3 +117,15 @@ export const ClipBoardIcon: React.FC<IconProps> = ({ className }) => (
     assignment_turned_in
   </span>
 );
+
+export const CalculateIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>calculate</span>
+);
+
+export const TimelineIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>timeline</span>
+);
+
+export const EditIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>edit</span>
+);

@@ -48,7 +48,7 @@ export default function CreateExerciseModal({
 
     const { error: insertError } = await supabase.from("exercises").insert({
       name,
-      muscle_group: muscleGroup,
+      muscle_group: type === "strength" ? muscleGroup : type,
       type,
       created_by: user.id,
     });
@@ -104,13 +104,19 @@ export default function CreateExerciseModal({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <CustomSelect
-              label="Partia mięśniowa"
-              value={muscleGroup}
-              onChange={setMuscleGroup}
-              options={MUSCLE_GROUPS}
-            />
+          <div
+            className={`grid grid-cols-1 ${
+              type === "strength" ? "sm:grid-cols-2" : ""
+            } gap-4`}
+          >
+            {type === "strength" && (
+              <CustomSelect
+                label="Partia mięśniowa"
+                value={muscleGroup}
+                onChange={setMuscleGroup}
+                options={MUSCLE_GROUPS}
+              />
+            )}
 
             <CustomSelect
               label="Typ"

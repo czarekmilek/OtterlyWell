@@ -4,7 +4,6 @@ import { useTasks } from "./hooks/useTasks";
 import { TaskBoard } from "./components/TaskBoard/TaskBoard";
 import { AddTaskModal } from "./components/AddTaskModal";
 import TaskCategoryManager from "./components/TaskCategoryManager/TaskCategoryManager";
-import { DaySelector } from "./components/DaySelector";
 import HistoricalTaskModal from "./components/HistoricalTasksList/HistoricalTaskModal";
 import { type ViewMode, ViewModeSwitcher } from "./components/ViewModeSwitcher";
 
@@ -20,21 +19,13 @@ export default function Tasks() {
     dismissTask,
     deleteCategory,
     restoreTask,
+    editTask,
   } = useTasks();
 
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
   const [isCategoryManagerOpen, setIsCategoryManagerOpen] = useState(false);
   const [isHistoricalModalOpen, setIsHistoricalModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>("all");
-
-  const isSameDay = (d1: Date, d2: Date) => {
-    return (
-      d1.getFullYear() === d2.getFullYear() &&
-      d1.getMonth() === d2.getMonth() &&
-      d1.getDate() === d2.getDate()
-    );
-  };
 
   // OLD LOGIC: filtering based on date -
   //            if task is uncompleted, it is always relevant
@@ -122,9 +113,10 @@ export default function Tasks() {
           tasks={filteredTasks}
           categories={activeCategories}
           onComplete={toggleTaskCompletion}
-          currentDate={selectedDate}
+          currentDate={new Date()}
           onDismiss={dismissTask}
           onDelete={deleteTask}
+          onEdit={editTask}
         />
       </div>
 

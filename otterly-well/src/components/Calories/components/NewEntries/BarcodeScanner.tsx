@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import type { FoodHit, FoodHitWithGrams } from "../../types/types";
 import { useBarcodeSearch } from "../../hooks/useBarcodeSearch";
@@ -86,14 +86,13 @@ export const BarcodeScanner = ({ addEntryFromFood }: BarcodeScannerProps) => {
   };
   return (
     <>
-      {/* Manual input area */}
       <motion.div
         key="scan"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.2 }}
-        className="pt-4 px-4 bg-brand-neutral-dark/50 rounded-b-xl"
+        className="pt-4 px-4 bg-brand-neutral-dark/50 rounded-xl rounded-tl-none"
       >
         {loading ? (
           <p className="text-center text-brand-secondary">Szukam...</p>
@@ -126,7 +125,6 @@ export const BarcodeScanner = ({ addEntryFromFood }: BarcodeScannerProps) => {
         <div className="h-4"></div>
       </motion.div>
 
-      {/* Bottom dialog for results */}
       <AddFoodDialog
         isOpen={isOpen}
         onClose={resetState}

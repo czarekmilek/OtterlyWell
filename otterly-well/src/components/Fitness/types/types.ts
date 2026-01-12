@@ -17,6 +17,7 @@ export interface ExerciseSetItem {
   duration_min?: number;
   created_at: string;
   exercise?: Exercise;
+  distance_km?: number;
 }
 
 export interface ExerciseSet {
@@ -26,6 +27,7 @@ export interface ExerciseSet {
   created_by: string;
   created_at: string;
   items?: ExerciseSetItem[];
+  scheduled_day?: number;
 }
 
 export interface WorkoutEntry {
@@ -38,4 +40,5 @@ export interface WorkoutEntry {
   duration_min?: number;
   created_at: string;
   exercise?: Exercise;
+  distance_km?: number;
 }

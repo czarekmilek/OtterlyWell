@@ -1,88 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { DateSelector } from "../Calories/components/DateSelector";
+import { DateSelector } from "../UI/DateSelector";
 import WorkoutList from "./components/WorkoutList/WorkoutList";
 import NewWorkoutTabs from "./components/NewWorkout/NewWorkoutTabs";
 import FitnessGoals from "./components/Goals/FitnessGoals";
 import { useAuth } from "../../context/AuthContext";
-import { supabase } from "../../lib/supabaseClient";
-import type { WorkoutEntry, Exercise } from "./types/types";
+import { useFitnessDaily } from "./hooks/useFitnessDaily";
+import type { Exercise } from "./types/types";
+import type { ExerciseInputData } from "./components/NewWorkout/AddExerciseToList";
 
 export default function Fitness() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [entries, setEntries] = useState<WorkoutEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (!user) return;
-
-    async function loadData() {
-      if (!user) return;
-      setIsLoading(true);
-
-      const startOfDay = new Date(selectedDate);
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = new Date(selectedDate);
-      endOfDay.setHours(23, 59, 59, 999);
-
-      const { data, error } = await supabase
-        .from("workout_logs")
-        .select("*, exercise:exercises(*)")
-        .eq("user_id", user.id)
-        .gte("created_at", startOfDay.toISOString())
-        .lte("created_at", endOfDay.toISOString())
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching workout logs", error);
-      } else if (data) {
-        setEntries(data);
-      }
-      setIsLoading(false);
-    }
-
-    loadData();
-  }, [user, selectedDate]);
+  const { entries, isLoading, addEntry, removeEntry, editEntry } =
+    useFitnessDaily(selectedDate);
 
   const handleAddExercise = async (
     exercise: Exercise,
-    sets: number,
-    reps: number,
-    weight: number
+    inputData: ExerciseInputData
   ) => {
-    if (!user) return;
-
-    const newEntry = {
-      user_id: user.id,
-      exercise_id: exercise.id,
-      sets,
-      reps,
-      weight_kg: weight,
-      created_at: selectedDate.toISOString(),
-    };
-
-    const { data, error } = await supabase
-      .from("workout_logs")
-      .insert(newEntry)
-      .select("*, exercise:exercises(*)")
-      .single();
-
-    if (error) {
-      console.error("Error adding workout log", error);
-    } else if (data) {
-      setEntries((prev) => [data, ...prev]);
-    }
+    await addEntry(exercise, inputData);
   };
 
   const handleRemoveEntry = async (id: string) => {
-    const { error } = await supabase.from("workout_logs").delete().eq("id", id);
-
-    if (error) {
-      console.error("Error deleting workout log", error);
-    } else {
-      setEntries((prev) => prev.filter((e) => e.id !== id));
-    }
+    await removeEntry(id);
   };
 
   return (
@@ -90,21 +31,23 @@ export default function Fitness() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="flex flex-col lg:flex-row gap-4 py-2 sm:py-4 h-full lg:h-[calc(100vh-1rem)] w-full overflow-hidden"
+      className="flex flex-col lg:flex-row gap-6 py-2 sm:py-4 h-full lg:h-[calc(100vh-1rem)] w-full overflow-hidden"
     >
-      <div className="lg:w-1/3 w-full h-full flex flex-col gap-2 overflow-hidden order-2 lg:order-1">
+      <div className="lg:w-1/3 w-full h-full flex flex-col gap-4 overflow-hidden order-1">
         <DateSelector
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
+          format="day"
         />
         <WorkoutList
           entries={entries}
           onRemoveEntry={handleRemoveEntry}
           isLoading={isLoading}
+          onEdit={editEntry}
         />
       </div>
-      <div className="lg:w-2/3 w-full h-full flex flex-col gap-2 overflow-hidden order-1 lg:order-2">
-        <FitnessGoals entries={entries} />
+      <div className="lg:w-2/3 w-full h-full flex flex-col gap-4 overflow-hidden order-1 lg:order-2">
+        <FitnessGoals entries={entries} selectedDate={selectedDate} />
         <NewWorkoutTabs onAddExercise={handleAddExercise} />
       </div>
     </motion.div>

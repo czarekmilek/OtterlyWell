@@ -8,6 +8,7 @@ interface AddTaskModalProps {
   onClose: () => void;
   onSubmit: (task: Omit<Task, "id" | "created_at" | "is_completed">) => void;
   categories: TaskCategory[];
+  initialData?: Task;
 }
 
 export function AddTaskModal({
@@ -15,23 +16,51 @@ export function AddTaskModal({
   onClose,
   onSubmit,
   categories,
+  initialData,
 }: AddTaskModalProps) {
-  const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState(categories[0]?.id || "");
-  const [priority, setPriority] = useState<TaskPriority>(1);
-  const [deadline, setDeadline] = useState("");
+  const [description, setDescription] = useState(
+    initialData?.description || ""
+  );
+  const [categoryId, setCategoryId] = useState(
+    initialData?.category_id || categories[0]?.id || ""
+  );
+  const [priority, setPriority] = useState<TaskPriority>(
+    initialData?.priority || 1
+  );
+  const [deadline, setDeadline] = useState(
+    initialData?.deadline
+      ? new Date(initialData.deadline).toISOString().split("T")[0]
+      : ""
+  );
 
-  // initial selected category is the first on the list
   useEffect(() => {
-    if (isOpen && categories.length > 0) {
-      const isCurrentCategoryValid = categories.some(
-        (c) => c.id === categoryId
-      );
-      if (!categoryId || !isCurrentCategoryValid) {
-        setCategoryId(categories[0].id);
+    if (isOpen) {
+      if (initialData) {
+        setDescription(initialData.description);
+        setCategoryId(initialData.category_id);
+        setPriority(initialData.priority);
+        setDeadline(
+          initialData.deadline
+            ? new Date(initialData.deadline).toISOString().split("T")[0]
+            : ""
+        );
+      } else if (categories.length > 0) {
+        if (!description && !initialData) {
+          const isCurrentCategoryValid = categories.some(
+            (c) => c.id === categoryId
+          );
+          if (!categoryId || !isCurrentCategoryValid) {
+            setCategoryId(categories[0].id);
+          }
+        }
       }
     }
-  }, [isOpen, categories, categoryId]);
+    // if no initialData we are creatin new task, not editing old one - so we reset state
+    if (isOpen && !initialData && !description) {
+      setPriority(1);
+      setDeadline("");
+    }
+  }, [isOpen, categories, categoryId, initialData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,9 +73,11 @@ export function AddTaskModal({
       deadline: deadline ? new Date(deadline).toISOString() : undefined,
     });
 
-    setDescription("");
-    setPriority(1);
-    setDeadline("");
+    if (!initialData) {
+      setDescription("");
+      setPriority(1);
+      setDeadline("");
+    }
     onClose();
   };
 
@@ -70,7 +101,7 @@ export function AddTaskModal({
             <div className="w-full max-w-lg bg-brand-neutral-darker border border-brand-depth rounded-2xl shadow-2xl pointer-events-auto mx-4 overflow-hidden">
               <div className="p-6 border-b border-brand-depth flex justify-between items-center bg-brand-neutral-dark/50">
                 <h2 className="text-xl font-bold text-brand-neutral-light">
-                  Dodaj nowe zadanie
+                  {initialData ? "Edytuj zadanie" : "Dodaj nowe zadanie"}
                 </h2>
                 <button
                   onClick={onClose}
@@ -162,7 +193,7 @@ export function AddTaskModal({
                     className="w-full py-3 bg-brand-primary rounded-xl text-brand-neutral-light font-bold 
                                          hover:bg-brand-primary/90 transition-all shadow-lg active:scale-97 cursor-pointer"
                   >
-                    Dodaj zadanie
+                    {initialData ? "Zapisz zmiany" : "Dodaj zadanie"}
                   </button>
                 </div>
               </form>

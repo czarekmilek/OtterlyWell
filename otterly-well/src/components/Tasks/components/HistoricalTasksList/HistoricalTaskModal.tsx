@@ -5,7 +5,7 @@ import { useRef, useEffect } from "react";
 import type { Task, TaskCategory } from "../../types/types";
 import { HistoricalTaskRow } from "./HistoricalTaskRow";
 import CustomSelect from "../../../UI/CustomSelect";
-import { MonthSelector } from "../../../Finance/components/MonthSelector";
+import { DateSelector } from "../../../UI/DateSelector";
 
 interface HistoricalTaskModalProps {
   isOpen: boolean;
@@ -127,7 +127,10 @@ export default function HistoricalTaskModal({
                 </button>
               </div>
 
-              <div className="p-4 border-b border-brand-depth/50 bg-brand-neutral-dark/20 flex flex-col md:flex-row gap-4">
+              <div
+                className="p-4 border-b border-brand-depth/50 bg-brand-neutral-dark/20 flex flex-col md:flex-row gap-4"
+                ref={monthSelectorRef}
+              >
                 <div className="flex-1">
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-brand-neutral-light/50">
@@ -145,50 +148,56 @@ export default function HistoricalTaskModal({
                   </div>
                 </div>
                 {/* this whole thing is a bit of a mess, but kind of works */}
-                <div
-                  className="w-full md:w-77 flex gap-2 items-start relative"
-                  ref={monthSelectorRef}
-                >
-                  <div className="flex-1">
-                    {!isMonthSelectorOpen && (
-                      <CustomSelect
-                        value={selectedCategoryId}
-                        onChange={setSelectedCategoryId}
-                        options={categoryOptions}
-                        placeholder="Kategoria"
-                      />
-                    )}
-                  </div>
-                  <button
-                    onClick={() => setIsMonthSelectorOpen(!isMonthSelectorOpen)}
-                    className={`p-3 rounded-lg border transition-colors flex items-center justify-center shrink-0
+                <AnimatePresence mode="wait">
+                  {!isMonthSelectorOpen ? (
+                    <motion.div
+                      key="category-selector"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="w-full md:w-77 flex gap-2 items-start relative"
+                    >
+                      <div className="flex-1">
+                        <CustomSelect
+                          value={selectedCategoryId}
+                          onChange={setSelectedCategoryId}
+                          options={categoryOptions}
+                          placeholder="Kategoria"
+                        />
+                      </div>
+                      <button
+                        onClick={() =>
+                          setIsMonthSelectorOpen(!isMonthSelectorOpen)
+                        }
+                        className={`p-3 rounded-lg border transition-colors flex items-center justify-center shrink-0
                              ${
                                isMonthSelectorOpen
                                  ? "bg-brand-neutral-dark border-brand-accent-1 text-brand-accent-1"
                                  : "bg-brand-neutral-dark border-brand-depth text-brand-neutral-light hover:border-brand-neutral-light/30"
                              }`}
-                  >
-                    <CalendarIcon />
-                  </button>
-
-                  {/* month selector appears over the modal only after clicking the calendar button - no need for swticher in the UI directly */}
-                  {/* TODO: make it relative, maybe create a new component for selecting just a month and year */}
-                  <AnimatePresence>
-                    {isMonthSelectorOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="absolute z-66 shadow-2xl scale-90 md:scale-80 -left-4 -top-1 bg-brand-neutral-dark rounded-xl"
                       >
-                        <MonthSelector
-                          selectedDate={selectedDate}
-                          onDateChange={setSelectedDate}
-                        />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                        <CalendarIcon />
+                      </button>
+                    </motion.div>
+                  ) : (
+                    // {/* month selector appears over the modal only after clicking the calendar button - no need for swticher in the UI directly */}
+                    // {/* TODO: make it relative, maybe create a new component for selecting just a month and year */}
+                    <motion.div
+                      key="date-selector"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <DateSelector
+                        selectedDate={selectedDate}
+                        onDateChange={setSelectedDate}
+                        format="month"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               <div className="flex-1 overflow-y-auto md:p-6 p-4 space-y-4">
