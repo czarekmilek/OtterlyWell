@@ -1,22 +1,27 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import type { Task } from "../../../types/types";
-import { CheckIcon, DeleteIcon } from "../../../../icons";
+import type { Task, TaskCategory } from "../../../types/types";
+import { CheckIcon, DeleteIcon, EditIcon } from "../../../../icons";
 import ConfirmDeleteDialog from "../../../../UI/ConfirmDeleteDialog";
+import { AddTaskModal } from "../../AddTaskModal";
 
 interface TaskItemProps {
   task: Task;
+  categories: TaskCategory[];
   onComplete: (taskId: string) => void;
   onDismiss: (taskId: string) => void;
   onDelete: (taskId: string) => void;
+  onEdit: (taskId: string, updates: Partial<Task>) => void;
   currentDate: Date;
 }
 
 export default function TaskItem({
   task,
+  categories,
   onComplete,
   onDismiss,
   onDelete,
+  onEdit,
   currentDate,
 }: TaskItemProps) {
   const priorityColors = {
@@ -76,6 +81,7 @@ export default function TaskItem({
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   return (
     <>
@@ -160,23 +166,25 @@ export default function TaskItem({
           </div>
         </div>
 
-        {/* <div className="absolute top-2 right-2 flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onDismiss(task.id);
-          }}
-          className="p-1 rounded-full hover:bg-brand-neutral-light/20 text-brand-neutral-light/60 hover:text-brand-neutral-light 
-                    text-xs transition-all cursor-pointer"
-          title="Archiwizuj"
-        >
-          <DeleteIcon className="scale-75" />
-        </button>
-      </div> */}
+        {!isCompleted && isExpanded && (
+          <div className="absolute top-1 right-2 flex gap-1 opacity-100">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsEditModalOpen(true);
+              }}
+              className="p-1 hover:bg-brand-neutral-light/20 rounded-full text-brand-neutral-light/60 hover:text-brand-neutral-light 
+                     text-xs transition-all cursor-pointer flex items-center justify-center"
+              title="Edytuj"
+            >
+              <EditIcon className="scale-75" />
+            </button>
+          </div>
+        )}
 
         {/* TODO: make better for mobile, icons are over the name */}
         {isCompleted && (
-          <div className="absolute top-2 right-2 flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-1 right-2 flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
             {/* <button
             onClick={(e) => {
               e.stopPropagation();
@@ -226,6 +234,14 @@ export default function TaskItem({
             do historii?
           </p>
         }
+      />
+
+      <AddTaskModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSubmit={(updatedTask) => onEdit(task.id, updatedTask)}
+        categories={categories}
+        initialData={task}
       />
     </>
   );

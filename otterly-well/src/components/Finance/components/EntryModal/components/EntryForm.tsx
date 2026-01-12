@@ -19,28 +19,58 @@ interface EntryFormProps {
   ) => Promise<any>;
   categories: FinanceCategory[];
   initialType?: FinanceType;
+  initialData?: FinanceTransaction;
 }
 
 const EntryForm = forwardRef<HTMLDivElement, EntryFormProps>(
-  ({ isOpen, onClose, onSubmit, categories, initialType = "expense" }, ref) => {
-    const [type, setType] = useState<FinanceType>(initialType);
-    const [amount, setAmount] = useState("");
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [categoryId, setCategoryId] = useState("");
-    const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  (
+    {
+      isOpen,
+      onClose,
+      onSubmit,
+      categories,
+      initialType = "expense",
+      initialData,
+    },
+    ref
+  ) => {
+    // for editing, to see where we came from
+    const [type, setType] = useState<FinanceType>(
+      initialData?.type || initialType
+    );
+    const [amount, setAmount] = useState(initialData?.amount.toString() || "");
+    const [title, setTitle] = useState(initialData?.title || "");
+    const [description, setDescription] = useState(
+      initialData?.description || ""
+    );
+    const [categoryId, setCategoryId] = useState(
+      initialData?.category_id || ""
+    );
+    const [date, setDate] = useState(
+      initialData?.date || new Date().toISOString().split("T")[0]
+    );
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
       if (isOpen) {
-        setType(initialType);
-        setAmount("");
-        setTitle("");
-        setDescription("");
-        setCategoryId("");
-        setDate(new Date().toISOString().split("T")[0]);
+        // if we are editing we have initialData
+        if (initialData) {
+          setType(initialData.type);
+          setAmount(initialData.amount.toString());
+          setTitle(initialData.title);
+          setDescription(initialData.description || "");
+          setCategoryId(initialData.category_id || "");
+          setDate(initialData.date);
+        } else {
+          setType(initialType);
+          setAmount("");
+          setTitle("");
+          setDescription("");
+          setCategoryId("");
+          setDate(new Date().toISOString().split("T")[0]);
+        }
       }
-    }, [isOpen, initialType]);
+    }, [isOpen, initialType, initialData]);
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();

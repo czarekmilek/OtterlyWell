@@ -163,11 +163,38 @@ export function useTaskMutations({
     [tasks, setTasks]
   );
 
+  const editTask = useCallback(
+    async (taskId: string, updates: Partial<Task>) => {
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      const updatedTask = { ...task, ...updates };
+
+      setTasks((prev) => prev.map((t) => (t.id === taskId ? updatedTask : t)));
+
+      try {
+        const { error } = await supabase
+          .from("tasks")
+          .update(updates)
+          .eq("id", taskId);
+
+        if (error) {
+          setTasks((prev) => prev.map((t) => (t.id === taskId ? task : t)));
+          throw error;
+        }
+      } catch (error) {
+        console.error("Error editing task:", error);
+      }
+    },
+    [tasks, setTasks]
+  );
+
   return {
     addTask,
     toggleTaskCompletion,
     deleteTask,
     dismissTask,
     restoreTask,
+    editTask,
   };
 }

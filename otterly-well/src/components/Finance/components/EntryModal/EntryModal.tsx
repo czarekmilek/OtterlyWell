@@ -18,14 +18,17 @@ interface EntryModalProps {
   ) => Promise<any>;
   categories: FinanceCategory[];
   initialType?: FinanceType;
+  initialData?: FinanceTransaction;
 }
 
+// Initial data is for editing, it allows to reuse this modal instead of creating a new one
 export default function EntryModal({
   isOpen,
   onClose,
   onSubmit,
   categories,
   initialType = "expense",
+  initialData,
 }: EntryModalProps) {
   return (
     <Transition show={isOpen} as={Fragment}>
@@ -59,6 +62,7 @@ export default function EntryModal({
                 onSubmit={onSubmit}
                 categories={categories}
                 initialType={initialType}
+                initialData={initialData}
               />
             </TransitionChild>
           </div>

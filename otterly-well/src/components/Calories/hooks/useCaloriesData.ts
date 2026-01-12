@@ -258,6 +258,22 @@ export function useCaloriesData(user: User | null, selectedDate: Date) {
     setEntries((prev) => prev.filter((e) => e.id !== id));
   }
 
+  async function editEntry(id: string, updates: Partial<Entry>) {
+    const { error } = await supabase
+      .from("calorie_entries")
+      .update(updates)
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error updating entry", error);
+      return;
+    }
+
+    setEntries((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, ...updates } : e))
+    );
+  }
+
   return {
     entries,
     isLoading,
@@ -266,6 +282,7 @@ export function useCaloriesData(user: User | null, selectedDate: Date) {
     addEntryFromFood,
     addCustomEntry,
     removeEntry,
+    editEntry,
     updateGoal,
   };
 }

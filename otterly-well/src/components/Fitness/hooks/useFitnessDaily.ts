@@ -85,5 +85,20 @@ export function useFitnessDaily(date: Date) {
     }
   };
 
-  return { entries, isLoading, addEntry, removeEntry };
+  const editEntry = async (id: string, updates: Partial<WorkoutEntry>) => {
+    const { error } = await supabase
+      .from("workout_logs")
+      .update(updates)
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error updating workout log", error);
+    } else {
+      setEntries((prev) =>
+        prev.map((e) => (e.id === id ? { ...e, ...updates } : e))
+      );
+    }
+  };
+
+  return { entries, isLoading, addEntry, removeEntry, editEntry };
 }

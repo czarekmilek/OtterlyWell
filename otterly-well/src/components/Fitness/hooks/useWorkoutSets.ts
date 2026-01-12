@@ -99,5 +99,51 @@ export function useWorkoutSets(query: string) {
     refreshSets();
   };
 
-  return { loading, sets, error, refreshSets, createSet, deleteSet };
+  const updateSet = async (
+    setId: string,
+    name: string,
+    description: string,
+    items: any[]
+  ) => {
+    if (!user) throw new Error("Użytkownik nie jest zalogowany");
+
+    const { error: setError } = await supabase
+      .from("workout_sets")
+      .update({
+        name,
+        description,
+      })
+      .eq("id", setId);
+
+    if (setError) throw setError;
+
+    const { error: deleteError } = await supabase
+      .from("workout_set_items")
+      .delete()
+      .eq("set_id", setId);
+
+    if (deleteError) throw deleteError;
+
+    if (items.length > 0) {
+      const setItems = items.map((item, index) => ({
+        set_id: setId,
+        exercise_id: item.exercise.id,
+        order_index: index,
+        sets: item.sets,
+        reps: item.reps,
+        weight_kg: item.weight,
+        duration_min: item.duration,
+      }));
+
+      const { error: itemsError } = await supabase
+        .from("workout_set_items")
+        .insert(setItems);
+
+      if (itemsError) throw itemsError;
+    }
+
+    refreshSets();
+  };
+
+  return { loading, sets, error, refreshSets, createSet, deleteSet, updateSet };
 }

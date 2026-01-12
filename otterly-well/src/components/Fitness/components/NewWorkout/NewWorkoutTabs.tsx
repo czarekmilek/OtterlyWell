@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import ExerciseSearch from "./ExerciseSearch";
 import SetSearch from "./SetSearch";
-import CreateSetModal from "./CreateSetModal";
+import SetModal from "./SetModal";
 import CreateExerciseModal from "./CreateExerciseModal";
 import type { Exercise, ExerciseSet } from "../../types/types";
 import type { ExerciseInputData } from "./AddExerciseToList";
@@ -82,9 +82,9 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
 
       <AnimatePresence>
         {isCreateSetModalOpen && (
-          <CreateSetModal
+          <SetModal
             onClose={() => setIsCreateSetModalOpen(false)}
-            onCreated={() => setIsCreateSetModalOpen(false)}
+            onSuccess={() => setIsCreateSetModalOpen(false)}
           />
         )}
         {isCreateExerciseModalOpen && (

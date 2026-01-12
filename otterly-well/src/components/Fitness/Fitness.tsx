@@ -12,7 +12,7 @@ import type { ExerciseInputData } from "./components/NewWorkout/AddExerciseToLis
 export default function Fitness() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const { entries, isLoading, addEntry, removeEntry } =
+  const { entries, isLoading, addEntry, removeEntry, editEntry } =
     useFitnessDaily(selectedDate);
 
   const handleAddExercise = async (
@@ -43,6 +43,7 @@ export default function Fitness() {
           entries={entries}
           onRemoveEntry={handleRemoveEntry}
           isLoading={isLoading}
+          onEdit={editEntry}
         />
       </div>
       <div className="lg:w-2/3 w-full h-full flex flex-col gap-4 overflow-hidden order-1 lg:order-2">

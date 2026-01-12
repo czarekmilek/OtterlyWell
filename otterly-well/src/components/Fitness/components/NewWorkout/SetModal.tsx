@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ExerciseSearch from "./ExerciseSearch";
 import { useWorkoutSets } from "../../hooks/useWorkoutSets";
-import type { Exercise } from "../../types/types";
+import type { Exercise, ExerciseSet } from "../../types/types";
 import { CloseIcon, DeleteIcon } from "../../../icons";
 import type { ExerciseInputData } from "./AddExerciseToList";
 
-interface CreateSetModalProps {
+interface SetModalProps {
   onClose: () => void;
-  onCreated: () => void;
+  onSuccess: () => void;
+  initialData?: ExerciseSet;
 }
 
 interface NewSetItem {
@@ -21,17 +22,36 @@ interface NewSetItem {
   distance: number;
 }
 
-export default function CreateSetModal({
+export default function SetModal({
   onClose,
-  onCreated,
-}: CreateSetModalProps) {
-  const { createSet } = useWorkoutSets("");
+  onSuccess,
+  initialData,
+}: SetModalProps) {
+  const { createSet, updateSet } = useWorkoutSets("");
   const [step, setStep] = useState<"details" | "add-exercise">("details");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState(initialData?.name || "");
+  const [description, setDescription] = useState(
+    initialData?.description || ""
+  );
   const [items, setItems] = useState<NewSetItem[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialData?.items) {
+      setItems(
+        initialData.items.map((item) => ({
+          id: item.id || Math.random().toString(36).substr(2, 9),
+          exercise: item.exercise!,
+          sets: item.sets,
+          reps: item.reps,
+          weight: item.weight_kg || 0,
+          duration: item.duration_min || 0,
+          distance: item.distance_km || 0,
+        }))
+      );
+    }
+  }, [initialData]);
 
   const handleAddExercise = (exercise: Exercise, data: ExerciseInputData) => {
     const newItem: NewSetItem = {
@@ -51,7 +71,7 @@ export default function CreateSetModal({
     setItems((prev) => prev.filter((i) => i.id !== id));
   };
 
-  const handleCreate = async () => {
+  const handleSubmit = async () => {
     if (!name.trim()) {
       setError("Nazwa zestawu jest wymagana");
       return;
@@ -65,12 +85,16 @@ export default function CreateSetModal({
     setError(null);
 
     try {
-      await createSet(name, description, items);
-      onCreated();
+      if (initialData) {
+        await updateSet(initialData.id, name, description, items);
+      } else {
+        await createSet(name, description, items);
+      }
+      onSuccess();
       onClose();
     } catch (err: any) {
-      console.error("Failed to create set:", err);
-      setError("Nie udało się utworzyć zestawu: " + err.message);
+      console.error("Failed to save set:", err);
+      setError("Nie udało się zapisać zestawu: " + err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -88,7 +112,9 @@ export default function CreateSetModal({
         <div className="flex justify-between items-center p-4 border-b border-brand-depth bg-brand-neutral-dark/50">
           <h2 className="text-xl font-bold text-brand-neutral-light">
             {step === "details"
-              ? "Stwórz nowy zestaw ćwiczeń"
+              ? initialData
+                ? "Edytuj zestaw ćwiczeń"
+                : "Stwórz nowy zestaw ćwiczeń"
               : "Dodaj ćwiczenie do zestawu"}
           </h2>
           <button
@@ -206,12 +232,16 @@ export default function CreateSetModal({
 
                 <div className="mt-auto pt-4">
                   <button
-                    onClick={handleCreate}
+                    onClick={handleSubmit}
                     disabled={isSubmitting}
                     className="w-full py-3 bg-brand-accent-1 hover:bg-brand-accent-2 disabled:opacity-50 disabled:cursor-not-allowed
                              text-white font-bold rounded-xl shadow-lg transition-all cursor-pointer"
                   >
-                    {isSubmitting ? "Zapisywanie..." : "Utwórz zestaw"}
+                    {isSubmitting
+                      ? "Zapisywanie..."
+                      : initialData
+                      ? "Zapisz zmiany"
+                      : "Utwórz zestaw"}
                   </button>
                 </div>
               </motion.div>

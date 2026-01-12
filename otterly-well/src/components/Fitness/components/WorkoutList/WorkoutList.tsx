@@ -6,12 +6,14 @@ interface WorkoutListProps {
   entries: WorkoutEntry[];
   onRemoveEntry: (id: string) => void;
   isLoading: boolean;
+  onEdit: (id: string, updates: Partial<WorkoutEntry>) => Promise<void>;
 }
 
 export default function WorkoutList({
   entries,
   onRemoveEntry,
   isLoading,
+  onEdit,
 }: WorkoutListProps) {
   if (isLoading) {
     return (
@@ -45,6 +47,7 @@ export default function WorkoutList({
               key={entry.id}
               entry={entry}
               onRemoveEntry={onRemoveEntry}
+              onEdit={onEdit}
             />
           ))}
         </AnimatePresence>

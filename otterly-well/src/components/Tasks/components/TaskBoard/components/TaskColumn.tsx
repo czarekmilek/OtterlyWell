@@ -7,18 +7,22 @@ import { CheckIcon } from "../../../../icons";
 interface TaskColumnProps {
   category: TaskCategory;
   tasks: Task[];
+  allCategories: TaskCategory[];
   onComplete: (taskId: string) => void;
   onDismiss: (taskId: string) => void;
   onDelete: (taskId: string) => void;
+  onEdit: (taskId: string, updates: Partial<Task>) => void;
   currentDate: Date;
 }
 
 export default function TaskColumn({
   category,
   tasks,
+  allCategories,
   onComplete,
   onDismiss,
   onDelete,
+  onEdit,
   currentDate,
 }: TaskColumnProps) {
   const sortedTasks = useMemo(() => {
@@ -77,9 +81,11 @@ export default function TaskColumn({
             <TaskItem
               key={task.id}
               task={task}
+              categories={allCategories}
               onComplete={onComplete}
               onDismiss={onDismiss}
               onDelete={onDelete}
+              onEdit={onEdit}
               currentDate={currentDate}
             />
           ))}

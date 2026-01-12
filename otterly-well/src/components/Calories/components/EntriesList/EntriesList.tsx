@@ -6,12 +6,14 @@ interface EntriesListProps {
   entries: Entry[];
   removeEntry: (id: string) => void;
   isLoading: boolean;
+  onEdit: (id: string, updates: Partial<Entry>) => void;
 }
 
 export const EntriesList = ({
   entries,
   removeEntry,
   isLoading,
+  onEdit,
 }: EntriesListProps) => {
   return (
     <div className="flex flex-col flex-1 min-h-0">
@@ -40,7 +42,12 @@ export const EntriesList = ({
             <ul className="divide-y divide-brand-depth/70 space-y-2">
               <AnimatePresence>
                 {entries.map((e) => (
-                  <EntryItem key={e.id} entry={e} removeEntry={removeEntry} />
+                  <EntryItem
+                    key={e.id}
+                    entry={e}
+                    removeEntry={removeEntry}
+                    onEdit={onEdit}
+                  />
                 ))}
               </AnimatePresence>
             </ul>

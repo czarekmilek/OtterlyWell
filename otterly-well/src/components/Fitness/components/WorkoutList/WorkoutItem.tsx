@@ -2,18 +2,22 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import type { WorkoutEntry } from "../../types/types";
 import ConfirmDeleteDialog from "../../../UI/ConfirmDeleteDialog";
-import { DeleteIcon } from "../../../icons";
+import { DeleteIcon, EditIcon } from "../../../icons";
+import { EditWorkoutModal } from "./EditWorkoutModal";
 
 interface WorkoutItemProps {
   entry: WorkoutEntry;
   onRemoveEntry: (id: string) => void;
+  onEdit: (id: string, updates: Partial<WorkoutEntry>) => Promise<void>;
 }
 
 export default function WorkoutItem({
   entry,
   onRemoveEntry,
+  onEdit,
 }: WorkoutItemProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -60,14 +64,26 @@ export default function WorkoutItem({
                 : "Cardio"}
             </p>
           </div>
-          <button
-            onClick={openModal}
-            className="flex sm:w-auto h-fit items-center justify-center rounded-md text-sm text-brand-neutral-light 
-                       hover:bg-red-800/20 hover:border-red-500/30 hover:text-red-400
-                       transition-colors duration-200 cursor-pointer"
-          >
-            <DeleteIcon />
-          </button>
+          <div className="flex sm:flex-row flex-col gap-1">
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="flex sm:order-1 order-2 sm:w-auto h-fit items-center justify-center rounded-full text-sm text-brand-neutral-light 
+                        hover:bg-brand-neutral-light/10 hover:text-brand-neutral-light
+                        transition-colors duration-200 cursor-pointer p-1"
+              title="Edytuj"
+            >
+              <EditIcon className="scale-75" />
+            </button>
+            <button
+              onClick={openModal}
+              className="flex sm:order-2 order-1 sm:w-auto h-fit items-center justify-center rounded-full text-sm text-brand-neutral-light 
+                        hover:bg-red-800/20 hover:border-red-500/30 hover:text-red-400
+                        transition-colors duration-200 cursor-pointer p-1"
+              title="Usuń"
+            >
+              <DeleteIcon className="scale-75" />
+            </button>
+          </div>
         </div>
 
         <div className="mt-3 flex gap-4">
@@ -148,6 +164,13 @@ export default function WorkoutItem({
             ? Tej akcji nie można cofnąć.
           </p>
         }
+      />
+
+      <EditWorkoutModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        entry={entry}
+        onSave={onEdit}
       />
     </>
   );

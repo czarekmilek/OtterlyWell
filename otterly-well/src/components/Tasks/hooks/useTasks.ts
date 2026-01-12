@@ -12,6 +12,7 @@ export function useTasks() {
     deleteTask,
     dismissTask,
     restoreTask,
+    editTask,
   } = useTaskMutations({ user, tasks, setTasks });
 
   const {
@@ -41,5 +42,6 @@ export function useTasks() {
     deleteCategory,
     dismissTask,
     restoreTask,
+    editTask,
   };
 }

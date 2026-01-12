@@ -17,6 +17,7 @@ export default function Calories() {
     addEntryFromFood,
     addCustomEntry,
     removeEntry,
+    editEntry,
     updateGoal,
   } = useCaloriesData(user, selectedDate);
 
@@ -59,6 +60,7 @@ export default function Calories() {
           entries={entries}
           removeEntry={removeEntry}
           isLoading={isLoading}
+          onEdit={editEntry}
         />
         <AddDataSection
           addEntryFromFood={addEntryFromFood}

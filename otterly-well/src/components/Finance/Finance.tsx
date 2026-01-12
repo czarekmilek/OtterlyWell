@@ -19,6 +19,7 @@ export default function Finance() {
     isLoading,
     addTransaction,
     deleteTransaction,
+    editTransaction,
     saveBudget,
     toggleCategory,
   } = useFinance();
@@ -119,8 +120,10 @@ export default function Finance() {
           >
             <TransactionList
               transactions={monthTransactions}
+              categories={categories}
               isLoading={isLoading}
               onDelete={deleteTransaction}
+              onEdit={editTransaction}
             />
           </div>
         </div>

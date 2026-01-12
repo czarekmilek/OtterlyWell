@@ -1,21 +1,30 @@
 import { useState } from "react";
-import { DeleteIcon } from "../../../../icons";
+import { DeleteIcon, EditIcon } from "../../../../icons";
 import ConfirmDeleteDialog from "../../../../UI/ConfirmDeleteDialog";
-import type { FinanceTransaction } from "../../../types/types";
+import EntryModal from "../../EntryModal/EntryModal";
+import type { FinanceTransaction, FinanceCategory } from "../../../types/types";
 import { getCategoryColor } from "../../../constants/categoryColors";
 import { getCategoryIcon } from "../../../constants/categoryIcons";
 
 interface TransactionItemProps {
   transaction: FinanceTransaction;
+  categories: FinanceCategory[];
   onDelete: (id: string) => void;
+  onEdit: (
+    id: string,
+    updatedTransaction: Partial<FinanceTransaction>
+  ) => Promise<any>;
 }
 
 export function TransactionItem({
   transaction,
+  categories,
   onDelete,
+  onEdit,
 }: TransactionItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const categoryColor = getCategoryColor(transaction.finance_categories?.name);
   const categoryIcon = getCategoryIcon(transaction.finance_categories?.name);
 
@@ -77,11 +86,22 @@ export function TransactionItem({
           </div>
 
           {isExpanded ? (
-            <div className="flex items-end justify-end">
+            <div className="flex items-end justify-end gap-1">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setIsModalOpen(true);
+                  setIsEditModalOpen(true);
+                }}
+                className="flex items-center p-1 text-brand-neutral-light hover:bg-brand-neutral-light/10
+                      rounded-full transition-all cursor-pointer"
+                title="Edytuj"
+              >
+                <EditIcon className="scale-80" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsDeleteModalOpen(true);
                 }}
                 className="flex items-center p-1 text-brand-negative hover:bg-brand-negative/10
                       rounded-full transition-all cursor-pointer"
@@ -114,8 +134,8 @@ export function TransactionItem({
       </div>
 
       <ConfirmDeleteDialog
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={() => onDelete(transaction.id)}
         description={
           <p>
@@ -126,6 +146,14 @@ export function TransactionItem({
             ? Tej akcji nie można cofnąć.
           </p>
         }
+      />
+
+      <EntryModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSubmit={(updatedData) => onEdit(transaction.id, updatedData)}
+        categories={categories}
+        initialData={transaction}
       />
     </>
   );

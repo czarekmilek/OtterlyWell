@@ -83,6 +83,41 @@ export function useTransactions(categories: FinanceCategory[]) {
     setTransactions((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const editTransaction = async (
+    id: string,
+    updatedTransaction: Partial<
+      Omit<
+        FinanceTransaction,
+        "id" | "user_id" | "created_at" | "finance_categories"
+      >
+    >
+  ) => {
+    const { data, error } = await supabase
+      .from("finance_transactions")
+      .update(updatedTransaction)
+      .eq("id", id)
+      .select("*")
+      .single();
+
+    if (error) {
+      console.error("Error editing transaction:", error);
+      throw error;
+    }
+
+    const enrichedTransaction = {
+      ...data,
+      finance_categories: categories.find((c) => c.id === data.category_id),
+    };
+
+    setTransactions((prev) =>
+      prev.map((t) =>
+        t.id === id ? (enrichedTransaction as FinanceTransaction) : t
+      )
+    );
+
+    return enrichedTransaction as FinanceTransaction;
+  };
+
   return {
     transactions,
     transactionsLoading,
@@ -90,5 +125,6 @@ export function useTransactions(categories: FinanceCategory[]) {
     fetchTransactions,
     addTransaction,
     deleteTransaction,
+    editTransaction,
   };
 }

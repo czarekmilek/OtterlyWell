@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useWorkoutSets } from "../../hooks/useWorkoutSets";
-import { SearchIcon } from "../../../icons";
+import { SearchIcon, EditIcon, DeleteIcon } from "../../../icons";
 import type { ExerciseSet } from "../../types/types";
+import SetModal from "./SetModal";
+import ConfirmDeleteDialog from "../../../UI/ConfirmDeleteDialog";
 
 interface SetSearchProps {
   onAddSet: (set: ExerciseSet) => void;
@@ -11,14 +13,29 @@ interface SetSearchProps {
 
 export default function SetSearch({ onAddSet, onCreateSet }: SetSearchProps) {
   const [query, setQuery] = useState("");
-  const { loading, sets, error } = useWorkoutSets(query);
+  const { loading, sets, error, refreshSets, deleteSet } =
+    useWorkoutSets(query);
   const [selectedSet, setSelectedSet] = useState<ExerciseSet | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleAdd = () => {
     if (selectedSet) {
       onAddSet(selectedSet);
       setSelectedSet(null);
       setQuery("");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (selectedSet) {
+      try {
+        await deleteSet(selectedSet.id);
+        setSelectedSet(null);
+        setIsDeleteModalOpen(false);
+      } catch (err) {
+        console.error("Failed to delete set", err);
+      }
     }
   };
 
@@ -139,13 +156,33 @@ export default function SetSearch({ onAddSet, onCreateSet }: SetSearchProps) {
                   {selectedSet.description}
                 </p>
               </div>
-              <button
-                onClick={() => setSelectedSet(null)}
-                className="text-sm text-brand-neutral-light/60 hover:text-brand-neutral-light hover:underline transition-all 
-                          cursor-pointer p-1"
-              >
-                Wróć
-              </button>
+              <div className="flex flex-col items-end gap-2">
+                <button
+                  onClick={() => setSelectedSet(null)}
+                  className="text-sm text-brand-neutral-light/60 hover:text-brand-neutral-light hover:underline transition-all 
+                            cursor-pointer p-1"
+                >
+                  Wróć
+                </button>
+                <div className="ml-4 flex sm:flex-row flex-col gap-2">
+                  <button
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="flex items-center justify-center p-1.5 rounded-lg bg-brand-depth/40 text-brand-neutral-light/70 
+                    hover:text-brand-accent-3 hover:bg-brand-accent-3/10 transition-colors cursor-pointer"
+                    title="Edytuj zestaw"
+                  >
+                    <EditIcon className="scale-75" />
+                  </button>
+                  <button
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="flex items-center justify-center p-1.5 rounded-lg bg-brand-depth/40 text-brand-neutral-light/70 
+                    hover:text-red-400 hover:bg-red-400/10 transition-colors cursor-pointer"
+                    title="Usuń zestaw"
+                  >
+                    <DeleteIcon className="scale-75" />
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto mb-4 custom-scrollbar">
@@ -191,6 +228,34 @@ export default function SetSearch({ onAddSet, onCreateSet }: SetSearchProps) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {isEditModalOpen && selectedSet && (
+        <SetModal
+          initialData={selectedSet}
+          onClose={() => setIsEditModalOpen(false)}
+          onSuccess={() => {
+            refreshSets();
+            setSelectedSet(null);
+            setIsEditModalOpen(false);
+          }}
+        />
+      )}
+
+      <ConfirmDeleteDialog
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Usuń zestaw"
+        description={
+          <p>
+            Czy na pewno chcesz usunąć zestaw{" "}
+            <strong className="text-brand-neutral-light">
+              {selectedSet?.name}
+            </strong>
+            ?
+          </p>
+        }
+      />
     </div>
   );
 }

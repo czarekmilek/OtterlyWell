@@ -23,6 +23,7 @@ export function useFinance() {
     fetchTransactions,
     addTransaction,
     deleteTransaction,
+    editTransaction,
   } = useTransactions(categories);
 
   const refresh = useCallback(async () => {
@@ -42,6 +43,7 @@ export function useFinance() {
     toggleCategory,
     addTransaction,
     deleteTransaction,
+    editTransaction,
     saveBudget,
     refresh,
   };
