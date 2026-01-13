@@ -32,7 +32,7 @@ export default function ExerciseSearch({
   };
 
   return (
-    <div className="flex flex-col h-full bg-brand-neutral-dark/20 overflow-hidden border border-brand-depth/50">
+    <div className="flex flex-col h-full bg-brand-neutral-dark/50 rounded-b-xl overflow-hidden border border-brand-depth/50">
       <AnimatePresence mode="wait">
         {!selectedExercise ? (
           <motion.div
@@ -162,8 +162,14 @@ export default function ExerciseSearch({
 
               {!loading && isRecent && hits.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-12 text-brand-neutral-light/30">
-                  <SearchIcon className="text-5xl mb-3 opacity-20" />
+                  <SearchIcon className="text-5xl mb-3" />
                   <p className="text-sm">Wpisz nazwę aby wyszukać</p>
+                  <button
+                    onClick={onCreateExercise}
+                    className="mt-2 text-brand-accent-1 hover:underline cursor-pointer text-sm"
+                  >
+                    lub stwórz nowe ćwiczenie
+                  </button>
                 </div>
               )}
             </div>

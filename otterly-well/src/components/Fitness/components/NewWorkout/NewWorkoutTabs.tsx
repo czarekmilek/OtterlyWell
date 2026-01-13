@@ -6,6 +6,7 @@ import SetModal from "./SetModal";
 import CreateExerciseModal from "./CreateExerciseModal";
 import type { Exercise, ExerciseSet } from "../../types/types";
 import type { ExerciseInputData } from "./AddExerciseToList";
+import TabButton from "../../../UI/TabButton";
 
 interface NewWorkoutTabsProps {
   onAddExercise: (exercise: Exercise, data: ExerciseInputData) => void;
@@ -18,13 +19,6 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
   const [isCreateSetModalOpen, setIsCreateSetModalOpen] = useState(false);
   const [isCreateExerciseModalOpen, setIsCreateExerciseModalOpen] =
     useState(false);
-
-  const getTabClassName = (isActive: boolean) =>
-    `flex-1 text-center px-2 sm:px-4 py-2 rounded-t-md transition-colors relative -mb-px ${
-      isActive
-        ? "bg-brand-neutral-dark/50 text-brand-neutral-light border-x border-t border-brand-depth border-b-transparent font-bold"
-        : "text-brand-neutral-dark hover:bg-brand-accent-3 border-b border-brand-depth cursor-pointer"
-    }`;
 
   const handleAddSet = (set: ExerciseSet) => {
     set.items?.forEach((item) => {
@@ -42,20 +36,21 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
 
   return (
     <>
-      <div className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4 flex-1 flex flex-col min-h-0">
-        <div className="flex border-b border-brand-depth">
-          <button
-            onClick={() => setActiveCategory("exercises")}
-            className={getTabClassName(activeCategory === "exercises")}
-          >
-            Ćwiczenia
-          </button>
-          <button
-            onClick={() => setActiveCategory("sets")}
-            className={getTabClassName(activeCategory === "sets")}
-          >
-            Zestawy
-          </button>
+      <div className="rounded-xl flex-1 flex flex-col min-h-0">
+        <div className="flex border-b border-brand-depth gap-2">
+          {/* using TabButton component for the same look as in Calories and Finacne */}
+          <TabButton
+            label="Ćwiczenia"
+            value="exercises"
+            isSelected={activeCategory === "exercises"}
+            setSelectedTab={(val) => setActiveCategory(val as "exercises")}
+          />
+          <TabButton
+            label="Zestawy"
+            value="sets"
+            isSelected={activeCategory === "sets"}
+            setSelectedTab={(val) => setActiveCategory(val as "sets")}
+          />
         </div>
 
         {activeCategory === "exercises" ? (

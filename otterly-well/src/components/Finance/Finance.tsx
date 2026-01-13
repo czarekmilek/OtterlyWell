@@ -7,7 +7,7 @@ import BudgetPlanner from "./components/BudgetPlanner/BudgetPlanner";
 import type { FinanceType } from "./types/types";
 import { FinanceStats } from "./components/FinanceStats/FinanceStats";
 import { NewTransactionModal } from "./components/NewTransactionModal";
-import TabButton from "./components/TabButton";
+import TabButton from "../UI/TabButton";
 import BilanceBreakdown from "./components/BilanceBreakdown/BilanceBreakdown";
 import { DateSelector } from "../UI/DateSelector";
 
@@ -142,6 +142,7 @@ export default function Finance() {
                 value="stats"
                 isSelected={selectedTab === "stats"}
                 setSelectedTab={setSelectedTab}
+                disabled={transactions.length === 0}
               />
             </div>
           </div>
@@ -158,6 +159,7 @@ export default function Finance() {
               <BilanceBreakdown
                 categories={categories}
                 categorySpending={categorySpending}
+                stats={stats}
               />
             )}
           </div>

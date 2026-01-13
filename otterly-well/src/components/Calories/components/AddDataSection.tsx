@@ -55,7 +55,7 @@ export function AddDataSection({
     );
 
   const getTabClassName = (tabName: typeof activeTab) =>
-    `glass-header text-sm sm:text-base py-2 px-4 rounded-t-xl transition-all relative ${
+    `glass-header text-sm sm:text-base py-2 px-4 rounded-t-xl transition-all relative cursor-pointer ${
       activeTab === tabName
         ? "bg-brand-neutral-dark/70 z-11 border-b-0"
         : "opacity-70 hover:opacity-100 hover:bg-brand-neutral-dark/60"

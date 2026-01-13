@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import { useAuth } from "../../../context/AuthContext";
 import type { FinanceCategory } from "../types/types";
@@ -8,6 +8,8 @@ export function useCategories() {
   const [categories, setCategories] = useState<FinanceCategory[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [categoriesError, setCategoriesError] = useState<string | null>(null);
+
+  const seedingRef = useRef(false);
 
   const fetchCategories = useCallback(async () => {
     if (!user) return;
@@ -21,11 +23,93 @@ export function useCategories() {
 
       if (catError) throw catError;
 
-      let fetchedCategories = catData;
-      setCategories(fetchedCategories);
+      if (catData && catData.length > 0) {
+        const uniqueKeys = new Set();
+        const duplicates: FinanceCategory[] = [];
+        const uniqueCategories: FinanceCategory[] = [];
+
+        for (const cat of catData) {
+          const key = `${cat.name}-${cat.type}`;
+          if (uniqueKeys.has(key)) {
+            duplicates.push(cat);
+          } else {
+            uniqueKeys.add(key);
+            uniqueCategories.push(cat);
+          }
+        }
+
+        if (duplicates.length > 0) {
+          console.log("Found duplicates, cleaning up...", duplicates);
+          // deleting duplicates from DB if found
+          const { error: deleteError } = await supabase
+            .from("finance_categories")
+            .delete()
+            .in(
+              "id",
+              duplicates.map((d) => d.id)
+            );
+
+          if (deleteError)
+            console.error("Error deleting duplicates:", deleteError);
+
+          setCategories(uniqueCategories);
+          return;
+        }
+      }
+
+      if ((!catData || catData.length === 0) && !seedingRef.current) {
+        seedingRef.current = true;
+        // if user is new he has now catData, then we create default ones for him
+        const defaultIncome = [
+          "Wynagrodzenia",
+          "Inwestycje",
+          "Prezenty",
+          "Inne",
+        ];
+        const defaultExpense = [
+          "Codzienne",
+          "Inne",
+          "Oszczędności",
+          "Transport",
+          "Jedzenie",
+          "Płatności",
+          "Samorozwój",
+          "Zdrowie",
+          "Rozrywka",
+          "Dom",
+        ];
+
+        const payload = [
+          ...defaultIncome.map((name) => ({
+            name,
+            type: "income",
+            user_id: user.id,
+            is_active: true,
+          })),
+          ...defaultExpense.map((name) => ({
+            name,
+            type: "expense",
+            user_id: user.id,
+            is_active: true,
+          })),
+        ];
+
+        const { data: insertedData, error: insertError } = await supabase
+          .from("finance_categories")
+          .insert(payload)
+          .select();
+
+        seedingRef.current = false;
+
+        if (insertError) throw insertError;
+        setCategories(insertedData as FinanceCategory[]);
+      } else {
+        setCategories(catData || []);
+      }
     } catch (err: any) {
       console.error("Error fetching categories:", err);
       setCategoriesError(err.message);
+      seedingRef.current = false;
     } finally {
       setCategoriesLoading(false);
     }

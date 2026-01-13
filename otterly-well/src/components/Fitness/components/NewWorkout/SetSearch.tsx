@@ -40,7 +40,7 @@ export default function SetSearch({ onAddSet, onCreateSet }: SetSearchProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-brand-neutral-dark/20 overflow-hidden border border-brand-depth/50">
+    <div className="flex flex-col h-full bg-brand-neutral-dark/50 rounded-b-xl overflow-hidden border border-brand-depth/50">
       <AnimatePresence mode="wait">
         {!selectedSet ? (
           <motion.div
@@ -124,6 +124,7 @@ export default function SetSearch({ onAddSet, onCreateSet }: SetSearchProps) {
 
               {!loading && !query && sets.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-12 text-brand-neutral-light/30">
+                  <SearchIcon className="text-5xl mb-3" />
                   <p className="text-sm">Brak zestawów</p>
                   <button
                     onClick={onCreateSet}
