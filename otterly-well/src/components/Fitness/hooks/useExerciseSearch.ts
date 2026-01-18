@@ -3,7 +3,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { useAuth } from "../../../context/AuthContext";
 import type { Exercise } from "../types/types";
 
-export function useExerciseSearch(query: string) {
+export function useExerciseSearch(query: string, refreshTrigger: number = 0) {
   const [loading, setLoading] = useState(false);
   const [hits, setHits] = useState<Exercise[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +65,7 @@ export function useExerciseSearch(query: string) {
 
     const debounce = setTimeout(fetchExercises, 300);
     return () => clearTimeout(debounce);
-  }, [query, user]);
+  }, [query, user, refreshTrigger]);
 
   return { loading, hits, error, isRecent };
 }

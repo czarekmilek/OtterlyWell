@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useWorkoutSets } from "../../hooks/useWorkoutSets";
-import { SearchIcon, EditIcon, DeleteIcon } from "../../../icons";
+import {
+  SearchIcon,
+  EditIcon,
+  DeleteIcon,
+  TrashIcon,
+  CloseIcon,
+  ArrowRightIcon,
+} from "../../../icons";
 import type { ExerciseSet } from "../../types/types";
 import SetModal from "./SetModal";
 import ConfirmDeleteDialog from "../../../UI/ConfirmDeleteDialog";
@@ -9,12 +16,19 @@ import ConfirmDeleteDialog from "../../../UI/ConfirmDeleteDialog";
 interface SetSearchProps {
   onAddSet: (set: ExerciseSet) => void;
   onCreateSet: () => void;
+  refreshTrigger?: number;
 }
 
-export default function SetSearch({ onAddSet, onCreateSet }: SetSearchProps) {
+export default function SetSearch({
+  onAddSet,
+  onCreateSet,
+  refreshTrigger = 0,
+}: SetSearchProps) {
   const [query, setQuery] = useState("");
-  const { loading, sets, error, refreshSets, deleteSet } =
-    useWorkoutSets(query);
+  const { loading, sets, error, refreshSets, deleteSet } = useWorkoutSets(
+    query,
+    refreshTrigger,
+  );
   const [selectedSet, setSelectedSet] = useState<ExerciseSet | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -147,40 +161,43 @@ export default function SetSearch({ onAddSet, onCreateSet }: SetSearchProps) {
           >
             <div className="flex items-start justify-between border-b border-brand-depth pb-4 mb-4">
               <div>
-                <h3 className="text-lg sm:text-xl font-bold text-brand-neutral-light">
-                  {selectedSet.name}
-                </h3>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setSelectedSet(null)}
+                    className="flex items-center justify-center p-2 hover:bg-brand-neutral-light/30 rounded-full transition-colors 
+                        text-brand-neutral-light/60 hover:text-brand-neutral-light cursor-pointer"
+                    title="Wróć"
+                  >
+                    <ArrowRightIcon className="scale-95 rotate-180" />
+                  </button>
+                  <h3 className="text-lg sm:text-xl font-bold text-brand-neutral-light">
+                    {selectedSet.name}
+                  </h3>
+                </div>
                 <p className="text-xs text-brand-neutral-light/60 uppercase tracking-wider mt-1">
                   Liczba ćwiczeń: {selectedSet.items?.length || 0}
                 </p>
-                <p className="text-xs text-brand-neutral-light/60 uppercase tracking-wider mt-1">
+                <p className="text-sm text-brand-neutral-light/70 mt-2 tracking-wide leading-relaxed">
                   {selectedSet.description}
                 </p>
               </div>
               <div className="flex flex-col items-end gap-2">
-                <button
-                  onClick={() => setSelectedSet(null)}
-                  className="text-sm text-brand-neutral-light/60 hover:text-brand-neutral-light hover:underline transition-all 
-                            cursor-pointer p-1"
-                >
-                  Wróć
-                </button>
                 <div className="ml-4 flex sm:flex-row flex-col gap-2">
                   <button
                     onClick={() => setIsEditModalOpen(true)}
-                    className="flex items-center justify-center p-1.5 rounded-lg bg-brand-depth/40 text-brand-neutral-light/70 
-                    hover:text-brand-accent-3 hover:bg-brand-accent-3/10 transition-colors cursor-pointer"
+                    className="flex items-center justify-center p-2 hover:bg-brand-accent-2/50 rounded-full transition-colors 
+                        text-brand-neutral-light/60 hover:text-brand-neutral-light cursor-pointer"
                     title="Edytuj zestaw"
                   >
-                    <EditIcon className="scale-75" />
+                    <EditIcon className="scale-95" />
                   </button>
                   <button
                     onClick={() => setIsDeleteModalOpen(true)}
-                    className="flex items-center justify-center p-1.5 rounded-lg bg-brand-depth/40 text-brand-neutral-light/70 
-                    hover:text-red-400 hover:bg-red-400/10 transition-colors cursor-pointer"
+                    className="flex items-center justify-center p-2 hover:bg-red-400/50 rounded-full transition-colors 
+                    text-brand-neutral-light/60 hover:text-brand-neutral-light cursor-pointer"
                     title="Usuń zestaw"
                   >
-                    <DeleteIcon className="scale-75" />
+                    <TrashIcon className="scale-95" />
                   </button>
                 </div>
               </div>

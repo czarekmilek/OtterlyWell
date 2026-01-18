@@ -3,7 +3,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import type { ExerciseSet } from "../types/types";
 import { useAuth } from "../../../context/AuthContext";
 
-export function useWorkoutSets(query: string) {
+export function useWorkoutSets(query: string, refreshTrigger: number = 0) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [sets, setSets] = useState<ExerciseSet[]>([]);
@@ -23,7 +23,7 @@ export function useWorkoutSets(query: string) {
             *,
             exercise:exercises (*)
           )
-        `
+        `,
         )
         .order("created_at", { ascending: false });
       ``;
@@ -47,7 +47,7 @@ export function useWorkoutSets(query: string) {
   useEffect(() => {
     const debounce = setTimeout(fetchSets, 300);
     return () => clearTimeout(debounce);
-  }, [query, user]);
+  }, [query, user, refreshTrigger]);
 
   const refreshSets = () => {
     fetchSets();
@@ -103,7 +103,7 @@ export function useWorkoutSets(query: string) {
     setId: string,
     name: string,
     description: string,
-    items: any[]
+    items: any[],
   ) => {
     if (!user) throw new Error("Użytkownik nie jest zalogowany");
 
