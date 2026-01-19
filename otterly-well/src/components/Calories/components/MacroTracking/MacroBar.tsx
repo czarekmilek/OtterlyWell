@@ -18,7 +18,7 @@ export function MacroBar({
   const carbsPercent = (carbsCals / totalCalories) * 100;
 
   return (
-    <div className="h-4 w-full rounded-full bg-brand-neutral-dark overflow-hidden flex">
+    <div className="h-2 w-full rounded-full bg-brand-neutral-dark overflow-hidden flex">
       <div
         className="h-full bg-brand-primary"
         style={{ width: `${proteinPercent}%` }}

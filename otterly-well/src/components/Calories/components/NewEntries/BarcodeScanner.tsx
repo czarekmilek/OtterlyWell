@@ -110,7 +110,8 @@ export const BarcodeScanner = ({ addEntryFromFood }: BarcodeScannerProps) => {
             <button
               type="submit"
               className="mt-3 w-full rounded-md bg-brand-primary px-4 py-2 font-semibold text-brand-neutral-light
-                         hover:bg-brand-primary/80 transition duration-300 cursor-pointer disabled:bg-brand-secondary"
+                         hover:bg-brand-primary/80 transition duration-300 cursor-pointer disabled:opacity-50 disabled:hover:cursor-not-allowed
+                         disabled:hover:bg-brand-primary"
               disabled={!manualBarcode || loading}
             >
               Szukaj ręcznie

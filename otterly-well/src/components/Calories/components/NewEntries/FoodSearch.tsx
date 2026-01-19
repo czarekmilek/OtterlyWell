@@ -5,7 +5,6 @@ import { AddFoodDialog } from "./AddFoodDialog";
 
 interface FoodSearchProps {
   query: string;
-  setQuery: (query: string) => void;
   loading: boolean;
   error: string | null;
   localHits: FoodHitWithGrams[];
@@ -14,7 +13,6 @@ interface FoodSearchProps {
 
 export const FoodSearch = ({
   query,
-  setQuery,
   loading,
   error,
   localHits,
@@ -22,7 +20,6 @@ export const FoodSearch = ({
 }: FoodSearchProps) => {
   const [selectedHit, setSelectedHit] = useState<FoodHitWithGrams | null>(null);
 
-  // Modal functions
   const openModal = (hit: FoodHitWithGrams) =>
     setSelectedHit({ ...hit, grams: hit.grams > 0 ? hit.grams : 100 });
 
@@ -56,26 +53,15 @@ export const FoodSearch = ({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.2 }}
-        className="bg-brand-neutral-dark/40 rounded-xl rounded-tl-none"
+        className="h-full flex flex-col"
       >
-        <div className="px-3 pt-4 pb-4">
-          <input
-            type="text"
-            placeholder="Szukaj produktu..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full border border-brand-depth bg-brand-neutral-dark px-3 py-2 text-brand-neutral-light
-                  placeholder-brand-secondary focus:ring-2 focus:ring-brand-accent-1/40 focus:outline-none rounded-lg"
-          />
-        </div>
-
         <AnimatePresence>
           {localHits.length > 0 && (
             <motion.ul
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="divide-y divide-white/10 rounded-lg border border-white/10 max-h-94 overflow-y-scroll"
+              className="divide-y divide-white/10 border-b border-brand-depth/40 flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-15rem)] custom-scrollbar"
             >
               {localHits.map(
                 (h) =>
@@ -124,7 +110,7 @@ export const FoodSearch = ({
                         </p>
                       </div>
                     </motion.li>
-                  )
+                  ),
               )}
             </motion.ul>
           )}

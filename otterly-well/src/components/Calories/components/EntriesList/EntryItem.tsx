@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { DeleteIcon, EditIcon } from "../../../icons";
+import { DeleteIcon, EditIcon, TrashIcon } from "../../../icons";
 import ConfirmDeleteDialog from "../../../UI/ConfirmDeleteDialog";
 import type { Entry } from "../../types/types";
-import { MacroBar } from "../MacroTracking/MacroBar";
 import { EditEntryModal } from "./EditEntryModal";
+import { MacroBar } from "../MacroTracking/MacroBar";
 
 interface EntryItemProps {
   entry: Entry;
@@ -24,56 +24,66 @@ export const EntryItem = ({ entry, removeEntry, onEdit }: EntryItemProps) => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, x: -20 }}
         transition={{ duration: 0.2 }}
-        className="flex flex-col sm:flex-row sm:items-start sm:justify-between p-3 gap-3 bg-brand-neutral-dark/40 rounded-lg group"
+        className="group relative flex flex-col gap-2 p-4 bg-brand-neutral-dark/30 hover:bg-brand-neutral-dark/50 rounded-xl 
+                  border border-transparent hover:border-brand-primary/10 transition-all duration-300"
       >
-        <div className="min-w-0 flex-1">
-          <div className="flex justify-between gap-2">
-            <p className="text-brand-neutral-light">{entry.name}</p>
-            <div className="flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-              {/* same as edit button below, only differnet icon and color */}
-              <button
-                onClick={() => setIsEditModalOpen(true)}
-                className="flex sm:w-auto h-fit items-center justify-center rounded-full p-0.5 text-sm text-brand-neutral-light/60
-                        hover:text-brand-neutral-light hover:bg-brand-neutral-light/10
-                        transition-colors duration-200 cursor-pointer"
-                title="Edytuj"
-              >
-                <EditIcon className="scale-75" />
-              </button>
-              <button
-                onClick={() => setIsDeleteModalOpen(true)}
-                className="flex sm:w-auto h-fit items-center justify-center rounded-full p-0.5 text-sm text-brand-neutral-light 
-                        hover:bg-red-800/20 hover:border-red-500/30 hover:text-red-400
-                        transition-colors duration-200 cursor-pointer"
-                title="Usuń"
-              >
-                <DeleteIcon className="scale-75" />
-              </button>
+        <div className="flex justify-between items-start w-full">
+          <div className="flex-1 pr-4">
+            <h3 className="font-medium text-brand-neutral-light text-base leading-snug">
+              {entry.name}
+            </h3>
+          </div>
+          <div className="flex flex-col items-end shrink-0">
+            <span className="font-bold text-lg text-brand-accent-3 tabular-nums">
+              {Math.round(entry.kcal)} kcal
+            </span>
+          </div>
+        </div>
+        <div>
+          <MacroBar
+            protein={entry.protein}
+            fat={entry.fat}
+            carbs={entry.carbs}
+          />
+        </div>
+
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex items-center gap-4 text-xs font-medium text-brand-secondary">
+            <div className="flex items-center gap-1.5" title="Białko">
+              <div className="w-2 h-2 rounded-full bg-brand-primary shadow-[0_0_8px_rgba(var(--brand-primary),0.5)]" />
+              <span className="text-brand-neutral-light/80">
+                B: {entry.protein.toFixed(1)}g
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5" title="Tłuszcz">
+              <div className="w-2 h-2 rounded-full bg-brand-accent-1 shadow-[0_0_8px_rgba(var(--brand-accent-1),0.5)]" />
+              <span className="text-brand-neutral-light/80">
+                T: {entry.fat.toFixed(1)}g
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5" title="Węglowodany">
+              <div className="w-2 h-2 rounded-full bg-brand-accent-2 shadow-[0_0_8px_rgba(var(--brand-accent-2),0.5)]" />
+              <span className="text-brand-neutral-light/80">
+                W: {entry.carbs.toFixed(1)}g
+              </span>
             </div>
           </div>
 
-          <div className="mt-2 w-full">
-            <MacroBar
-              protein={entry.protein}
-              fat={entry.fat}
-              carbs={entry.carbs}
-            />
-          </div>
-          <div className="h-px bg-brand-neutral-light/20 mt-2"></div>
-
-          <div className="mt-2 grid grid-cols-2 gap-2 text-sm text-brand-secondary">
-            <span className="font-semibold bg-brand-accent-3/90 text-brand-neutral-light px-2 rounded-xl text-center">
-              {entry.kcal} kcal
-            </span>
-            <span className="font-semibold bg-brand-primary/90 text-brand-neutral-light px-2 rounded-xl text-center">
-              B: {entry.protein.toFixed(1)}g
-            </span>
-            <span className="font-semibold bg-brand-accent-1/90 text-brand-neutral-light px-2 rounded-xl text-center">
-              T: {entry.fat.toFixed(1)}g
-            </span>
-            <span className="font-semibold bg-brand-accent-2/90 text-brand-neutral-light px-2 rounded-xl text-center">
-              W: {entry.carbs.toFixed(1)}g
-            </span>
+          <div className="sm:flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="flex items-center p-1.5 rounded-full text-brand-secondary hover:bg-brand-accent-2/70 transition-colors cursor-pointer"
+              title="Edytuj"
+            >
+              <EditIcon className="" />
+            </button>
+            <button
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="flex items-center p-1.5 rounded-full text-brand-secondary hover:text-red-400 hover:bg-red-400/10 transition-colors cursor-pointer"
+              title="Usuń"
+            >
+              <TrashIcon className="" />
+            </button>
           </div>
         </div>
       </motion.li>

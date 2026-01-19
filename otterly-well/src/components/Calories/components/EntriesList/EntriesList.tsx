@@ -39,7 +39,7 @@ export const EntriesList = ({
               obok.
             </p>
           ) : (
-            <ul className="divide-y divide-brand-depth/70 space-y-2">
+            <ul className="space-y-2 pb-4">
               <AnimatePresence>
                 {entries.map((e) => (
                   <EntryItem
