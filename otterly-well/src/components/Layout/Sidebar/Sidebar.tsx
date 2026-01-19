@@ -1,5 +1,6 @@
 import { Fragment, useMemo, useState } from "react";
 import ConfigureModules from "./components/ConfigureModules";
+import PreferencesModal from "./components/PreferencesModal";
 import { useModuleContext } from "../../../context/ModuleContext";
 import {
   Dialog,
@@ -13,6 +14,7 @@ import {
   FinanceIcon,
   TaskIcon,
   WorkoutIcon,
+  SettingsIcon,
 } from "../../icons";
 import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
@@ -40,6 +42,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
   const { user } = useAuth();
   const { visibleModules } = useModuleContext();
   const [isConfigOpen, setIsConfigOpen] = useState(false);
+  const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
 
   const navigation = useMemo(
     () =>
@@ -64,8 +67,10 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
             item.to !== "#" &&
             (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)),
         })),
-    [pathname, visibleModules]
+    [pathname, visibleModules],
   );
+
+  const isDisabled = !user;
 
   const sidebarContent = (
     <>
@@ -77,20 +82,26 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
           Otterly Well
         </h1>
       </div>
-      <nav className="flex flex-1 flex-col gap-y-5 overflow-y-auto px-4">
+      <nav className="flex flex-1 flex-col gap-y-5 overflow-y-auto px-4 mt-5 xl:mt-0">
         <ul role="list" className="flex flex-1 flex-col">
           <li>
             <ul role="list" className="space-y-1">
               {navigation.map((item) => (
                 <li key={item.name}>
-                  {item.to === "#" ? (
+                  {item.to === "#" || isDisabled ? (
                     <div
                       className={classNames(
-                        "text-brand-neutral-dark cursor-not-allowed",
-                        "group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6"
+                        isDisabled
+                          ? "opacity-50 cursor-not-allowed"
+                          : "cursor-not-allowed",
+                        "text-brand-neutral-dark group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6",
                       )}
                       aria-disabled
-                      title="Wkrótce"
+                      title={
+                        isDisabled
+                          ? "Zaloguj się, aby uzyskać dostęp"
+                          : "Wkrótce"
+                      }
                     >
                       <item.icon
                         className="h-6 w-6 shrink-0"
@@ -105,7 +116,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
                         item.current
                           ? "bg-brand-accent-1 text-brand-neutral-dark"
                           : "text-brand-neutral-dark hover:bg-brand-primary hover:text-brand-neutral-light",
-                        "group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6"
+                        "group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6",
                       )}
                       aria-current={item.current ? "page" : undefined}
                       onClick={() => setMobileOpen(false)}
@@ -124,8 +135,10 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
           <li className="mt-auto mb-2">
             <button
               onClick={() => setIsConfigOpen(true)}
-              className="w-full group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6 text-brand-neutral-dark hover:bg-brand-neutral-dark 
-              hover:text-brand-neutral-light transition-colors cursor-pointer"
+              disabled={isDisabled}
+              className={`w-full group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6 text-brand-neutral-dark 
+              hover:bg-brand-neutral-dark hover:text-brand-neutral-light transition-colors 
+              ${isDisabled ? "opacity-0 cursor-default" : "cursor-pointer"}`}
             >
               {/* material icon, extract later to icons file */}
               <span className="material-symbols-sharp h-6 w-6 shrink-0">
@@ -134,12 +147,28 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
               Konfiguruj widok
             </button>
           </li>
+          <li className="mb-2">
+            <button
+              onClick={() => setIsPreferencesOpen(true)}
+              disabled={isDisabled}
+              className={`w-full group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6 text-brand-neutral-dark 
+              hover:bg-brand-neutral-dark hover:text-brand-neutral-light transition-colors 
+              ${isDisabled ? "opacity-0 cursor-default" : "cursor-pointer"}`}
+            >
+              <SettingsIcon className="h-6 w-6 shrink-0" />
+              Preferencje
+            </button>
+          </li>
         </ul>
       </nav>
       <UserProfile user={user} />
       <ConfigureModules
         isOpen={isConfigOpen}
         onClose={() => setIsConfigOpen(false)}
+      />
+      <PreferencesModal
+        isOpen={isPreferencesOpen}
+        onClose={() => setIsPreferencesOpen(false)}
       />
     </>
   );

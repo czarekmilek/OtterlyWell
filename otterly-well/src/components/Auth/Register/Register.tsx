@@ -26,7 +26,7 @@ export default function Register() {
             transition={{ delay: 1, duration: 1.5 }}
             className="text-brand-neutral-dark/70 text-sm"
           >
-            i zadbaj o siebie
+            Zarejestruj się, aby zacząć
           </motion.p>
         </div>
 

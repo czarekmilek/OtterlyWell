@@ -11,7 +11,7 @@ export default function Login() {
         className="w-full max-w-md rounded-3xl shadow-2xl backdrop-blur-xl relative overflow-hidden
                   border bg-white/40 border-brand-accent-2/50 p-8 md:py-12"
       >
-        <div className="text-center mb-12">
+        <div className="text-center mb-9 sm:mb-12">
           <motion.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -26,7 +26,7 @@ export default function Login() {
             transition={{ delay: 1, duration: 1.5 }}
             className="text-brand-neutral-dark/70 text-sm"
           >
-            Świat poczeka, teraz czas na oddech
+            Zaloguj się, aby zacząć
           </motion.p>
         </div>
 
