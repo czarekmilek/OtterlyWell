@@ -3,6 +3,7 @@ export interface Exercise {
   name: string;
   muscle_group: string;
   type: "strength" | "cardio" | "stretching";
+  description?: string;
   created_by?: string;
 }
 

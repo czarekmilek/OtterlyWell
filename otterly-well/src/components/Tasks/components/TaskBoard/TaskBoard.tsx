@@ -1,3 +1,4 @@
+import { TaskIcon } from "../../../icons";
 import type { Task, TaskCategory } from "../../types/types";
 import TaskColumn from "./components/TaskColumn";
 
@@ -30,6 +31,24 @@ export function TaskBoard({
     if (count >= 7) return `${base} xl:grid-cols-3 2xl:grid-cols-4`;
     return `${base} xl:grid-cols-3 2xl:grid-cols-4 xl:h-full`; // 4, 5, 6 - improve for this later, we can make a 2-1-1-2 or reversed
   };
+
+  // in case there are no categories active, like when new user enters this module
+  if (categories.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-brand-neutral-light/70 p-8 text-center bg-brand-neutral-dark/20 rounded-2xl border border-brand-depth border-dashed">
+        <TaskIcon className="opacity-50 mb-2" />
+        <h3 className="text-xl font-bold mb-2 text-brand-neutral-light">
+          Witaj w Zadaniach!
+        </h3>
+        {/* TODO: adjust instructions */}
+        <p className="max-w-md">
+          Twoja tablica jest pusta. Rozpocznij od stworzenia nowej kategorii
+          klikając przycisk <strong>"Filtruj"</strong>, a następnie dodaj nowe
+          zadania do tej kategorii przyciskiem <strong>"Dodaj"</strong>.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full overflow-y-auto">

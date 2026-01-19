@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
+import { supabase } from "../../../../lib/supabaseClient";
 import ExerciseSearch from "./ExerciseSearch";
 import SetSearch from "./SetSearch";
 import SetModal from "./SetModal";
 import CreateExerciseModal from "./CreateExerciseModal";
 import type { Exercise, ExerciseSet } from "../../types/types";
 import type { ExerciseInputData } from "./AddExerciseToList";
+import TabButton from "../../../UI/TabButton";
+import ConfirmDeleteDialog from "../../../UI/ConfirmDeleteDialog";
 
 interface NewWorkoutTabsProps {
   onAddExercise: (exercise: Exercise, data: ExerciseInputData) => void;
@@ -13,18 +16,20 @@ interface NewWorkoutTabsProps {
 
 export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
   const [activeCategory, setActiveCategory] = useState<"exercises" | "sets">(
-    "exercises"
+    "exercises",
   );
   const [isCreateSetModalOpen, setIsCreateSetModalOpen] = useState(false);
+  const [exerciseToEdit, setExerciseToEdit] = useState<Exercise | undefined>(
+    undefined,
+  );
   const [isCreateExerciseModalOpen, setIsCreateExerciseModalOpen] =
     useState(false);
-
-  const getTabClassName = (isActive: boolean) =>
-    `flex-1 text-center px-2 sm:px-4 py-2 rounded-t-md transition-colors relative -mb-px ${
-      isActive
-        ? "bg-brand-neutral-dark/50 text-brand-neutral-light border-x border-t border-brand-depth border-b-transparent font-bold"
-        : "text-brand-neutral-dark hover:bg-brand-accent-3 border-b border-brand-depth cursor-pointer"
-    }`;
+  const [exercisesRefreshTrigger, setExercisesRefreshTrigger] = useState(0);
+  const [setsRefreshTrigger, setSetsRefreshTrigger] = useState(0);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [exerciseToDelete, setExerciseToDelete] = useState<Exercise | null>(
+    null,
+  );
 
   const handleAddSet = (set: ExerciseSet) => {
     set.items?.forEach((item) => {
@@ -40,22 +45,46 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
     });
   };
 
+  const promptDeleteExercise = (exercise: Exercise) => {
+    setExerciseToDelete(exercise);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!exerciseToDelete) return;
+
+    const { error } = await supabase
+      .from("exercises")
+      .delete()
+      .eq("id", exerciseToDelete.id);
+
+    if (error) {
+      console.error("Error deleting exercise:", error);
+      alert("Wystąpił błąd podczas usuwania ćwiczenia: " + error.message);
+    } else {
+      setExercisesRefreshTrigger((prev) => prev + 1);
+    }
+    setIsDeleteModalOpen(false);
+    setExerciseToDelete(null);
+  };
+
   return (
     <>
-      <div className="rounded-xl border border-brand-depth bg-brand-neutral-dark/50 p-4 flex-1 flex flex-col min-h-0">
-        <div className="flex border-b border-brand-depth">
-          <button
-            onClick={() => setActiveCategory("exercises")}
-            className={getTabClassName(activeCategory === "exercises")}
-          >
-            Ćwiczenia
-          </button>
-          <button
-            onClick={() => setActiveCategory("sets")}
-            className={getTabClassName(activeCategory === "sets")}
-          >
-            Zestawy
-          </button>
+      <div className="rounded-xl flex-1 flex flex-col min-h-0">
+        <div className="flex border-b border-brand-depth gap-2">
+          {/* using TabButton component for the same look as in Calories and Finacne */}
+          <TabButton
+            label="Ćwiczenia"
+            value="exercises"
+            isSelected={activeCategory === "exercises"}
+            setSelectedTab={(val) => setActiveCategory(val as "exercises")}
+          />
+          <TabButton
+            label="Zestawy"
+            value="sets"
+            isSelected={activeCategory === "sets"}
+            setSelectedTab={(val) => setActiveCategory(val as "sets")}
+          />
         </div>
 
         {activeCategory === "exercises" ? (
@@ -65,7 +94,16 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
                 <ExerciseSearch
                   key="search"
                   onAddExercise={onAddExercise}
-                  onCreateExercise={() => setIsCreateExerciseModalOpen(true)}
+                  onCreateExercise={() => {
+                    setExerciseToEdit(undefined);
+                    setIsCreateExerciseModalOpen(true);
+                  }}
+                  onEditExercise={(exercise) => {
+                    setExerciseToEdit(exercise);
+                    setIsCreateExerciseModalOpen(true);
+                  }}
+                  onDeleteExercise={promptDeleteExercise}
+                  refreshTrigger={exercisesRefreshTrigger}
                 />
               </AnimatePresence>
             </div>
@@ -75,6 +113,7 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
             <SetSearch
               onCreateSet={() => setIsCreateSetModalOpen(true)}
               onAddSet={handleAddSet}
+              refreshTrigger={setsRefreshTrigger}
             />
           </div>
         )}
@@ -84,16 +123,47 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
         {isCreateSetModalOpen && (
           <SetModal
             onClose={() => setIsCreateSetModalOpen(false)}
-            onSuccess={() => setIsCreateSetModalOpen(false)}
+            onSuccess={() => {
+              setSetsRefreshTrigger((prev) => prev + 1);
+              setIsCreateSetModalOpen(false);
+            }}
           />
         )}
         {isCreateExerciseModalOpen && (
           <CreateExerciseModal
-            onClose={() => setIsCreateExerciseModalOpen(false)}
-            onCreated={() => setIsCreateExerciseModalOpen(false)}
+            onClose={() => {
+              setIsCreateExerciseModalOpen(false);
+              setExerciseToEdit(undefined);
+            }}
+            initialData={exerciseToEdit}
+            onCreated={() => {
+              setExercisesRefreshTrigger((prev) => prev + 1);
+              setIsCreateExerciseModalOpen(false);
+              setExerciseToEdit(undefined);
+            }}
           />
         )}
       </AnimatePresence>
+
+      <ConfirmDeleteDialog
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Usuń ćwiczenie"
+        description={
+          <p>
+            Czy na pewno chcesz usunąć ćwiczenie{" "}
+            <strong className="text-brand-neutral-light">
+              {exerciseToDelete?.name}
+            </strong>
+            ? <br />
+            <span className="text-xs opacity-80 mt-2 block">
+              Usunie to również wszystkie użycia tego ćwiczenia w historii
+              treningów oraz zestawach. Tego działania nie można cofnąć.
+            </span>
+          </p>
+        }
+      />
     </>
   );
 }

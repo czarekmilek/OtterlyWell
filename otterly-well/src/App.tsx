@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./components/Auth/ProtectedRoute";
+import { PublicRoute } from "./components/Auth/PublicRoute";
 import { LoadingSpinner } from "./components/UI/LoadingSpinner";
 import { ModuleProvider } from "./context/ModuleContext";
 import "./App.css";
@@ -20,8 +21,10 @@ function App() {
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route element={<PublicRoute />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Route>
 
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<Dashboard />} />

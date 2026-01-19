@@ -6,6 +6,7 @@ import type { Task, TaskCategory } from "../../types/types";
 import { HistoricalTaskRow } from "./HistoricalTaskRow";
 import CustomSelect from "../../../UI/CustomSelect";
 import { DateSelector } from "../../../UI/DateSelector";
+import ConfirmDeleteDialog from "../../../UI/ConfirmDeleteDialog";
 
 interface HistoricalTaskModalProps {
   isOpen: boolean;
@@ -30,6 +31,8 @@ export default function HistoricalTaskModal({
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isMonthSelectorOpen, setIsMonthSelectorOpen] = useState(false);
   const monthSelectorRef = useRef<HTMLDivElement>(null);
+
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -219,7 +222,7 @@ export default function HistoricalTaskModal({
                       isExpanded={expandedTaskId === task.id}
                       onClick={() => toggleExpand(task.id)}
                       onRestore={onRestore}
-                      onDelete={onDelete}
+                      onDelete={(id) => setTaskToDelete(id)}
                     />
                   ))
                 )}
@@ -233,6 +236,20 @@ export default function HistoricalTaskModal({
               </div>
             </div>
           </motion.div>
+
+          <ConfirmDeleteDialog
+            isOpen={!!taskToDelete}
+            onClose={() => setTaskToDelete(null)}
+            onConfirm={() => {
+              if (taskToDelete) {
+                onDelete(taskToDelete);
+                setTaskToDelete(null);
+              }
+            }}
+            title="Usuń zadanie"
+            description="Czy na pewno chcesz trwale usunąć to zadanie? Tej operacji nie można cofnąć."
+            confirmLabel="Usuń zadanie"
+          />
         </>
       )}
     </AnimatePresence>

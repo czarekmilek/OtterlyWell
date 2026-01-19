@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "../../../../lib/supabaseClient";
 import { useAuth } from "../../../../context/AuthContext";
 import CustomSelect from "../../../UI/CustomSelect";
 import { CloseIcon, LoadingIcon } from "../../../icons";
+import type { Exercise } from "../../types/types";
 
 interface CreateExerciseModalProps {
   onClose: () => void;
   onCreated: () => void;
+  initialData?: Exercise;
 }
 
 const MUSCLE_GROUPS = [
@@ -29,15 +31,35 @@ const TYPES = [
 export default function CreateExerciseModal({
   onClose,
   onCreated,
+  initialData,
 }: CreateExerciseModalProps) {
   const { user } = useAuth();
-  const [name, setName] = useState("");
-  const [muscleGroup, setMuscleGroup] = useState("chest");
+  const [name, setName] = useState(initialData?.name || "");
+  const [description, setDescription] = useState(
+    initialData?.description || "",
+  );
+  const [muscleGroup, setMuscleGroup] = useState(
+    initialData?.muscle_group || "chest",
+  );
   const [type, setType] = useState<"strength" | "cardio" | "stretching">(
-    "strength"
+    (initialData?.type as "strength" | "cardio" | "stretching") || "strength",
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialData) {
+      setName(initialData.name);
+      setDescription(initialData.description || "");
+      setMuscleGroup(initialData.muscle_group);
+      setType(initialData.type);
+    } else {
+      setName("");
+      setDescription("");
+      setMuscleGroup("chest");
+      setType("strength");
+    }
+  }, [initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,20 +68,62 @@ export default function CreateExerciseModal({
     setLoading(true);
     setError(null);
 
-    const { error: insertError } = await supabase.from("exercises").insert({
+    const exerciseData = {
       name,
+      description,
       muscle_group: type === "strength" ? muscleGroup : type,
       type,
-      created_by: user.id,
-    });
+    };
+
+    // console.log("Submitting exercise update:", exerciseData);
+    // console.log("User ID:", user.id);
+
+    let apiError = null;
+
+    if (initialData) {
+      // console.log("Updating existing exercise:", initialData.id);
+      const { data, error } = await supabase
+        .from("exercises")
+        .update(exerciseData)
+        .eq("id", initialData.id)
+        .select();
+
+      // console.log("Update response:", { data, error });
+
+      // use is able to change only his own exercises
+      if (error) {
+        apiError = error;
+      } else if (!data || data.length === 0) {
+        apiError = {
+          message:
+            "Brak uprawnień do edycji tego ćwiczenia lub ćwiczenie nie istnieje.",
+        };
+      }
+    } else {
+      const { error } = await supabase.from("exercises").insert({
+        ...exerciseData,
+        created_by: user.id,
+      });
+      apiError = error;
+    }
 
     setLoading(false);
 
-    if (insertError) {
-      console.error("Error creating custom exercise", insertError);
-      setError("Nie udało się utworzyć ćwiczenia: " + insertError.message);
+    if (apiError) {
+      console.error(
+        `Error ${initialData ? "updating" : "creating"} custom exercise`,
+        apiError,
+      );
+      setError(
+        `Nie udało się ${
+          initialData ? "zaktualizować" : "utworzyć"
+        } ćwiczenia: ` + apiError.message,
+      );
     } else {
-      setName("");
+      if (!initialData) {
+        setName("");
+        setDescription("");
+      }
       onCreated();
       onClose();
     }
@@ -76,7 +140,7 @@ export default function CreateExerciseModal({
       >
         <div className="flex justify-between items-center p-4 border-b border-brand-depth bg-brand-neutral-dark/50 rounded-t-2xl">
           <h2 className="text-xl font-bold text-brand-neutral-light">
-            Stwórz własne ćwiczenie
+            {initialData ? "Edytuj ćwiczenie" : "Stwórz własne ćwiczenie"}
           </h2>
           <button
             onClick={onClose}
@@ -101,6 +165,21 @@ export default function CreateExerciseModal({
               className="p-3 rounded-lg bg-brand-neutral-dark border border-brand-depth text-brand-neutral-light 
                          placeholder-brand-neutral-light/30 focus:outline-none focus:ring-1 focus:ring-brand-accent-1 
                          focus:border-brand-accent-1 transition-all"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm text-brand-neutral-light font-medium">
+              Opis (opcjonalnie)
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Krótki opis, wskazówki..."
+              rows={2}
+              className="p-3 rounded-lg bg-brand-neutral-dark border border-brand-depth text-brand-neutral-light 
+                         placeholder-brand-neutral-light/30 focus:outline-none focus:ring-1 focus:ring-brand-accent-1 
+                         focus:border-brand-accent-1 transition-all resize-none"
             />
           </div>
 
@@ -147,6 +226,8 @@ export default function CreateExerciseModal({
               <>
                 <LoadingIcon className="animate-spin" /> Zapisywanie...
               </>
+            ) : initialData ? (
+              "Zapisz zmiany"
             ) : (
               "Stwórz ćwiczenie"
             )}

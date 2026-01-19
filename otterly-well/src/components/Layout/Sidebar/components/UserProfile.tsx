@@ -1,5 +1,5 @@
 import type { User } from "@supabase/supabase-js";
-import { LogoutIcon, SettingsIcon } from "../../../icons";
+import { LogoutIcon } from "../../../icons";
 
 import { useAuth } from "../../../../context/AuthContext";
 
@@ -26,14 +26,6 @@ const UserProfile = ({ user }: UserProfileProps) => {
           </span>
         </div>
         <div className="ml-auto flex items-center gap-x-1">
-          <button
-            type="button"
-            className="flex items-center justify-center rounded-md p-1 text-brand-neutral-dark 
-                    hover:bg-brand-neutral-dark/10 cursor-pointer transition-colors"
-            title="Ustawienia"
-          >
-            <SettingsIcon />
-          </button>
           <button
             type="button"
             className="flex items-center justify-center rounded-md p-1 text-brand-neutral-dark 

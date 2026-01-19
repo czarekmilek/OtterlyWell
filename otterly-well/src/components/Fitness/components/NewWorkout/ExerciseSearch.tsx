@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "../../../../lib/supabaseClient";
 import { useExerciseSearch } from "../../hooks/useExerciseSearch";
 import { SearchIcon } from "../../../icons";
 import AddExerciseToList from "./AddExerciseToList";
@@ -10,18 +11,47 @@ interface ExerciseSearchProps {
   onAddExercise: (exercise: Exercise, data: ExerciseInputData) => void;
   submitButtonText?: string;
   onCreateExercise?: () => void;
+  onEditExercise?: (exercise: Exercise) => void;
+  onDeleteExercise?: (exercise: Exercise) => void;
+  refreshTrigger?: number;
 }
 
 export default function ExerciseSearch({
   onAddExercise,
   submitButtonText = "Dodaj ćwiczenie",
   onCreateExercise,
+  onEditExercise,
+  onDeleteExercise,
+  refreshTrigger = 0,
 }: ExerciseSearchProps) {
   const [query, setQuery] = useState("");
-  const { loading, hits, error, isRecent } = useExerciseSearch(query);
-  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
-    null
+  const { loading, hits, error, isRecent } = useExerciseSearch(
+    query,
+    refreshTrigger,
   );
+  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const refreshSelectedExercise = async () => {
+      if (selectedExercise && refreshTrigger > 0) {
+        const { data, error } = await supabase
+          .from("exercises")
+          .select("*")
+          .eq("id", selectedExercise.id)
+          .single();
+
+        if (data && !error) {
+          setSelectedExercise(data);
+        } else {
+          setSelectedExercise(null);
+        }
+      }
+    };
+
+    refreshSelectedExercise();
+  }, [refreshTrigger]);
 
   const handleCreateExercise = (data: ExerciseInputData) => {
     if (selectedExercise) {
@@ -32,7 +62,7 @@ export default function ExerciseSearch({
   };
 
   return (
-    <div className="flex flex-col h-full bg-brand-neutral-dark/20 overflow-hidden border border-brand-depth/50">
+    <div className="flex flex-col h-full bg-brand-neutral-dark/50 rounded-b-xl overflow-hidden border border-brand-depth/50">
       <AnimatePresence mode="wait">
         {!selectedExercise ? (
           <motion.div
@@ -111,6 +141,7 @@ export default function ExerciseSearch({
                     >
                       {exercise.name}
                     </span>
+                    {/* Edit button moved to details view */}
                     {(() => {
                       let label: string = exercise.type;
                       let className =
@@ -129,7 +160,7 @@ export default function ExerciseSearch({
                         ];
                         label =
                           MUSCLE_GROUPS.find(
-                            (g) => g.value === exercise.muscle_group
+                            (g) => g.value === exercise.muscle_group,
                           )?.label || exercise.muscle_group;
                       } else if (exercise.type === "cardio") {
                         label = "Cardio";
@@ -162,8 +193,14 @@ export default function ExerciseSearch({
 
               {!loading && isRecent && hits.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-12 text-brand-neutral-light/30">
-                  <SearchIcon className="text-5xl mb-3 opacity-20" />
+                  <SearchIcon className="text-5xl mb-3" />
                   <p className="text-sm">Wpisz nazwę aby wyszukać</p>
+                  <button
+                    onClick={onCreateExercise}
+                    className="mt-2 text-brand-accent-1 hover:underline cursor-pointer text-sm"
+                  >
+                    lub stwórz nowe ćwiczenie
+                  </button>
                 </div>
               )}
             </div>
@@ -174,6 +211,16 @@ export default function ExerciseSearch({
             onCancel={() => setSelectedExercise(null)}
             onAdd={handleCreateExercise}
             submitButtonText={submitButtonText}
+            onEdit={
+              onEditExercise
+                ? () => onEditExercise(selectedExercise)
+                : undefined
+            }
+            onDelete={
+              onDeleteExercise
+                ? () => onDeleteExercise(selectedExercise)
+                : undefined
+            }
           />
         )}
       </AnimatePresence>

@@ -29,20 +29,23 @@ export function useCaloriesData(user: User | null, selectedDate: Date) {
       if (!user) return;
 
       setIsLoading(true);
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .select("goal_calories, goal_protein, goal_fat, goal_carbs")
-        .eq("id", user.id)
+      const { data: goalsData, error: goalsError } = await supabase
+        .from("nutrition_goals")
+        .select(
+          "daily_kcal_limit, daily_protein_goal, daily_fat_goal, daily_carbs_goal",
+        )
+        .eq("user_id", user.id)
         .maybeSingle();
 
-      if (profileError) console.error("Error fetching profile", profileError);
+      if (goalsError)
+        console.error("Error fetching nutrition goals", goalsError);
 
-      if (profileData) {
+      if (goalsData) {
         setGoals((prev) => ({
-          calories: profileData.goal_calories ?? prev.calories,
-          protein: profileData.goal_protein ?? prev.protein,
-          fat: profileData.goal_fat ?? prev.fat,
-          carbs: profileData.goal_carbs ?? prev.carbs,
+          calories: goalsData.daily_kcal_limit ?? prev.calories,
+          protein: goalsData.daily_protein_goal ?? prev.protein,
+          fat: goalsData.daily_fat_goal ?? prev.fat,
+          carbs: goalsData.daily_carbs_goal ?? prev.carbs,
         }));
       }
 
@@ -80,9 +83,9 @@ export function useCaloriesData(user: User | null, selectedDate: Date) {
           acc.carbs += e.carbs;
           return acc;
         },
-        { kcal: 0, protein: 0, fat: 0, carbs: 0 }
+        { kcal: 0, protein: 0, fat: 0, carbs: 0 },
       ),
-    [entries]
+    [entries],
   );
 
   async function addEntryFromFood(food: FoodHit, grams: number) {
@@ -116,6 +119,7 @@ export function useCaloriesData(user: User | null, selectedDate: Date) {
             image_url: food.imageUrl,
             serving_size_g: food.servingSize,
             serving_unit: food.servingUnit,
+            created_by: user.id,
           })
           .select("id")
           .single();
@@ -160,37 +164,57 @@ export function useCaloriesData(user: User | null, selectedDate: Date) {
 
   const saveGoals = async (
     updates: Partial<{
-      goal_calories: number;
-      goal_protein: number;
-      goal_fat: number;
-      goal_carbs: number;
-    }>
+      daily_kcal_limit: number;
+      daily_protein_goal: number;
+      daily_fat_goal: number;
+      daily_carbs_goal: number;
+    }>,
   ) => {
     if (!user) return;
 
-    const { error } = await supabase.from("profiles").upsert({
-      id: user.id,
-      goal_calories: goals.calories,
-      goal_protein: goals.protein,
-      goal_fat: goals.fat,
-      goal_carbs: goals.carbs,
-      ...updates,
-    });
+    // upsert on user_id to create the record if it doesn't exist
+    const { data: existing } = await supabase
+      .from("nutrition_goals")
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-    if (error) console.error("Error updating goals", error);
+    if (existing) {
+      const { error } = await supabase
+        .from("nutrition_goals")
+        .update(updates)
+        .eq("id", existing.id);
+      if (error) console.error("Error updating goals", error);
+    } else {
+      const { error } = await supabase.from("nutrition_goals").insert({
+        user_id: user.id,
+        daily_kcal_limit: goals.calories,
+        daily_protein_goal: goals.protein,
+        daily_fat_goal: goals.fat,
+        daily_carbs_goal: goals.carbs,
+        ...updates,
+      });
+      if (error) console.error("Error creating goals", error);
+    }
   };
 
   const updateGoal = (type: keyof GoalsState, value: number) => {
     const v = value > 0 ? value : 0;
     setGoals((prev) => ({ ...prev, [type]: v }));
 
-    const dbField = `goal_${type}` as const;
-    saveGoals({ [dbField]: v });
+    const map: Record<keyof GoalsState, string> = {
+      calories: "daily_kcal_limit",
+      protein: "daily_protein_goal",
+      fat: "daily_fat_goal",
+      carbs: "daily_carbs_goal",
+    };
+
+    saveGoals({ [map[type]]: v });
   };
 
   async function addCustomEntry(
     customEntry: Omit<Entry, "id">,
-    saveData?: { servingName: string; servingWeight: number }
+    saveData?: { servingName: string; servingWeight: number },
   ) {
     if (!user) return false;
 
@@ -270,7 +294,7 @@ export function useCaloriesData(user: User | null, selectedDate: Date) {
     }
 
     setEntries((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, ...updates } : e))
+      prev.map((e) => (e.id === id ? { ...e, ...updates } : e)),
     );
   }
 
