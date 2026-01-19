@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRightIcon, CloseIcon, EditIcon, TrashIcon } from "../../../icons";
+import { ArrowRightIcon, EditIcon, TrashIcon } from "../../../icons";
 import type { Exercise } from "../../types/types";
 import { useAuth } from "../../../../context/AuthContext";
 

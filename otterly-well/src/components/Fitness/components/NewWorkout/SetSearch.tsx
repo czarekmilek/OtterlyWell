@@ -4,9 +4,7 @@ import { useWorkoutSets } from "../../hooks/useWorkoutSets";
 import {
   SearchIcon,
   EditIcon,
-  DeleteIcon,
   TrashIcon,
-  CloseIcon,
   ArrowRightIcon,
 } from "../../../icons";
 import type { ExerciseSet } from "../../types/types";

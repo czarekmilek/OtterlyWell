@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { DeleteIcon, EditIcon, TrashIcon } from "../../../icons";
+import { EditIcon, TrashIcon } from "../../../icons";
 import ConfirmDeleteDialog from "../../../UI/ConfirmDeleteDialog";
 import type { Entry } from "../../types/types";
 import { EditEntryModal } from "./EditEntryModal";
