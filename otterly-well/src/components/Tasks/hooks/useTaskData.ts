@@ -15,6 +15,7 @@ export function useTaskData() {
       const { data, error } = await supabase
         .from("task_categories")
         .select("*")
+        .order("order_index", { ascending: true })
         .order("created_at", { ascending: true });
 
       if (error) throw error;

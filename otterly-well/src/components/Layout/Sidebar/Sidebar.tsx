@@ -21,7 +21,7 @@ import { useAuth } from "../../../context/AuthContext";
 import UserProfile from "./components/UserProfile";
 
 const navigationItems = [
-  { name: "Dashboard", to: "/", icon: DashboardIcon },
+  { name: "Pulpit", to: "/", icon: DashboardIcon },
   { name: "Kalorie", to: "/calories", icon: CalorieIcon },
   { name: "Treningi", to: "/fitness", icon: WorkoutIcon },
   { name: "Finanse", to: "/finance", icon: FinanceIcon },

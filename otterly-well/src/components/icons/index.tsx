@@ -129,3 +129,7 @@ export const TimelineIcon: React.FC<IconProps> = ({ className }) => (
 export const EditIcon: React.FC<IconProps> = ({ className }) => (
   <span className={`material-symbols-sharp ${className}`}>edit</span>
 );
+
+export const DragHandleIcon: React.FC<IconProps> = ({ className }) => (
+  <span className={`material-symbols-sharp ${className}`}>drag_indicator</span>
+);

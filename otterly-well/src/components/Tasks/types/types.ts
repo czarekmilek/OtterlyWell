@@ -5,6 +5,7 @@ export interface TaskCategory {
   name: string;
   is_active: boolean;
   created_at?: string;
+  order_index?: number;
 }
 
 export interface Task {

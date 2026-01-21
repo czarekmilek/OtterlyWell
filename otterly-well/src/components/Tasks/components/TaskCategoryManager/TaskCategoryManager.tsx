@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Reorder } from "framer-motion";
 import type { TaskCategory } from "../../types/types";
 import { CloseIcon } from "../../../icons";
 import { TaskCategoryToggleRow } from "./components/TaskCategoryToggleRow";
@@ -12,6 +12,7 @@ interface TaskCategoryManagerProps {
   onToggleCategory: (categoryId: string) => void;
   onAddCategory: (name: string) => void;
   onDeleteCategory: (categoryId: string) => void;
+  onReorder: (newOrder: TaskCategory[]) => void;
 }
 
 export default function TaskCategoryManager({
@@ -21,6 +22,7 @@ export default function TaskCategoryManager({
   onToggleCategory,
   onAddCategory,
   onDeleteCategory,
+  onReorder,
 }: TaskCategoryManagerProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
@@ -62,16 +64,23 @@ export default function TaskCategoryManager({
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 <div className="space-y-2">
                   {/* simplified version of categoryToggleRow from finance */}
-                  {categories.map((category) => (
-                    <TaskCategoryToggleRow
-                      key={category.id}
-                      name={category.name}
-                      isActive={category.is_active}
-                      isDeleteMode={isDeleteMode}
-                      onToggle={() => onToggleCategory(category.id)}
-                      onDelete={() => onDeleteCategory(category.id)}
-                    />
-                  ))}
+                  <Reorder.Group
+                    axis="y"
+                    values={categories}
+                    onReorder={onReorder}
+                    className="space-y-2"
+                  >
+                    {categories.map((category) => (
+                      <TaskCategoryToggleRow
+                        key={category.id}
+                        category={category}
+                        isActive={category.is_active}
+                        isDeleteMode={isDeleteMode}
+                        onToggle={() => onToggleCategory(category.id)}
+                        onDelete={() => onDeleteCategory(category.id)}
+                      />
+                    ))}
+                  </Reorder.Group>
                 </div>
 
                 {isAdding ? (

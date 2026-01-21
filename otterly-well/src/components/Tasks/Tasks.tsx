@@ -20,6 +20,7 @@ export default function Tasks() {
     deleteCategory,
     restoreTask,
     editTask,
+    reorderCategories,
   } = useTasks();
 
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -56,7 +57,7 @@ export default function Tasks() {
 
   const activeCategories = useMemo(
     () => categories.filter((c) => c.is_active),
-    [categories]
+    [categories],
   );
 
   return (
@@ -133,6 +134,7 @@ export default function Tasks() {
         onToggleCategory={toggleCategory}
         onAddCategory={addCategory}
         onDeleteCategory={deleteCategory}
+        onReorder={reorderCategories}
       />
 
       <HistoricalTaskModal
