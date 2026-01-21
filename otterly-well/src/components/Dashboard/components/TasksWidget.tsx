@@ -1,17 +1,67 @@
-import { useMemo, useState } from "react";
 import { useTasks } from "../../Tasks/hooks/useTasks";
 import TaskColumn from "../../Tasks/components/TaskBoard/components/TaskColumn";
 import { Link } from "react-router-dom";
-import { ChevronLeftIcon, ChevronRightIcon, TaskIcon } from "../../icons";
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "../../../lib/supabaseClient";
+import { useAuth } from "../../../context/AuthContext";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  LoadingIcon,
+  TaskIcon,
+} from "../../icons";
+import { LoadingSpinner } from "../../UI/LoadingSpinner";
 
 export default function TasksWidget() {
-  const { tasks, categories, toggleTaskCompletion, dismissTask } = useTasks();
+  const {
+    tasks,
+    categories,
+    toggleTaskCompletion,
+    dismissTask,
+    isLoading: isTasksLoading,
+  } = useTasks();
+  const { user } = useAuth();
 
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  useEffect(() => {
+    if (isTasksLoading) return;
+    if (!user) {
+      setIsInitializing(false);
+      return;
+    }
+
+    if (categories.length === 0) {
+      setIsInitializing(false);
+      return;
+    }
+
+    const fetchDefaultCategory = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("default_task_category_id")
+        .eq("id", user.id)
+        .single();
+
+      if (data?.default_task_category_id) {
+        const activeCats = categories.filter((c) => c.is_active);
+        const index = activeCats.findIndex(
+          (c) => c.id === data.default_task_category_id,
+        );
+        if (index !== -1) {
+          setCurrentCategoryIndex(index);
+        }
+      }
+      setIsInitializing(false);
+    };
+
+    fetchDefaultCategory();
+  }, [categories, user, isTasksLoading]);
 
   const activeCategories = useMemo(
     () => categories.filter((c) => c.is_active),
-    [categories]
+    [categories],
   );
 
   const currentCategory = activeCategories[currentCategoryIndex];
@@ -22,14 +72,26 @@ export default function TasksWidget() {
 
   const handlePrev = () => {
     setCurrentCategoryIndex(
-      (prev) => (prev - 1 + activeCategories.length) % activeCategories.length
+      (prev) => (prev - 1 + activeCategories.length) % activeCategories.length,
     );
   };
 
   const tasksForCategory = useMemo(() => {
     if (!currentCategory) return [];
-    return tasks.filter((t) => t.category_id === currentCategory.id);
+    return tasks
+      .filter((t) => t.category_id === currentCategory.id)
+      .filter((t) => !t.is_dismissed);
   }, [tasks, currentCategory]);
+
+  if (isTasksLoading || isInitializing) {
+    return (
+      <div className="flex flex-col h-full bg-brand-neutral-dark/40 border border-brand-depth rounded-2xl p-4 items-center justify-center min-h-[160px]">
+        <div className="text-brand-secondary animate-pulse text-center font-semibold">
+          Ładowanie zadań...
+        </div>
+      </div>
+    );
+  }
 
   if (activeCategories.length === 0) {
     return (

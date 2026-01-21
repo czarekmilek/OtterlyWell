@@ -52,6 +52,44 @@ export default function PreferencesModal({
     setLoading(false);
   };
 
+  const [defaultTaskCategoryId, setDefaultTaskCategoryId] =
+    useState<string>("none");
+  const [taskCategories, setTaskCategories] = useState<
+    { id: string; name: string }[]
+  >([]);
+
+  useEffect(() => {
+    if (isOpen && user) {
+      fetchTaskSettings();
+    }
+  }, [isOpen, user]);
+
+  const fetchTaskSettings = async () => {
+    if (!user) return;
+
+    const { data: categories } = await supabase
+      .from("task_categories")
+      .select("id, name")
+      .eq("is_active", true)
+      .order("created_at");
+
+    if (categories) {
+      setTaskCategories(categories);
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("default_task_category_id")
+      .eq("id", user.id)
+      .single();
+
+    if (profile?.default_task_category_id) {
+      setDefaultTaskCategoryId(profile.default_task_category_id);
+    } else {
+      setDefaultTaskCategoryId("none");
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -61,6 +99,8 @@ export default function PreferencesModal({
     const { error } = await supabase.from("profiles").upsert({
       id: user.id,
       username: username,
+      default_task_category_id:
+        defaultTaskCategoryId === "none" ? null : defaultTaskCategoryId,
       updated_at: new Date(),
     });
 
@@ -142,6 +182,49 @@ export default function PreferencesModal({
                             text-brand-neutral-light placeholder-brand-neutral-light/30 focus:outline-none focus:border-brand-primary
                             disabled:opacity-50 disabled:cursor-wait"
                           />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-sm font-medium text-brand-secondary mb-3 uppercase tracking-wider">
+                        Pulpit
+                      </h4>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm text-brand-neutral-light mb-1">
+                            Domyślna kategoria zadań
+                          </label>
+                          <select
+                            value={defaultTaskCategoryId}
+                            onChange={(e) =>
+                              setDefaultTaskCategoryId(e.target.value)
+                            }
+                            disabled={loading}
+                            className="w-full px-4 py-2 rounded-xl bg-brand-neutral-light/5 border border-brand-depth 
+                            text-brand-neutral-light focus:outline-none focus:border-brand-primary
+                            disabled:opacity-50 appearance-none cursor-pointer"
+                          >
+                            <option
+                              value="none"
+                              className="bg-brand-neutral-dark"
+                            >
+                              Brak (ostatnia aktywna)
+                            </option>
+                            {taskCategories.map((cat) => (
+                              <option
+                                key={cat.id}
+                                value={cat.id}
+                                className="bg-brand-neutral-dark"
+                              >
+                                {cat.name}
+                              </option>
+                            ))}
+                          </select>
+                          <p className="text-xs text-brand-neutral-light/40 mt-1">
+                            Ta kategoria będzie domyślnie wyświetlana na
+                            pulpicie.
+                          </p>
                         </div>
                       </div>
                     </div>

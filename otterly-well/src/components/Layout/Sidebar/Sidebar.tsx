@@ -76,10 +76,10 @@ const Sidebar = ({ mobileOpen, setMobileOpen }: SidebarProps) => {
     <>
       <div className="flex shrink-0 items-center justify-center gap-x-4 px-6 h-16">
         <h1
-          className="text-2xl font-bold text-brand-neutral-dark 
+          className="text-4xl font-script text-brand-neutral-dark 
                        rounded-full px-3 py-1"
         >
-          Otterly Well
+          OtterlyWell
         </h1>
       </div>
       <nav className="flex flex-1 flex-col gap-y-5 overflow-y-auto px-4 mt-5 xl:mt-0">

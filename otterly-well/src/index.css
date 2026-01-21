@@ -24,6 +24,9 @@
   ); /* Tailwind emerald-400 */
   --color-brand-negative: oklch(70.4% 0.191 22.216); /* Tailwind red-600 */
   --color-brand-negative-darker: #450a0a; /* Tailwind red-950 */
+
+  /* Fonts */
+  --font-script: "Lobster", cursive;
 }
 
 @layer components {
