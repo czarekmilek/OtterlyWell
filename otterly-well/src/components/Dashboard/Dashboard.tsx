@@ -3,9 +3,31 @@ import FitnessWidget from "./components/FitnessWidget";
 import FinanceWidget from "./components/FinanceWidget";
 import TasksWidget from "./components/TasksWidget";
 import { useModuleContext } from "../../context/ModuleContext";
+import { DashboardIcon } from "../icons";
 
 const Dashboard = () => {
   const { visibleModules } = useModuleContext();
+
+  const hasActiveModules = Object.values(visibleModules).some(Boolean);
+
+  if (!hasActiveModules) {
+    return (
+      <div className="py-6 lg:p-8 mx-auto space-y-3 h-full xl:h-[calc(100vh)] flex flex-col">
+        <div className="flex-grow overflow-hidden">
+          <div className="flex flex-col items-center justify-center h-full text-brand-neutral-light/70 p-8 text-center bg-brand-neutral-dark/20 rounded-2xl border border-brand-depth border-dashed">
+            <DashboardIcon className="opacity-50 mb-2" />
+            <h3 className="text-xl font-bold mb-2 text-brand-neutral-light">
+              Wszystkie moduły są ukryte.
+            </h3>
+            <p className="max-w-md">
+              Przejdź do menu bocznego i kliknij{" "}
+              <strong>"Konfiguruj widok"</strong>, aby dodać widgety.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-4 h-full flex flex-col">
@@ -31,21 +53,6 @@ const Dashboard = () => {
           </div>
         )}
       </div>
-
-      {!Object.values(visibleModules).some(Boolean) && (
-        <div
-          className="flex flex-col items-center justify-center p-12 text-center bg-brand-neutral-dark/10 
-                  rounded-3xl border-2 border-dashed border-brand-depth"
-        >
-          <p className="text-brand-neutral-dark font-medium text-lg">
-            Wszystkie moduły są ukryte.
-          </p>
-          <p className="text-brand-primary text-sm mt-2">
-            Przejdź do menu bocznego i kliknij "Konfiguruj widok", aby dodać
-            widgety.
-          </p>
-        </div>
-      )}
     </div>
   );
 };
