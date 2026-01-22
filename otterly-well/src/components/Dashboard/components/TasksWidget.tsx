@@ -4,13 +4,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import { useAuth } from "../../../context/AuthContext";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  LoadingIcon,
-  TaskIcon,
-} from "../../icons";
-import { LoadingSpinner } from "../../UI/LoadingSpinner";
+import { ChevronLeftIcon, ChevronRightIcon, TaskIcon } from "../../icons";
 
 export default function TasksWidget() {
   const {
