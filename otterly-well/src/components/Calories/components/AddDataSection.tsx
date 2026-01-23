@@ -23,7 +23,7 @@ export function AddDataSection({
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
   const [isScannerModalOpen, setIsScannerModalOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const { loading, hits, error } = useFoodSearch(query);
+  const { loading, hits, error, isRecent } = useFoodSearch(query);
 
   const hitsWithGrams: FoodHitWithGrams[] = useMemo(
     () =>
@@ -95,6 +95,7 @@ export function AddDataSection({
             error={error}
             localHits={localHits}
             addEntryFromFood={addEntryFromFood}
+            isRecent={isRecent}
           />
         </div>
       </div>
