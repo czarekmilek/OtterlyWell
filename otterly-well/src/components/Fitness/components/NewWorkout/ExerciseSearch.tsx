@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../../../../lib/supabaseClient";
 import { useExerciseSearch } from "../../hooks/useExerciseSearch";
@@ -14,6 +14,7 @@ interface ExerciseSearchProps {
   onEditExercise?: (exercise: Exercise) => void;
   onDeleteExercise?: (exercise: Exercise) => void;
   refreshTrigger?: number;
+  clearSelectionTrigger?: number;
 }
 
 export default function ExerciseSearch({
@@ -23,6 +24,7 @@ export default function ExerciseSearch({
   onEditExercise,
   onDeleteExercise,
   refreshTrigger = 0,
+  clearSelectionTrigger = 0,
 }: ExerciseSearchProps) {
   const [query, setQuery] = useState("");
   const { loading, hits, error, isRecent } = useExerciseSearch(
@@ -33,8 +35,22 @@ export default function ExerciseSearch({
     null,
   );
 
+  const shouldSkipRefreshRef = useRef(false);
+
+  useEffect(() => {
+    if (clearSelectionTrigger > 0) {
+      setSelectedExercise(null);
+      shouldSkipRefreshRef.current = true;
+    }
+  }, [clearSelectionTrigger]);
+
   useEffect(() => {
     const refreshSelectedExercise = async () => {
+      if (shouldSkipRefreshRef.current) {
+        shouldSkipRefreshRef.current = false;
+        return;
+      }
+
       if (selectedExercise && refreshTrigger > 0) {
         const { data, error } = await supabase
           .from("exercises")
