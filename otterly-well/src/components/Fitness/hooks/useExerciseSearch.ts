@@ -49,6 +49,7 @@ export function useExerciseSearch(query: string, refreshTrigger: number = 0) {
             .from("exercises")
             .select("*")
             .ilike("name", `%${query}%`)
+            .or(`created_by.is.null,created_by.eq.${user?.id}`)
             .limit(20);
 
           if (error) throw error;
