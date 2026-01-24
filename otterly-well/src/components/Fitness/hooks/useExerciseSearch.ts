@@ -3,7 +3,18 @@ import { supabase } from "../../../lib/supabaseClient";
 import { useAuth } from "../../../context/AuthContext";
 import type { Exercise } from "../types/types";
 
-export function useExerciseSearch(query: string, refreshTrigger: number = 0) {
+export type ExerciseFilter =
+  | "strength"
+  | "cardio"
+  | "stretching"
+  | "all"
+  | null;
+
+export function useExerciseSearch(
+  query: string,
+  refreshTrigger: number = 0,
+  filter: ExerciseFilter = null,
+) {
   const [loading, setLoading] = useState(false);
   const [hits, setHits] = useState<Exercise[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +27,7 @@ export function useExerciseSearch(query: string, refreshTrigger: number = 0) {
       setLoading(true);
       setError(null);
       try {
-        if (!query || query.length < 2) {
+        if ((!query || query.length < 2) && filter === null) {
           if (!user) {
             setHits([]);
             setIsRecent(true);
@@ -45,12 +56,20 @@ export function useExerciseSearch(query: string, refreshTrigger: number = 0) {
           setHits(uniqueExercises.slice(0, 7));
           setIsRecent(true);
         } else {
-          const { data, error } = await supabase
+          let queryBuilder = supabase
             .from("exercises")
             .select("*")
-            .ilike("name", `%${query}%`)
-            .or(`created_by.is.null,created_by.eq.${user?.id}`)
-            .limit(20);
+            .or(`created_by.is.null,created_by.eq.${user?.id}`);
+          if (filter && filter !== "all") {
+            queryBuilder = queryBuilder.eq("type", filter);
+          }
+
+          if (query && query.length >= 2) {
+            queryBuilder = queryBuilder.ilike("name", `%${query}%`);
+          }
+          const limit = query ? 20 : 50;
+
+          const { data, error } = await queryBuilder.limit(limit);
 
           if (error) throw error;
           setHits(data || []);
@@ -66,7 +85,7 @@ export function useExerciseSearch(query: string, refreshTrigger: number = 0) {
 
     const debounce = setTimeout(fetchExercises, 300);
     return () => clearTimeout(debounce);
-  }, [query, user, refreshTrigger]);
+  }, [query, user, refreshTrigger, filter]);
 
   return { loading, hits, error, isRecent };
 }

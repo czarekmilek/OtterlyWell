@@ -29,7 +29,8 @@ export function FitnessWidgetSimplified({
   const stats = useMemo(() => {
     const workouts = new Set(entries.map((e) => e.exercise_id)).size;
     const sets = entries.reduce((acc, e) => acc + (e.sets || 0), 0);
-    return { workouts, sets };
+    const lastSet = entries.length > 0 ? entries[0] : null;
+    return { workouts, sets, lastSet };
   }, [entries]);
 
   return (
@@ -70,19 +71,45 @@ export function FitnessWidgetSimplified({
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2 }}
-        className="bg-brand-neutral-dark p-4 border border-brand-depth rounded-xl flex items-center justify-between"
+        transition={{ delay: 0.4 }}
+        className="bg-brand-neutral-dark p-4 border border-brand-depth rounded-xl h-full flex flex-col justify-center min-h-[100px]"
       >
-        <div>
-          <p className="text-xs text-brand-neutral-light/70 uppercase tracking-wide mb-1">
-            Ćwiczenia • Serie
-          </p>
-          <p className={`text-2xl font-bold text-brand-accent-1`}>
-            {stats.workouts}{" "}
-            <span className="text-brand-neutral-light/50">•</span>{" "}
-            <span className="text-brand-accent-3">{stats.sets}</span>
-          </p>
-        </div>
+        <p className="text-xs text-brand-neutral-light/70 uppercase tracking-wide mb-2">
+          Ostatnia seria
+        </p>
+        {stats.lastSet ? (
+          <div className="flex flex-col gap-1">
+            <span className="text-lg font-bold text-brand-neutral-light line-clamp-1">
+              {stats.lastSet.exercise?.name || "Nieznane ćwiczenie"}
+            </span>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs text-brand-accent-1 bg-brand-accent-1/10 px-2 py-0.5 rounded">
+                {new Date(stats.lastSet.created_at).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+              {stats.lastSet.distance_km ? (
+                <span className="text-xs text-brand-accent-1 bg-brand-accent-1/10 px-2 py-0.5 rounded">
+                  {stats.lastSet.distance_km} km x {stats.lastSet.duration_min}{" "}
+                  min
+                </span>
+              ) : stats.lastSet.weight_kg ? (
+                <span className="text-xs text-brand-accent-1 bg-brand-accent-1/10 px-2 py-0.5 rounded">
+                  {stats.lastSet.weight_kg} kg x {stats.lastSet.reps}
+                </span>
+              ) : (
+                <span className="text-xs text-brand-accent-1 bg-brand-accent-1/10 px-2 py-0.5 rounded">
+                  {stats.lastSet.duration_min} min
+                </span>
+              )}
+            </div>
+          </div>
+        ) : (
+          <span className="text-brand-neutral-light/50 italic text-sm">
+            Brak aktywności
+          </span>
+        )}
       </motion.div>
     </motion.div>
   );
