@@ -12,7 +12,7 @@ interface TransactionItemProps {
   onDelete: (id: string) => void;
   onEdit: (
     id: string,
-    updatedTransaction: Partial<FinanceTransaction>
+    updatedTransaction: Partial<FinanceTransaction>,
   ) => Promise<any>;
 }
 

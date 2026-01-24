@@ -13,20 +13,20 @@ export default function BilanceBreakdown({
   stats,
 }: BilanceBreakdownProps) {
   const expenseCategories = categories.filter(
-    (c) => c.type === "expense" && (categorySpending[c.id] || 0) !== 0
+    (c) => c.type === "expense" && (categorySpending[c.id] || 0) !== 0,
   );
   const incomeCategories = categories.filter(
-    (c) => c.type === "income" && (categorySpending[c.id] || 0) !== 0
+    (c) => c.type === "income" && (categorySpending[c.id] || 0) !== 0,
   );
 
   const categorisedIncome = incomeCategories.reduce(
     (acc, c) => acc + (categorySpending[c.id] || 0),
-    0
+    0,
   );
 
   const categorisedExpense = expenseCategories.reduce(
     (acc, c) => acc + (categorySpending[c.id] || 0),
-    0
+    0,
   );
 
   const uncategorisedIncome = stats.income - categorisedIncome;
