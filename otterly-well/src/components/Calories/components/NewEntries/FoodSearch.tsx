@@ -76,8 +76,8 @@ export const FoodSearch = ({
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ duration: 0.2 }}
                       onClick={() => openModal(h)}
-                      className={`group p-3 flex items-center gap-3 hover:bg-brand-depth/20 transition cursor-pointer ${
-                        isRecent ? "bg-brand-accent-1/80" : ""
+                      className={`group p-3 flex items-center gap-3 hover:bg-brand-neutral-dark/40 transition cursor-pointer ${
+                        isRecent ? "" : ""
                       }`}
                     >
                       {h.imageUrl && (
