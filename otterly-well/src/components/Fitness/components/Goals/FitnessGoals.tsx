@@ -46,7 +46,7 @@ export default function FitnessSummary({
       0,
     );
 
-    const lastSet = entries.length > 0 ? entries[0] : null;
+    const lastSet = entries.length > 0 ? entries[entries.length - 1] : null;
 
     return { workouts, sets, volume, distance_km, lastSet };
   }, [entries]);

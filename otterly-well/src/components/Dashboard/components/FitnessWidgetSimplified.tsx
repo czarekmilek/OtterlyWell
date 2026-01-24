@@ -29,7 +29,7 @@ export function FitnessWidgetSimplified({
   const stats = useMemo(() => {
     const workouts = new Set(entries.map((e) => e.exercise_id)).size;
     const sets = entries.reduce((acc, e) => acc + (e.sets || 0), 0);
-    const lastSet = entries.length > 0 ? entries[0] : null;
+    const lastSet = entries.length > 0 ? entries[entries.length - 1] : null;
     return { workouts, sets, lastSet };
   }, [entries]);
 

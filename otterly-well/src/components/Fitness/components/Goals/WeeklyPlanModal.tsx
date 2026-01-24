@@ -65,7 +65,7 @@ export default function WeeklyPlanModal({ onClose }: WeeklyPlanModalProps) {
               {DAYS.map((day) => {
                 // displaying sets for selected day, not CURRENT day
                 const currentSet = weeklyPlan.find(
-                  (s) => s.scheduled_day === day.id
+                  (s) => s.scheduled_day === day.id,
                 );
 
                 return (

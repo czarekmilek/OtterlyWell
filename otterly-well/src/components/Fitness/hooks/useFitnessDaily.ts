@@ -71,7 +71,7 @@ export function useFitnessDaily(date: Date) {
     if (error) {
       console.error("Error adding workout log", error);
     } else if (data) {
-      setEntries((prev) => [data, ...prev]);
+      setEntries((prev) => [...prev, data]);
     }
   };
 
