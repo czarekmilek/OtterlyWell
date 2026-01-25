@@ -30,6 +30,6 @@ describe("<Layout />", () => {
     );
 
     expect(screen.getByTestId("test-child")).toBeInTheDocument();
-    expect(screen.getByText("OtterlyWell")).toBeInTheDocument();
+    expect(screen.getAllByText("OtterlyWell")[0]).toBeInTheDocument();
   });
 });
