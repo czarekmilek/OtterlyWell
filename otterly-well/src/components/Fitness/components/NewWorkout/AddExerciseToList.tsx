@@ -64,6 +64,7 @@ export default function AddExerciseToList({
               </label>
               <input
                 type="number"
+                min={0}
                 value={duration}
                 onChange={(e) => setDuration(Number(e.target.value))}
                 className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
@@ -76,6 +77,7 @@ export default function AddExerciseToList({
               </label>
               <input
                 type="number"
+                min={0}
                 value={distance}
                 onChange={(e) => setDistance(Number(e.target.value))}
                 className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
@@ -92,6 +94,7 @@ export default function AddExerciseToList({
             </label>
             <input
               type="number"
+              min={0}
               value={duration}
               onChange={(e) => setDuration(Number(e.target.value))}
               className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
@@ -109,6 +112,7 @@ export default function AddExerciseToList({
               </label>
               <input
                 type="number"
+                min={0}
                 value={sets}
                 onChange={(e) => setSets(Number(e.target.value))}
                 className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
@@ -120,6 +124,7 @@ export default function AddExerciseToList({
               </label>
               <input
                 type="number"
+                min={0}
                 value={reps}
                 onChange={(e) => setReps(Number(e.target.value))}
                 className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"
@@ -131,6 +136,7 @@ export default function AddExerciseToList({
               </label>
               <input
                 type="number"
+                min={0}
                 value={weight}
                 onChange={(e) => setWeight(Number(e.target.value))}
                 className="w-full bg-transparent text-center text-xl font-bold text-brand-accent-1 focus:outline-none"

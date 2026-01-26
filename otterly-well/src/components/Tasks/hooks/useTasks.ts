@@ -20,6 +20,7 @@ export function useTasks() {
     addCategory,
     deleteCategory: deleteCategoryMut,
     reorderCategories,
+    editCategory,
   } = useCategoryMutations({
     user,
     categories,
@@ -45,5 +46,6 @@ export function useTasks() {
     restoreTask,
     editTask,
     reorderCategories,
+    editCategory,
   };
 }

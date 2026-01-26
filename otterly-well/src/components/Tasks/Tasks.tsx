@@ -21,6 +21,7 @@ export default function Tasks() {
     restoreTask,
     editTask,
     reorderCategories,
+    editCategory,
   } = useTasks();
 
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -135,6 +136,7 @@ export default function Tasks() {
         onAddCategory={addCategory}
         onDeleteCategory={deleteCategory}
         onReorder={reorderCategories}
+        onEditCategory={editCategory}
       />
 
       <HistoricalTaskModal

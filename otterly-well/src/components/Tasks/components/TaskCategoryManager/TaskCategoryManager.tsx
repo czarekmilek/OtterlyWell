@@ -13,6 +13,7 @@ interface TaskCategoryManagerProps {
   onAddCategory: (name: string) => void;
   onDeleteCategory: (categoryId: string) => void;
   onReorder: (newOrder: TaskCategory[]) => void;
+  onEditCategory: (categoryId: string, name: string) => void;
 }
 
 export default function TaskCategoryManager({
@@ -23,9 +24,10 @@ export default function TaskCategoryManager({
   onAddCategory,
   onDeleteCategory,
   onReorder,
+  onEditCategory,
 }: TaskCategoryManagerProps) {
   const [isAdding, setIsAdding] = useState(false);
-  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   return (
     <AnimatePresence>
@@ -75,9 +77,10 @@ export default function TaskCategoryManager({
                         key={category.id}
                         category={category}
                         isActive={category.is_active}
-                        isDeleteMode={isDeleteMode}
+                        isEditMode={isEditMode}
                         onToggle={() => onToggleCategory(category.id)}
                         onDelete={() => onDeleteCategory(category.id)}
+                        onEdit={(name) => onEditCategory(category.id, name)}
                       />
                     ))}
                   </Reorder.Group>
@@ -103,19 +106,19 @@ export default function TaskCategoryManager({
                 )}
                 {/* TODO: maybe move to another place */}
                 <button
-                  onClick={() => setIsDeleteMode(!isDeleteMode)}
+                  onClick={() => setIsEditMode(!isEditMode)}
                   className={`w-full px-4 rounded-lg transition-all duration-200 cursor-pointer ${
-                    isDeleteMode
+                    isEditMode
                       ? "text-brand-accent-1 hover:text-brand-accent-1/80 hover:underline"
                       : "text-brand-accent-1 hover:text-brand-accent-1/80 hover:underline"
                   }`}
                   title={
-                    isDeleteMode ? "Zarządzaj kategoriami" : "Usuń kategorie"
+                    isEditMode
+                      ? "Zakończ tryb edycji"
+                      : "Włącz tryb edycji i usuwania"
                   }
                 >
-                  <span>
-                    {isDeleteMode ? "Tryb zarządzania" : "Tryb usuwania"}
-                  </span>
+                  <span>{isEditMode ? "Zakończ edycję" : "Tryb edycji"}</span>
                 </button>
               </div>
             </div>
