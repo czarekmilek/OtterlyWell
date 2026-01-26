@@ -9,7 +9,7 @@ import { Fragment, useState, useEffect } from "react";
 import { useAuth } from "../../../../context/AuthContext";
 import { supabase } from "../../../../lib/supabaseClient";
 import ForgotPasswordModal from "../../../Auth/ForgotPasswordModal";
-import { CloseIcon, LockIcon } from "../../../icons";
+import { CloseIcon } from "../../../icons";
 
 interface PreferencesModalProps {
   isOpen: boolean;
