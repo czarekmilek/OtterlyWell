@@ -141,10 +141,42 @@ export function useCategoryMutations({
     [setCategories, user],
   );
 
+  const editCategory = useCallback(
+    async (categoryId: string, newName: string) => {
+      const category = categories.find((c) => c.id === categoryId);
+      if (!category) return;
+
+      if (category.name === newName) return;
+
+      // Optimistic update
+      setCategories((prev) =>
+        prev.map((c) => (c.id === categoryId ? { ...c, name: newName } : c)),
+      );
+
+      try {
+        const { error } = await supabase
+          .from("task_categories")
+          .update({ name: newName })
+          .eq("id", categoryId);
+
+        if (error) {
+          setCategories((prev) =>
+            prev.map((c) => (c.id === categoryId ? category : c)),
+          );
+          throw error;
+        }
+      } catch (error) {
+        console.error("Error updating category:", error);
+      }
+    },
+    [categories, setCategories],
+  );
+
   return {
     toggleCategory,
     addCategory,
     deleteCategory,
     reorderCategories,
+    editCategory,
   };
 }

@@ -34,6 +34,8 @@ export default function WorkoutItem({
     { label: "Ramiona", value: "arms" },
     { label: "Brzuch", value: "core" },
     { label: "Cardio", value: "cardio" },
+    { label: "Biceps", value: "biceps" },
+    { label: "Triceps", value: "triceps" },
   ];
   return (
     <>
@@ -53,15 +55,15 @@ export default function WorkoutItem({
               {entry.exercise?.type === "strength"
                 ? `${
                     MUSCLE_GROUPS.find(
-                      (group) => group.value === entry.exercise?.muscle_group
+                      (group) => group.value === entry.exercise?.muscle_group,
                     )?.label
                   } • `
                 : ""}
               {entry.exercise?.type === "strength"
                 ? "Siłowe"
                 : entry.exercise?.type === "stretching"
-                ? "Rozciąganie"
-                : "Cardio"}
+                  ? "Rozciąganie"
+                  : "Cardio"}
             </p>
           </div>
           <div className="flex sm:flex-row flex-col gap-1">

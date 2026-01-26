@@ -1,21 +1,79 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import type { FoodHit } from "../types/types";
+import { useAuth } from "../../../context/AuthContext";
 
-export function useFoodSearch(q: string) {
+export function useFoodSearch(q: string, refreshTrigger: number = 0) {
   const [loading, setLoading] = useState(false);
   const [hits, setHits] = useState<FoodHit[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isRecent, setIsRecent] = useState(true);
+
+  const { user } = useAuth();
 
   useEffect(() => {
     let abort = false;
     async function run() {
       if (!q || q.length < 2) {
-        setHits([]);
+        if (!user) {
+          setHits([]);
+          setIsRecent(true);
+          return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+          const { data, error } = await supabase
+            .from("calorie_entries")
+            .select("food:foods(*)")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(50);
+
+          if (error) throw error;
+
+          const seenIds = new Set();
+          const uniqueFoods: FoodHit[] = [];
+
+          if (data) {
+            data.forEach((entry: any) => {
+              const f = entry.food;
+              if (f && !seenIds.has(f.id)) {
+                seenIds.add(f.id);
+                uniqueFoods.push({
+                  id: f.id,
+                  name: f.name,
+                  brand: f.brand,
+                  kcalPer100g: f.kcal_per_100g,
+                  proteinPer100g: f.protein_g_per_100g,
+                  fatPer100g: f.fat_g_per_100g,
+                  carbsPer100g: f.carbs_g_per_100g,
+                  imageUrl: f.image_url,
+                  sourceId: f.source_id,
+                  servingSize: f.serving_size_g,
+                  servingUnit: f.serving_unit,
+                });
+              }
+            });
+          }
+
+          if (!abort) {
+            setHits(uniqueFoods.slice(0, 10));
+            setIsRecent(true);
+          }
+        } catch (e: any) {
+          if (!abort) setError(e.message);
+        } finally {
+          if (!abort) setLoading(false);
+        }
         return;
       }
+
       setLoading(true);
       setError(null);
+      setIsRecent(false);
 
       try {
         // Search in 'foods' table
@@ -63,11 +121,11 @@ export function useFoodSearch(q: string) {
         if (!abort) {
           // Deduplicate results
           const localSourceIds = new Set(
-            localHits.map((h) => h.sourceId).filter(Boolean)
+            localHits.map((h) => h.sourceId).filter(Boolean),
           );
 
           const newOffHits = offHits.filter(
-            (h) => !h.sourceId || !localSourceIds.has(h.sourceId)
+            (h) => !h.sourceId || !localSourceIds.has(h.sourceId),
           );
 
           setHits([...localHits, ...newOffHits]);
@@ -84,7 +142,7 @@ export function useFoodSearch(q: string) {
       abort = true;
       clearTimeout(timer);
     };
-  }, [q]);
+  }, [q, user, refreshTrigger]);
 
-  return { loading, hits, error };
+  return { loading, hits, error, isRecent };
 }

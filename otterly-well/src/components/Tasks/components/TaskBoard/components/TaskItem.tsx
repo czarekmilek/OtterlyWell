@@ -102,7 +102,7 @@ export default function TaskItem({
             className={`mt-1 w-5 h-5 rounded-full border-2 transition-all flex-shrink-0 flex items-center justify-center cursor-pointer
                        ${
                          isCompleted
-                           ? "bg-brand-positive border-brand-positive text-brand-neutral-darker"
+                           ? "bg-brand-positive border-brand-positive hover:bg-brand-secondary hover:border-brand-secondary text-brand-neutral-darker"
                            : "border-brand-neutral-light/50 hover:border-brand-accent-1 hover:bg-brand-accent-1/20"
                        }`}
           >
@@ -115,7 +115,7 @@ export default function TaskItem({
                         ${
                           isCompleted
                             ? "line-through text-brand-neutral-light/50 truncate pr-17"
-                            : "truncate"
+                            : "truncate pr-17"
                         }`}
             >
               {/* we cut this to fit the buttons, the full description visible when expanded */}
@@ -142,8 +142,8 @@ export default function TaskItem({
                                  task.priority === 3
                                    ? "text-brand-negative-darker/60 bg-brand-negative/30"
                                    : task.priority === 2
-                                   ? "text-brand-accent-1/90 bg-brand-accent-3/30"
-                                   : "text-brand-neutral-light/80 bg-brand-accent-2/30"
+                                     ? "text-brand-accent-1/90 bg-brand-accent-3/30"
+                                     : "text-brand-neutral-light/80 bg-brand-accent-2/30"
                                }`}
                 >
                   {priorityLabel[task.priority]} priorytet

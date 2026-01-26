@@ -19,7 +19,8 @@ const MUSCLE_GROUPS = [
   { label: "Barki", value: "shoulders" },
   { label: "Ramiona", value: "arms" },
   { label: "Brzuch", value: "core" },
-  { label: "Cardio", value: "cardio" },
+  { label: "Biceps", value: "biceps" },
+  { label: "Triceps", value: "triceps" },
 ];
 
 const TYPES = [

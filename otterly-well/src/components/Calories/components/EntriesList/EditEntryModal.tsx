@@ -113,6 +113,7 @@ export const EditEntryModal = ({
                   </label>
                   <input
                     type="number"
+                    min={0}
                     value={grams}
                     // updating grams udpates all macros automatiicaly
                     onChange={(e) => {
@@ -154,6 +155,7 @@ export const EditEntryModal = ({
                     </label>
                     <input
                       type="number"
+                      min={0}
                       value={kcal}
                       onChange={(e) => setKcal(Number(e.target.value))}
                       className="w-full rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-2 
@@ -167,6 +169,7 @@ export const EditEntryModal = ({
                     </label>
                     <input
                       type="number"
+                      min={0}
                       value={protein}
                       onChange={(e) => setProtein(Number(e.target.value))}
                       className="w-full rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-2 
@@ -180,6 +183,7 @@ export const EditEntryModal = ({
                     </label>
                     <input
                       type="number"
+                      min={0}
                       value={fat}
                       onChange={(e) => setFat(Number(e.target.value))}
                       className="w-full rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-2 
@@ -193,6 +197,7 @@ export const EditEntryModal = ({
                     </label>
                     <input
                       type="number"
+                      min={0}
                       value={carbs}
                       onChange={(e) => setCarbs(Number(e.target.value))}
                       className="w-full rounded-md border border-brand-depth bg-brand-neutral-dark px-3 py-2 

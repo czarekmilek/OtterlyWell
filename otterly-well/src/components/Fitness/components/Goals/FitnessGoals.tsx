@@ -39,14 +39,14 @@ export default function FitnessSummary({
     const sets = entries.reduce((acc, e) => acc + (e.sets || 0), 0);
     const volume = entries.reduce(
       (acc, e) => acc + (e.sets || 0) * (e.reps || 0) * (e.weight_kg || 0),
-      0
+      0,
     );
     const distance_km = entries.reduce(
       (acc, e) => acc + (e.distance_km || 0),
-      0
+      0,
     );
 
-    const lastSet = entries.length > 0 ? entries[0] : null;
+    const lastSet = entries.length > 0 ? entries[entries.length - 1] : null;
 
     return { workouts, sets, volume, distance_km, lastSet };
   }, [entries]);
@@ -76,9 +76,20 @@ export default function FitnessSummary({
                       minute: "2-digit",
                     })}
                   </span>
-                  <span className="text-sm text-brand-secondary">
-                    {stats.lastSet.weight_kg} kg x {stats.lastSet.reps}
-                  </span>
+                  {stats.lastSet.distance_km ? (
+                    <span className="text-xs text-brand-accent-1 bg-brand-accent-1/10 px-2 py-0.5 rounded">
+                      {stats.lastSet.distance_km} km x{" "}
+                      {stats.lastSet.duration_min} min
+                    </span>
+                  ) : stats.lastSet.weight_kg ? (
+                    <span className="text-xs text-brand-accent-1 bg-brand-accent-1/10 px-2 py-0.5 rounded">
+                      {stats.lastSet.weight_kg} kg x {stats.lastSet.reps}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-brand-accent-1 bg-brand-accent-1/10 px-2 py-0.5 rounded">
+                      {stats.lastSet.duration_min} min
+                    </span>
+                  )}
                 </div>
               </div>
             ) : (

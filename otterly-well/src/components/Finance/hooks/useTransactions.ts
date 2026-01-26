@@ -8,7 +8,7 @@ export function useTransactions(categories: FinanceCategory[]) {
   const [transactions, setTransactions] = useState<FinanceTransaction[]>([]);
   const [transactionsLoading, setTransactionsLoading] = useState(true);
   const [transactionsError, setTransactionsError] = useState<string | null>(
-    null
+    null,
   );
 
   const fetchTransactions = useCallback(async () => {
@@ -45,7 +45,7 @@ export function useTransactions(categories: FinanceCategory[]) {
     transaction: Omit<
       FinanceTransaction,
       "id" | "user_id" | "created_at" | "finance_categories"
-    >
+    >,
   ) => {
     if (!user) return;
     const { data, error } = await supabase
@@ -90,7 +90,7 @@ export function useTransactions(categories: FinanceCategory[]) {
         FinanceTransaction,
         "id" | "user_id" | "created_at" | "finance_categories"
       >
-    >
+    >,
   ) => {
     const { data, error } = await supabase
       .from("finance_transactions")
@@ -111,8 +111,8 @@ export function useTransactions(categories: FinanceCategory[]) {
 
     setTransactions((prev) =>
       prev.map((t) =>
-        t.id === id ? (enrichedTransaction as FinanceTransaction) : t
-      )
+        t.id === id ? (enrichedTransaction as FinanceTransaction) : t,
+      ),
     );
 
     return enrichedTransaction as FinanceTransaction;

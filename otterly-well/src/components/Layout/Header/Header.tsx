@@ -22,6 +22,12 @@ const Header = ({ onMenuClick }: HeaderProps) => {
 
       <div className="h-6 w-px bg-brand-depth" aria-hidden="true" />
 
+      <button onClick={onMenuClick} className="flex items-center">
+        <h1 className="text-2xl font-script text-brand-neutral-dark">
+          OtterlyWell
+        </h1>
+      </button>
+
       {/* <div className="flex flex-1 justify-end gap-x-6">
         <div className="flex items-center gap-x-4">
           <span className="sr-only">View profile</span>

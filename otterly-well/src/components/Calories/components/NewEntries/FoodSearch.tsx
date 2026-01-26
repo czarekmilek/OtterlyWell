@@ -9,6 +9,7 @@ interface FoodSearchProps {
   error: string | null;
   localHits: FoodHitWithGrams[];
   addEntryFromFood: (food: FoodHit, grams: number) => void;
+  isRecent?: boolean;
 }
 
 export const FoodSearch = ({
@@ -17,6 +18,7 @@ export const FoodSearch = ({
   error,
   localHits,
   addEntryFromFood,
+  isRecent = false,
 }: FoodSearchProps) => {
   const [selectedHit, setSelectedHit] = useState<FoodHitWithGrams | null>(null);
 
@@ -74,7 +76,9 @@ export const FoodSearch = ({
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ duration: 0.2 }}
                       onClick={() => openModal(h)}
-                      className="group p-3 flex items-center gap-3 hover:bg-brand-depth/20 transition cursor-pointer"
+                      className={`group p-3 flex items-center gap-3 hover:bg-brand-neutral-dark/40 transition cursor-pointer ${
+                        isRecent ? "" : ""
+                      }`}
                     >
                       {h.imageUrl && (
                         <img
@@ -120,6 +124,15 @@ export const FoodSearch = ({
           query !== "" &&
           error === null && (
             <p className="m-2 text-brand-secondary">Brak wyników</p>
+          )}
+
+        {localHits.length === 0 &&
+          loading === false &&
+          isRecent &&
+          localHits.length === 0 && (
+            <div className="flex flex-col items-center justify-center p-8 text-brand-neutral-light/30">
+              <p>Brak ostatnio dodawanych produktów</p>
+            </div>
           )}
 
         {loading && (

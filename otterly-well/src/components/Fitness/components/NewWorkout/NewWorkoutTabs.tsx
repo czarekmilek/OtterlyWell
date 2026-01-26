@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import { supabase } from "../../../../lib/supabaseClient";
+
 import ExerciseSearch from "./ExerciseSearch";
 import SetSearch from "./SetSearch";
 import SetModal from "./SetModal";
@@ -10,11 +10,14 @@ import type { ExerciseInputData } from "./AddExerciseToList";
 import TabButton from "../../../UI/TabButton";
 import ConfirmDeleteDialog from "../../../UI/ConfirmDeleteDialog";
 
+import { useExerciseMutations } from "../../hooks/useExerciseMutations";
+
 interface NewWorkoutTabsProps {
   onAddExercise: (exercise: Exercise, data: ExerciseInputData) => void;
 }
 
 export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
+  const { deleteExercise } = useExerciseMutations();
   const [activeCategory, setActiveCategory] = useState<"exercises" | "sets">(
     "exercises",
   );
@@ -30,6 +33,7 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
   const [exerciseToDelete, setExerciseToDelete] = useState<Exercise | null>(
     null,
   );
+  const [clearSelectionTrigger, setClearSelectionTrigger] = useState(0);
 
   const handleAddSet = (set: ExerciseSet) => {
     set.items?.forEach((item) => {
@@ -53,19 +57,17 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
   const handleConfirmDelete = async () => {
     if (!exerciseToDelete) return;
 
-    const { error } = await supabase
-      .from("exercises")
-      .delete()
-      .eq("id", exerciseToDelete.id);
+    try {
+      await deleteExercise(exerciseToDelete.id);
 
-    if (error) {
-      console.error("Error deleting exercise:", error);
-      alert("Wystąpił błąd podczas usuwania ćwiczenia: " + error.message);
-    } else {
       setExercisesRefreshTrigger((prev) => prev + 1);
+      setClearSelectionTrigger((prev) => prev + 1);
+    } catch (error: any) {
+      alert("Wystąpił błąd: " + (error.message || error.toString()));
+    } finally {
+      setIsDeleteModalOpen(false);
+      setExerciseToDelete(null);
     }
-    setIsDeleteModalOpen(false);
-    setExerciseToDelete(null);
   };
 
   return (
@@ -104,6 +106,7 @@ export default function NewWorkoutTabs({ onAddExercise }: NewWorkoutTabsProps) {
                   }}
                   onDeleteExercise={promptDeleteExercise}
                   refreshTrigger={exercisesRefreshTrigger}
+                  clearSelectionTrigger={clearSelectionTrigger}
                 />
               </AnimatePresence>
             </div>

@@ -26,7 +26,7 @@ export function useFitnessDaily(date: Date) {
         .eq("user_id", user.id)
         .gte("created_at", startOfDay.toISOString())
         .lte("created_at", endOfDay.toISOString())
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: true });
 
       if (error) {
         console.error("Error fetching workout logs", error);
@@ -47,7 +47,7 @@ export function useFitnessDaily(date: Date) {
       weight?: number;
       duration?: number;
       distance?: number;
-    }
+    },
   ) => {
     if (!user) return;
 
@@ -71,7 +71,7 @@ export function useFitnessDaily(date: Date) {
     if (error) {
       console.error("Error adding workout log", error);
     } else if (data) {
-      setEntries((prev) => [data, ...prev]);
+      setEntries((prev) => [...prev, data]);
     }
   };
 
@@ -95,7 +95,7 @@ export function useFitnessDaily(date: Date) {
       console.error("Error updating workout log", error);
     } else {
       setEntries((prev) =>
-        prev.map((e) => (e.id === id ? { ...e, ...updates } : e))
+        prev.map((e) => (e.id === id ? { ...e, ...updates } : e)),
       );
     }
   };

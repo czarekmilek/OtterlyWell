@@ -98,14 +98,14 @@ const LoginForm = () => {
         </motion.button>
 
         <div className="flex justify-end">
-          <button
+          {/* <button
             type="button"
             onClick={() => setIsForgotOpen(true)}
             className="text-sm text-brand-neutral-dark/60 hover:text-brand-primary transition-colors font-medium
             cursor-pointer"
           >
             Nie pamiętam hasła
-          </button>
+          </button> */}
         </div>
       </div>
 

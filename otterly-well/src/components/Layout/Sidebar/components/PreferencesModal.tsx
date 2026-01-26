@@ -229,7 +229,7 @@ export default function PreferencesModal({
                       </div>
                     </div>
 
-                    <div>
+                    {/* <div>
                       <h4 className="text-sm font-medium text-brand-secondary mb-3 uppercase tracking-wider">
                         Bezpieczeństwo
                       </h4>
@@ -248,7 +248,7 @@ export default function PreferencesModal({
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
 
                     {message && (
                       <div
