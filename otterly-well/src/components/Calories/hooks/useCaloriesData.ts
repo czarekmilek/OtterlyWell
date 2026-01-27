@@ -14,10 +14,10 @@ export function useCaloriesData(user: User | null, selectedDate: Date) {
   const [isLoading, setIsLoading] = useState(true);
 
   const [goals, setGoals] = useState<GoalsState>({
-    calories: 2137,
-    protein: 133,
-    fat: 77,
-    carbs: 255,
+    calories: 2370,
+    protein: 120,
+    fat: 72,
+    carbs: 270,
   });
 
   const [entries, setEntries] = useState<Entry[]>([]);
