@@ -31,7 +31,11 @@ export function LinearMacroProgress({
       <div className="h-4 w-full rounded-full bg-brand-neutral-light/20 overflow-hidden">
         <div
           className="h-full rounded-full"
-          style={{ width: `${percent}%`, backgroundColor: color }}
+          style={{
+            width: `${percent}%`,
+            backgroundColor:
+              value > goal ? "var(--color-brand-negative)" : color,
+          }}
         ></div>
       </div>
     </div>
