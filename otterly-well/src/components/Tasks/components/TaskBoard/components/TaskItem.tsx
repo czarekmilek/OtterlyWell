@@ -99,14 +99,22 @@ export default function TaskItem({
               e.stopPropagation();
               onComplete(task.id);
             }}
-            className={`mt-1 w-5 h-5 rounded-full border-2 transition-all flex-shrink-0 flex items-center justify-center cursor-pointer
+            aria-label={
+              isCompleted ? "Oznacz jako nieukończone" : "Oznacz jako ukończone"
+            }
+            className="group/complete -ml-3.5 -mr-3.5 -mt-2.5 w-12 h-12 flex flex-shrink-0 
+              items-center justify-center rounded-full cursor-pointer focus:outline-none"
+          >
+            <div
+              className={`w-5 h-5 p-2 rounded-full border-2 transition-all flex items-center justify-center
                        ${
                          isCompleted
-                           ? "bg-brand-positive border-brand-positive hover:bg-brand-secondary hover:border-brand-secondary text-brand-neutral-darker"
-                           : "border-brand-neutral-light/50 hover:border-brand-accent-1 hover:bg-brand-accent-1/20"
+                           ? "bg-brand-positive border-brand-positive group-hover/complete:bg-brand-secondary group-hover/complete:border-brand-secondary text-brand-neutral-darker"
+                           : "border-brand-neutral-light/50 group-hover/complete:border-brand-accent-1 group-hover/complete:bg-brand-accent-1/20"
                        }`}
-          >
-            {isCompleted && <CheckIcon className="scale-75" />}
+            >
+              {isCompleted && <CheckIcon className="scale-75" />}
+            </div>
           </button>
 
           <div className="flex-grow min-w-0">
