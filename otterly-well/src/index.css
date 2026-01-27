@@ -36,6 +36,20 @@
   .glass-header {
     @apply bg-brand-neutral-dark/50 text-brand-neutral-light border border-brand-depth font-bold;
   }
+
+  .material-symbols-sharp {
+    font-family: "Material Symbols Sharp";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+  }
 }
 
 /* --- Light Mode --- */

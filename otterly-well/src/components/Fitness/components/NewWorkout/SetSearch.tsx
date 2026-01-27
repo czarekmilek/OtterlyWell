@@ -78,7 +78,7 @@ export default function SetSearch({
               </div>
               <button
                 onClick={onCreateSet}
-                className="bg-brand-accent-1 hover:bg-brand-accent-2 text-white p-3 rounded-lg transition-colors shadow-lg"
+                className="bg-brand-accent-1 hover:bg-brand-accent-2 text-white p-3 rounded-lg transition-colors shadow-lg cursor-pointer"
                 title="Stwórz nowy zestaw"
               >
                 +

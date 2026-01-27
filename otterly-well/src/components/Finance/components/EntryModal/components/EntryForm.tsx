@@ -15,7 +15,7 @@ interface EntryFormProps {
     entry: Omit<
       FinanceTransaction,
       "id" | "user_id" | "created_at" | "finance_categories"
-    >
+    >,
   ) => Promise<any>;
   categories: FinanceCategory[];
   initialType?: FinanceType;
@@ -32,22 +32,22 @@ const EntryForm = forwardRef<HTMLDivElement, EntryFormProps>(
       initialType = "expense",
       initialData,
     },
-    ref
+    ref,
   ) => {
     // for editing, to see where we came from
     const [type, setType] = useState<FinanceType>(
-      initialData?.type || initialType
+      initialData?.type || initialType,
     );
     const [amount, setAmount] = useState(initialData?.amount.toString() || "");
     const [title, setTitle] = useState(initialData?.title || "");
     const [description, setDescription] = useState(
-      initialData?.description || ""
+      initialData?.description || "",
     );
     const [categoryId, setCategoryId] = useState(
-      initialData?.category_id || ""
+      initialData?.category_id || "",
     );
     const [date, setDate] = useState(
-      initialData?.date || new Date().toISOString().split("T")[0]
+      initialData?.date || new Date().toISOString().split("T")[0],
     );
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -195,7 +195,7 @@ const EntryForm = forwardRef<HTMLDivElement, EntryFormProps>(
               disabled={isSubmitting}
               className="inline-flex w-full justify-center rounded-md bg-brand-accent-1 px-3 py-2 text-sm font-semibold text-brand-neutral-dark shadow-sm 
                     hover:bg-brand-accent-2 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-brand-accent-1 disabled:opacity-50
-                    disabled:cursor-not-allowed cursor-pointer"
+                    disabled:cursor-not-allowed cursor-pointer transition-colors"
             >
               {isSubmitting ? "Zapisywanie..." : "Zapisz"}
             </button>
@@ -203,7 +203,7 @@ const EntryForm = forwardRef<HTMLDivElement, EntryFormProps>(
         </form>
       </DialogPanel>
     );
-  }
+  },
 );
 
 EntryForm.displayName = "EntryForm";

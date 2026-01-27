@@ -19,18 +19,18 @@ export function AddTaskModal({
   initialData,
 }: AddTaskModalProps) {
   const [description, setDescription] = useState(
-    initialData?.description || ""
+    initialData?.description || "",
   );
   const [categoryId, setCategoryId] = useState(
-    initialData?.category_id || categories[0]?.id || ""
+    initialData?.category_id || categories[0]?.id || "",
   );
   const [priority, setPriority] = useState<TaskPriority>(
-    initialData?.priority || 1
+    initialData?.priority || 1,
   );
   const [deadline, setDeadline] = useState(
     initialData?.deadline
       ? new Date(initialData.deadline).toISOString().split("T")[0]
-      : ""
+      : "",
   );
 
   useEffect(() => {
@@ -42,12 +42,12 @@ export function AddTaskModal({
         setDeadline(
           initialData.deadline
             ? new Date(initialData.deadline).toISOString().split("T")[0]
-            : ""
+            : "",
         );
       } else if (categories.length > 0) {
         if (!description && !initialData) {
           const isCurrentCategoryValid = categories.some(
-            (c) => c.id === categoryId
+            (c) => c.id === categoryId,
           );
           if (!categoryId || !isCurrentCategoryValid) {
             setCategoryId(categories[0].id);
@@ -105,7 +105,8 @@ export function AddTaskModal({
                 </h2>
                 <button
                   onClick={onClose}
-                  className="text-brand-neutral-light/60 hover:text-brand-neutral-light transition-colors"
+                  className="text-brand-secondary hover:text-brand-neutral-dark hover:bg-brand-neutral-light/70 rounded-full 
+                  p-1 flex items-center justify-center cursor-pointer transition-all"
                 >
                   <CloseIcon />
                 </button>
@@ -162,8 +163,8 @@ export function AddTaskModal({
                                                     ? p === 3
                                                       ? "bg-brand-negative text-white border-brand-negative"
                                                       : p === 2
-                                                      ? "bg-brand-accent-3 text-white border-brand-accent-3"
-                                                      : "bg-brand-accent-2 text-white border-brand-accent-2"
+                                                        ? "bg-brand-accent-3 text-white border-brand-accent-3"
+                                                        : "bg-brand-accent-2 text-white border-brand-accent-2"
                                                     : "border-brand-depth text-brand-neutral-light/60 hover:border-brand-neutral-light/40"
                                                 }`}
                         >
