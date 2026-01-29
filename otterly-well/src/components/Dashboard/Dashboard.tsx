@@ -17,7 +17,7 @@ const Dashboard = () => {
           <div className="flex flex-col items-center justify-center h-full text-brand-neutral-light/70 p-8 text-center bg-brand-neutral-dark/20 rounded-2xl border border-brand-depth border-dashed">
             <DashboardIcon className="opacity-50 mb-2" />
             <h3 className="text-xl font-bold mb-2 text-brand-neutral-light">
-              Wszystkie moduły są ukryte.
+              Wszystkie moduły są ukryte
             </h3>
             <p className="max-w-md">
               Przejdź do menu bocznego i kliknij{" "}
