@@ -1,7 +1,7 @@
 # OtterlyWell
 **OtterlyWell** to aplikacja webowa służąca jako centralny hub do organizacji codziennego życia i monitorowania well-beingu. Projekt łączy w sobie funkcjonalności z zakresu dietetyki, aktywności fizycznej, finansów oraz zarządzania zadaniami w jednym, spójnym systemie.
 
-Aplikacja została zrealizowana jako **praca inżynierska**.
+Aplikacja została zrealizowana jako **praca inżynierska** na Uniwersytecie Wrocławskim.
 
 ## Funkcjonalności
 Aplikacja składa się z modularnej architektury, pozwalającej użytkownikowi na wybór aktywnych komponentów:
@@ -12,12 +12,11 @@ Aplikacja składa się z modularnej architektury, pozwalającej użytkownikowi n
 - **Moduł zadaniowy**: Tablica zadań do organizacji pracy, priorytetyzacja i kategoryzacja zadań.
 
 ## Technologie
-Projekt został wykonany w nowoczesnym stosie technologicznym:
+Projekt został wykonany w następującym stosie technologicznym:
 - **Frontend**: [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/)
 - **Build Tool**: [Vite](https://vitejs.dev/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/), [Headless UI](https://headlessui.com/), [Framer Motion](https://www.framer.com/motion/) (animacje)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/), [Headless UI](https://headlessui.com/), [Framer Motion](https://www.framer.com/motion/)
 - **Backend (BaaS)**: [Supabase](https://supabase.com/) (PostgreSQL, Auth, Edge Functions)
-- **Routing**: React Router DOM
 
 ## Wersja demonstracyjna
 Aplikacja jest hostowana z pomocą Github Pages i dostępna w
@@ -30,7 +29,7 @@ Aplikacja jest hostowana z pomocą Github Pages i dostępna w
 ### Uruchomienie
 1.  Sklonuj repozytorium:
     ```bash
-    git clone https://github.com/czarekmilek/OtterlyWell.git
+    git clone https://github.com/czarekmilek/OtterlyWell/
     cd OtterlyWell
     ```
 2.  Zainstaluj zależności:
@@ -44,7 +43,7 @@ Aplikacja jest hostowana z pomocą Github Pages i dostępna w
     VITE_SUPABASE_ANON_KEY=twoj_klucz_anon_supabase
     VITE_SUPABASE_FUNCTIONS_URL=url_do_edge_functions
     ```
-    > **Uwaga**: `VITE_SUPABASE_FUNCTIONS_URL` jest wymagany do działania wyszukiwarki produktów (przez OpenFoodFacts).
+    > `VITE_SUPABASE_FUNCTIONS_URL` jest wymagany do działania wyszukiwarki produktów (przez OpenFoodFacts).
 4.  Uruchom serwer deweloperski:
     ```bash
     npm run dev
